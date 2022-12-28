@@ -1,22 +1,22 @@
 {
   "schemaVersion": 1,
-  "id": "myplugin",
+  "id": "moremcmeta_emissive_plugin",
   "version": "${modVersion}",
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "MoreMcmeta Emissive Textures Plugin",
+  "description": "Plugin for MoreMcmeta to enable emissive textures for blocks, items, entities, and block entities.\n\n",
   "authors": [
-    "AUTHOR_NAME"
+    "soir20"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://github.com/MoreMcmeta",
+    "sources": "https://github.com/MoreMcmeta/emissive-plugin"
   },
-  "license": "Insert License Here",
+  "license": "LGPL-3.0",
   "icon": "assets/examplemod/icon.png",
   "environment": "*",
   "entrypoints": {
     "client": [
-      "io.github.myorg.myplugin.fabric.ExampleModFabric"
+      "io.github.moremcmeta.emissiveplugin.fabric.ExampleModFabric"
     ]
   },
   "depends": {
