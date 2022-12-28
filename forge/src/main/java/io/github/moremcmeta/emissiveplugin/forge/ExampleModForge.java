@@ -1,6 +1,6 @@
-package io.github.myorg.myplugin.forge;
+package io.github.moremcmeta.emissiveplugin.forge;
 
-import io.github.myorg.myplugin.ExampleMod;
+import io.github.moremcmeta.emissiveplugin.ExampleMod;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.IExtensionPoint;

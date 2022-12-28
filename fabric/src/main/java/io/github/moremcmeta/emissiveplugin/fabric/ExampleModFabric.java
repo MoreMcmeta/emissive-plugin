@@ -1,6 +1,6 @@
-package io.github.myorg.myplugin.fabric;
+package io.github.moremcmeta.emissiveplugin.fabric;
 
-import io.github.myorg.myplugin.ExampleMod;
+import io.github.moremcmeta.emissiveplugin.ExampleMod;
 import net.fabricmc.api.ClientModInitializer;
 
 public class ExampleModFabric extends ExampleMod implements ClientModInitializer {
