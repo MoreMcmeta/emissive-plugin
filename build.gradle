@@ -23,6 +23,8 @@ subprojects {
         // mappings "net.fabricmc:yarn:1.19+build.4:v2"
 
         modImplementation "io.github.moremcmeta:moremcmeta-${project.name}:${project.moremcmeta_version}"
+
+        testImplementation "junit:junit:${project.junit_version}"
     }
 }
 
@@ -31,9 +33,19 @@ allprojects {
     apply plugin: "architectury-plugin"
     apply plugin: "maven-publish"
 
+    def final SNAPSHOT_SUFFIX = "-prerelease"
+
+    project.ext.mod_version = System.getenv("MOD_VERSION") ?: "DEV"
+    project.ext.is_snapshot = project.mod_version.endsWith(SNAPSHOT_SUFFIX)
+
     archivesBaseName = project.archives_base_name
-    version = project.mod_version
+    version = "${project.minecraft_version}-${project.mod_version}"
     group = project.maven_group
+
+    project.ext.maven_artifact_id = "${archivesBaseName}-${project.name}"
+    project.ext.maven_version = is_snapshot
+            ? "${version.substring(0, version.length() - SNAPSHOT_SUFFIX.length())}-SNAPSHOT"
+            : version
 
     repositories {
         // Add repositories to retrieve artifacts from in here.
@@ -57,5 +69,26 @@ allprojects {
 
     java {
         withSourcesJar()
+    }
+
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                artifactId = project.maven_artifact_id
+                version = project.maven_version
+                from components.java
+            }
+        }
+
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = "https://maven.pkg.github.com/MoreMcmeta/emissive-plugin"
+                credentials {
+                    username = System.getenv("GITHUB_ACTOR")
+                    password = System.getenv("GITHUB_TOKEN")
+                }
+            }
+        }
     }
 }
