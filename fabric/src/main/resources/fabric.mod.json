@@ -3,7 +3,7 @@
   "id": "moremcmeta_emissive_plugin",
   "version": "${modVersion}",
   "name": "MoreMcmeta Emissive Textures Plugin",
-  "description": "Plugin for MoreMcmeta to enable emissive textures for blocks, items, entities, and block entities.\n\n",
+  "description": "Plugin for MoreMcmeta to enable emissive textures for blocks, items, entities, and block entities.",
   "authors": [
     "soir20"
   ],
