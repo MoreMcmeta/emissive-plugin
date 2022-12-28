@@ -1,0 +1,18 @@
+name: Clean up prerelease packages from deleted branches and tags
+on: [delete]
+jobs:
+  cleanup_packages:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        loader: [forge, fabric, common]
+    steps:
+      - uses: actions/delete-package-versions@c5e64443ea1242014b4011a563c5bccc90867ac8
+        with:
+          package-name: io.github.moremcmeta.emissive-plugin-${{ matrix.loader }}
+          min-versions-to-keep: 0
+          ignore-versions: ^[\d.]+-(?!${{ github.event.ref }}-SNAPSHOT).*$
+          token: ${{ secrets.GITHUB_TOKEN }}

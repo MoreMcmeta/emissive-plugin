@@ -1,0 +1,68 @@
+name: Publish development and release versions to GitHub Packages
+on:
+  release:
+    types: [published]
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    strategy:
+      matrix:
+        loader: [forge, fabric, common]
+    env:
+      MOREMCMETA_MAVEN_USER: ${{ secrets.MOREMCMETA_MAVEN_USER }}
+      MOREMCMETA_MAVEN_PASS: ${{ secrets.MOREMCMETA_MAVEN_PASS }}
+    steps:
+      - uses: actions/checkout@3ba5ee6fac7e0e30e2ea884e236f282d3a775891
+      - uses: actions/setup-java@308abcba03229002f0055e17d79d00c32fca160f
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Determine mod version from tag
+        id: mod_version
+        uses: actions/github-script@d556feaca394842dc55e4734bf3bb9f685482fa0
+        with:
+          script: |
+            const tag_name = context.payload.release.tag_name;
+            if (!tag_name.match(/^v\d+\.\d+(\.\d+)?-\d+\.\d+\.\d+$/)) {
+              core.setFailed('Tag name does not match release format. Stopping publication.');
+            }
+            return tag_name.split('-')[1];
+          result-encoding: string
+
+      - name: Ensure Gradle wrapper is executable
+        run: chmod +x ./gradlew
+
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@9aa31f26bc8e536d1faf4b332bb8365350743a18
+
+      - name: Publish to GitHub Packages
+        uses: gradle/gradle-build-action@cfc50b189af149aeb55f94103f47753382d88d33
+        with:
+          arguments: :${{ matrix.loader }}:build :${{ matrix.loader }}:publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MOD_VERSION: ${{ steps.mod_version.outputs.result }}
+
+      - name: Retrieve Minecraft version
+        id: mc_version
+        uses: soir20/read-properties@149513cdd3abac7305a217dd6ed3f0c0eaf72b9e
+        with:
+          file: "./gradle.properties"
+          property: "minecraft_version"
+
+      - name: Publish to GitHub Releases
+        if: matrix.loader != 'common'
+        uses: actions/upload-release-asset@ef2adfe8cb8ebfa540930c452c576b3819990faa
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./${{ matrix.loader }}/build/libs/emissive-plugin-${{ env.MC_VERSION }}-${{ env.MOD_VERSION }}-${{ matrix.loader }}.jar
+          asset_name: emissive-plugin-${{ env.MC_VERSION }}-${{ env.MOD_VERSION }}-${{ matrix.loader }}.jar
+          asset_content_type: application/java-archive
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MOD_VERSION: ${{ steps.mod_version.outputs.result }}
+          MC_VERSION: ${{ steps.mc_version.outputs.value }}
