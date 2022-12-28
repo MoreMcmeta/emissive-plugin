@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "myplugin",
+  "version": "${modVersion}",
+  "name": "Example Mod",
+  "description": "This is an example description! Tell everyone what your mod is about!",
+  "authors": [
+    "AUTHOR_NAME"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "Insert License Here",
+  "icon": "assets/examplemod/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "io.github.myorg.myplugin.fabric.ExampleModFabric"
+    ]
+  },
+  "depends": {
+    "fabric": "*",
+    "minecraft": ">=${minecraftVersion}",
+    "moremcmeta": "${minMoreMcmetaVersion}"
+  }
+}

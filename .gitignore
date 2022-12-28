@@ -1,0 +1,32 @@
+# Eclipse
+bin
+*.launch
+.settings
+.metadata
+.classpath
+.project
+
+# IDEA
+out
+*.ipr
+*.iws
+*.iml
+.idea
+
+# Gradle
+build
+.gradle
+
+# Other
+eclipse
+run
+
+# Files from Forge MDK
+forge*changelog.txt
+
+# Crash logs
+logs
+/.vscode/launch.json
+
+# Architectury Files
+.architectury-transformer

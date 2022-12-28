@@ -1,0 +1,35 @@
+modLoader = "javafml"
+loaderVersion = "[${loaderVersion},)"
+#issueTrackerURL = ""
+license = "Insert License Here"
+
+[[mods]]
+modId = "myplugin"
+version = "${modVersion}"
+displayName = "Example Mod"
+authors = "AUTHOR_NAME"
+description = '''
+This is an example description! Tell everyone what your mod is about!
+'''
+#logoFile = ""
+
+[[dependencies.myplugin]]
+modId = "moremcmeta"
+mandatory = true
+versionRange = "[${minMoreMcmetaVersion},)"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.myplugin]]
+modId = "forge"
+mandatory = true
+versionRange = "[${loaderVersion},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.myplugin]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[${minecraftVersion},)"
+ordering = "NONE"
+side = "BOTH"
