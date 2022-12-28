@@ -56,7 +56,7 @@ jobs:
 
       - name: Publish to GitHub Releases
         if: matrix.loader != 'common'
-        uses: actions/upload-release-asset@ef2adfe8cb8ebfa540930c452c576b3819990faa
+        uses: soir20/upload-release-asset@37aa3a51885376058749a2862ac37308eff79123
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: ./${{ matrix.loader }}/build/libs/emissive-plugin-${{ env.MC_VERSION }}-${{ env.MOD_VERSION }}-${{ matrix.loader }}.jar
