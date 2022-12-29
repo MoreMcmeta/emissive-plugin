@@ -20,7 +20,7 @@ public class OverlayMetadataParser implements MetadataParser {
         requireNonNull(metadata, "Metadata cannot be null");
 
         MetadataView sectionMetadata = metadata.subView(ModConstants.SECTION_NAME).orElseThrow();
-        Optional<String> rawOverlayLocation = metadata.stringValue("texture");
+        Optional<String> rawOverlayLocation = sectionMetadata.stringValue("texture");
         if (rawOverlayLocation.isEmpty()) {
             throw new InvalidMetadataException("Overlays must have a texture defined");
         }
