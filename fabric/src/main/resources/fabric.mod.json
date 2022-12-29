@@ -15,8 +15,8 @@
   "icon": "assets/examplemod/icon.png",
   "environment": "*",
   "entrypoints": {
-    "client": [
-      "io.github.moremcmeta.emissiveplugin.fabric.ExampleModFabric"
+    "moremcmeta-client": [
+      "io.github.moremcmeta.emissiveplugin.fabric.OverlayPluginFabric"
     ]
   },
   "mixins": [
