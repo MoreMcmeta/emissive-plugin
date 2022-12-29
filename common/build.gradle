@@ -2,6 +2,10 @@ architectury {
     common(project.enabled_platforms.split(","))
 }
 
+loom {
+    accessWidenerPath = file("src/main/resources/moremcmeta_emissive_plugin.accesswidener")
+}
+
 dependencies {
     // We depend on fabric loader here to use the fabric @Environment annotations and get the mixin dependencies
     // Do NOT use other classes from fabric loader

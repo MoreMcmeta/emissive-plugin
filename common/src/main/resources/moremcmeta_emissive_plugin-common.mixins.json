@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "io.github.moremcmeta.emissiveplugin.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "client": [
+    "ModelPartMixin",
+    "EntityRenderDispatcherMixin",
+    "BlockEntityRenderDispatcherMixin"
+  ],
+  "mixins": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

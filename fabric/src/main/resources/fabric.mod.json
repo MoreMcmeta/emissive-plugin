@@ -19,6 +19,9 @@
       "io.github.moremcmeta.emissiveplugin.fabric.ExampleModFabric"
     ]
   },
+  "mixins": [
+    "moremcmeta_emissive_plugin-common.mixins.json"
+  ],
   "depends": {
     "fabric": "*",
     "minecraft": ">=${minecraftVersion}",
