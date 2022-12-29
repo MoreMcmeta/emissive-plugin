@@ -1,20 +1,18 @@
 package io.github.moremcmeta.emissiveplugin.forge;
 
-import io.github.moremcmeta.emissiveplugin.ExampleMod;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
+import io.github.moremcmeta.emissiveplugin.ModConstants;
 import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkConstants;
 
-@Mod(ExampleMod.MOD_ID)
-public class ExampleModForge extends ExampleMod {
+@Mod(ModConstants.MOD_ID)
+public class EmissivePluginForge {
 
     /**
      * Serves as mod entrypoint on Forge and tells the server to ignore this mod.
      */
-    public ExampleModForge() {
+    public EmissivePluginForge() {
 
         /* Make sure the mod being absent on the other network side does not
            cause the client to display the server as incompatible. */
@@ -25,8 +23,6 @@ public class ExampleModForge extends ExampleMod {
                         (remoteVersion, isServer)-> true
                 )
         );
-
-        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> this::start);
     }
 
 }
