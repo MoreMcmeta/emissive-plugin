@@ -19,7 +19,11 @@ package io.github.moremcmeta.emissiveplugin.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import io.github.moremcmeta.emissiveplugin.OverlayMetadata;
+import io.github.moremcmeta.emissiveplugin.ModConstants;
 import io.github.moremcmeta.emissiveplugin.WrappedBufferSource;
+import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataRegistry;
+import io.github.moremcmeta.moremcmeta.api.client.metadata.ParsedMetadata;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.LightTexture;
@@ -33,33 +37,42 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import java.util.Optional;
+
 @Mixin(ModelPart.class)
 public class ModelPartMixin {
 
-    @Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;IIFFFF)V", at = @At(value = "HEAD"))
+    @Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;IIFFFF)V",
+            at = @At(value = "HEAD"))
     private void onEntry(CallbackInfo callbackInfo) {
         WrappedBufferSource.depth++;
     }
 
-    @Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;IIFFFF)V", at = @At(value = "RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void onReturn(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float blue, float green, float alpha, CallbackInfo callbackInfo) {
+    @Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;IIFFFF)V",
+            at = @At(value = "RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
+    private void onReturn(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay,
+                          float red, float blue, float green, float alpha, CallbackInfo callbackInfo) {
         ModelPart thisPart = (ModelPart) (Object) this;
         MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
 
-        if (WrappedBufferSource.depth == 0 && WrappedBufferSource.currentRenderType instanceof RenderType.CompositeRenderType compositeType) {
-            RenderType.CompositeState state = compositeType.state();
-
-            ResourceLocation location = null;
+        if (WrappedBufferSource.depth == 0) {
+            Optional<ParsedMetadata> metadataOptional = Optional.empty();
             if (vertexConsumer instanceof SpriteCoordinateExpander spriteVertexConsumer) {
-                location = spriteVertexConsumer.sprite.getName();
-            } else if (state.textureState.cutoutTexture().isPresent()) {
-                location = state.textureState.cutoutTexture().get();
+                ResourceLocation location = spriteVertexConsumer.sprite.getName();
+                metadataOptional = MetadataRegistry.INSTANCE.getFromSpriteName(ModConstants.DISPLAY_NAME, location);
+            } else if (WrappedBufferSource.currentRenderType instanceof RenderType.CompositeRenderType compositeType && compositeType.state().textureState.cutoutTexture().isPresent()) {
+                ResourceLocation location = compositeType.state().textureState.cutoutTexture().get();
+                metadataOptional = MetadataRegistry.INSTANCE.getFromPath(ModConstants.DISPLAY_NAME, location);
             }
 
-            if (location != null && location.getPath().contains("bed")) {
+            if (metadataOptional.isPresent()) {
+                OverlayMetadata overlayMetadata = (OverlayMetadata) metadataOptional.get();
+                ResourceLocation overlay = overlayMetadata.overlayLocation();
+                int overlayLight = overlayMetadata.isEmissive() ? LightTexture.FULL_BRIGHT : packedLight;
+
                 RenderType lastType = WrappedBufferSource.currentRenderType;
-                VertexConsumer newConsumer = bufferSource.getBuffer(RenderType.entityCutoutNoCullZOffset(new ResourceLocation("textures/entity/bed/blue.png")));
-                thisPart.render(poseStack, newConsumer, LightTexture.FULL_BRIGHT, packedOverlay, red, blue, green, alpha);
+                VertexConsumer newConsumer = bufferSource.getBuffer(RenderType.entityCutoutNoCullZOffset(overlay));
+                thisPart.render(poseStack, newConsumer, overlayLight, packedOverlay, red, blue, green, alpha);
 
                 // Restore original render type
                 bufferSource.getBuffer(lastType);
