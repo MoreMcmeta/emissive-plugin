@@ -17,6 +17,7 @@
 
 package io.github.moremcmeta.emissiveplugin.mixin;
 
+import io.github.moremcmeta.emissiveplugin.EntityRenderingState;
 import io.github.moremcmeta.emissiveplugin.WrappedBufferSource;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
@@ -31,11 +32,11 @@ public class BlockEntityRenderDispatcherMixin {
 
     @ModifyVariable(method = "render(Lnet/minecraft/client/renderer/entity/Entity;FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;)V", at = @At("HEAD"))
     private MultiBufferSource wrapBufferSource(MultiBufferSource bufferSource) {
-        return WrappedBufferSource.wrap(bufferSource, (renderType) -> WrappedBufferSource.currentRenderType = renderType);
+        return WrappedBufferSource.wrap(bufferSource, (renderType) -> EntityRenderingState.currentRenderType = renderType);
     }
 
     @Inject(method = "render(Lnet/minecraft/client/renderer/entity/Entity;FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;)V", at = @At(value = "RETURN"))
     private void onReturn(CallbackInfo callbackInfo) {
-        WrappedBufferSource.currentRenderType = null;
+        EntityRenderingState.currentRenderType = null;
     }
 }

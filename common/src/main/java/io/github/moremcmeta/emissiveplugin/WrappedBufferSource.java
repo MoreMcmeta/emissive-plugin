@@ -24,9 +24,6 @@ import net.minecraft.client.renderer.RenderType;
 import java.util.function.Consumer;
 
 public final class WrappedBufferSource implements MultiBufferSource {
-    public static RenderType currentRenderType;
-    public static int depth = -1;
-
     private final MultiBufferSource DELEGATE;
     private final Consumer<RenderType> ACTION;
 

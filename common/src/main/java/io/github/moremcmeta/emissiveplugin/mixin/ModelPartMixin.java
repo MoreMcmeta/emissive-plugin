@@ -19,9 +19,9 @@ package io.github.moremcmeta.emissiveplugin.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import io.github.moremcmeta.emissiveplugin.EntityRenderingState;
 import io.github.moremcmeta.emissiveplugin.ModConstants;
 import io.github.moremcmeta.emissiveplugin.OverlayMetadata;
-import io.github.moremcmeta.emissiveplugin.WrappedBufferSource;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataRegistry;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.ParsedMetadata;
 import net.minecraft.client.Minecraft;
@@ -53,7 +53,7 @@ public class ModelPartMixin {
     @Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;IIFFFF)V",
             at = @At(value = "HEAD"))
     private void onEntry(CallbackInfo callbackInfo) {
-        WrappedBufferSource.depth++;
+        EntityRenderingState.partRenderDepth++;
     }
 
     @Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;IIFFFF)V",
@@ -63,22 +63,30 @@ public class ModelPartMixin {
         ModelPart thisPart = (ModelPart) (Object) this;
         MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
 
-        if (WrappedBufferSource.depth == 0) {
+        // Check depth to avoid getting stuck in infinite recursion or re-rendering child parts multiple times
+        if (EntityRenderingState.partRenderDepth == 0) {
             Optional<ParsedMetadata> metadataOptional = Optional.empty();
+
+            // Handle a sprite being rendered
             if (vertexConsumer instanceof SpriteCoordinateExpander spriteVertexConsumer) {
                 ResourceLocation location = spriteVertexConsumer.sprite.getName();
                 metadataOptional = MetadataRegistry.INSTANCE.metadataFromSpriteName(ModConstants.DISPLAY_NAME, location);
-            } else if (WrappedBufferSource.currentRenderType instanceof RenderType.CompositeRenderType compositeType && compositeType.state().textureState.cutoutTexture().isPresent()) {
+
+            // Handle a regular texture being rendered
+            } else if (EntityRenderingState.currentRenderType instanceof RenderType.CompositeRenderType compositeType
+                    && compositeType.state().textureState.cutoutTexture().isPresent()) {
+
                 ResourceLocation location = compositeType.state().textureState.cutoutTexture().get();
                 metadataOptional = MetadataRegistry.INSTANCE.metadataFromPath(ModConstants.DISPLAY_NAME, location);
             }
 
+            // Do rendering
             if (metadataOptional.isPresent()) {
                 OverlayMetadata overlayMetadata = (OverlayMetadata) metadataOptional.get();
                 ResourceLocation overlay = overlayMetadata.overlayLocation();
                 int overlayLight = overlayMetadata.isEmissive() ? LightTexture.FULL_BRIGHT : packedLight;
 
-                RenderType lastType = WrappedBufferSource.currentRenderType;
+                RenderType lastType = EntityRenderingState.currentRenderType;
                 VertexConsumer newConsumer = makeBuffer(bufferSource, overlay, RenderType::entityCutoutNoCullZOffset);
                 thisPart.render(poseStack, newConsumer, overlayLight, packedOverlay, red, blue, green, alpha);
 
@@ -86,9 +94,10 @@ public class ModelPartMixin {
                 bufferSource.getBuffer(lastType);
 
             }
+
         }
 
-        WrappedBufferSource.depth--;
+        EntityRenderingState.partRenderDepth--;
     }
 
     private VertexConsumer makeBuffer(MultiBufferSource bufferSource, ResourceLocation overlayLocation,
