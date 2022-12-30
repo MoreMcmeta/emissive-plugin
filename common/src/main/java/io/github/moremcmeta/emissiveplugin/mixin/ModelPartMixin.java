@@ -59,10 +59,10 @@ public class ModelPartMixin {
             Optional<ParsedMetadata> metadataOptional = Optional.empty();
             if (vertexConsumer instanceof SpriteCoordinateExpander spriteVertexConsumer) {
                 ResourceLocation location = spriteVertexConsumer.sprite.getName();
-                metadataOptional = MetadataRegistry.INSTANCE.getFromSpriteName(ModConstants.DISPLAY_NAME, location);
+                metadataOptional = MetadataRegistry.INSTANCE.metadataFromSpriteName(ModConstants.DISPLAY_NAME, location);
             } else if (WrappedBufferSource.currentRenderType instanceof RenderType.CompositeRenderType compositeType && compositeType.state().textureState.cutoutTexture().isPresent()) {
                 ResourceLocation location = compositeType.state().textureState.cutoutTexture().get();
-                metadataOptional = MetadataRegistry.INSTANCE.getFromPath(ModConstants.DISPLAY_NAME, location);
+                metadataOptional = MetadataRegistry.INSTANCE.metadataFromPath(ModConstants.DISPLAY_NAME, location);
             }
 
             if (metadataOptional.isPresent()) {
