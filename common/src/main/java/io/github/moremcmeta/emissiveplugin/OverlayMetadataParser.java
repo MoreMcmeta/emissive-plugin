@@ -32,7 +32,7 @@ public class OverlayMetadataParser implements MetadataParser {
 
         boolean isEmissive = sectionMetadata.booleanValue("emissive").orElse(false);
 
-        return new OverlayMetadata(SpriteNameConverter.toTextureLocation(overlayLocationAsSprite), isEmissive);
+        return new OverlayMetadata(overlayLocationAsSprite, isEmissive);
     }
 
 }

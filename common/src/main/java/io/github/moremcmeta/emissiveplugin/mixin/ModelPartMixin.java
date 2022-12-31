@@ -101,9 +101,9 @@ public class ModelPartMixin {
         EntityRenderingState.partRenderDepth--;
     }
 
-    private VertexConsumer makeBuffer(MultiBufferSource bufferSource, ResourceLocation overlayLocation,
+    private VertexConsumer makeBuffer(MultiBufferSource bufferSource, ResourceLocation spriteName,
                                       Function<ResourceLocation, RenderType> renderTypeFunction) {
-        ResourceLocation spriteName = SpriteNameConverter.toSpriteName(overlayLocation);
+        ResourceLocation overlayLocation = SpriteNameConverter.toTextureLocation(spriteName);
         Optional<VertexConsumer> spriteBuffer;
 
         // Check the cached atlas before checking all atlases
