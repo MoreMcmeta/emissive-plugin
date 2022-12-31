@@ -32,18 +32,7 @@ public class OverlayMetadataParser implements MetadataParser {
 
         boolean isEmissive = sectionMetadata.booleanValue("emissive").orElse(false);
 
-        return new OverlayMetadata(makeTextureLocation(overlayLocationAsSprite), isEmissive);
-    }
-
-    /**
-     * Converts a sprite name to a standard texture location (with textures/ prefix and .png suffix).
-     * @param location      the sprite name to convert
-     * @return the texture location corresponding to the sprite
-     */
-    private static ResourceLocation makeTextureLocation(ResourceLocation location) {
-        String originalPath = location.getPath();
-        String fullPath = "textures/" + originalPath + ".png";
-        return new ResourceLocation(location.getNamespace(), fullPath);
+        return new OverlayMetadata(SpriteNameConverter.toTextureLocation(overlayLocationAsSprite), isEmissive);
     }
 
 }

@@ -22,6 +22,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.moremcmeta.emissiveplugin.EntityRenderingState;
 import io.github.moremcmeta.emissiveplugin.ModConstants;
 import io.github.moremcmeta.emissiveplugin.OverlayMetadata;
+import io.github.moremcmeta.emissiveplugin.SpriteNameConverter;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataRegistry;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.ParsedMetadata;
 import net.minecraft.client.Minecraft;
@@ -102,7 +103,7 @@ public class ModelPartMixin {
 
     private VertexConsumer makeBuffer(MultiBufferSource bufferSource, ResourceLocation overlayLocation,
                                       Function<ResourceLocation, RenderType> renderTypeFunction) {
-        ResourceLocation spriteName = makeSpriteName(overlayLocation);
+        ResourceLocation spriteName = SpriteNameConverter.toSpriteName(overlayLocation);
         Optional<VertexConsumer> spriteBuffer;
 
         // Check the cached atlas before checking all atlases
@@ -166,16 +167,5 @@ public class ModelPartMixin {
         }
 
         return Optional.empty();
-    }
-
-    private ResourceLocation makeSpriteName(ResourceLocation textureLocation) {
-        int prefixLength = "textures/".length();
-        int postfixLength = ".png".length();
-        int pathLength = textureLocation.getPath().length();
-
-        return new ResourceLocation(
-                textureLocation.getNamespace(),
-                textureLocation.getPath().substring(prefixLength, pathLength - postfixLength)
-        );
     }
 }
