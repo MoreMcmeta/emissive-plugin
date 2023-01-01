@@ -30,12 +30,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(EntityRenderDispatcher.class)
 public class EntityRenderDispatcherMixin {
 
-    @ModifyVariable(method = "render(Lnet/minecraft/client/renderer/entity/Entity;DDDFFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At("HEAD"))
+    @ModifyVariable(method = "render", at = @At("HEAD"))
     private MultiBufferSource wrapBufferSource(MultiBufferSource bufferSource) {
         return WrappedBufferSource.wrap(bufferSource, (renderType) -> EntityRenderingState.currentRenderType = renderType);
     }
 
-    @Inject(method = "render(Lnet/minecraft/client/renderer/entity/Entity;DDDFFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "RETURN"))
+    @Inject(method = "render", at = @At(value = "RETURN"))
     private void onReturn(CallbackInfo callbackInfo) {
         EntityRenderingState.currentRenderType = null;
     }
