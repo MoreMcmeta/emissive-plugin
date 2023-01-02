@@ -27,7 +27,6 @@
     "moremcmeta_emissive_plugin-fabric.mixins.json"
   ],
   "depends": {
-    "fabric": "*",
     "minecraft": ">=${minecraftVersion}",
     "moremcmeta": "${minMoreMcmetaVersion}"
   }
