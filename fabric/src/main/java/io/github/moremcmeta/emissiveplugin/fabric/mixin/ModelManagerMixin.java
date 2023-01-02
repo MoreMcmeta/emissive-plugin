@@ -57,7 +57,7 @@ public class ModelManagerMixin {
     }
 
     @Inject(at = @At(value = "INVOKE_ASSIGN", target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;"),
-            method = "apply(Lnet/minecraft/client/resources/model/ModelManager;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V")
+            method = "apply")
     @SuppressWarnings("ConstantConditions")
     public void onReloaded(CallbackInfo info) {
         Map<ResourceLocation, BakedModel> models = ((ModelManager) (Object) this).bakedRegistry;
