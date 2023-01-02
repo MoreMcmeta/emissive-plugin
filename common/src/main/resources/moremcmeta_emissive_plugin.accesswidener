@@ -6,3 +6,4 @@ accessible  class   net/minecraft/client/renderer/RenderStateShard$EmptyTextureS
 accessible  field   net/minecraft/client/renderer/RenderType$CompositeState textureState  Lnet/minecraft/client/renderer/RenderStateShard$EmptyTextureStateShard;
 accessible  method  net/minecraft/client/renderer/RenderStateShard$EmptyTextureStateShard    cutoutTexture    ()Ljava/util/Optional;
 accessible  field   net/minecraft/client/renderer/SpriteCoordinateExpander sprite  Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;
+accessible  field   net/minecraft/client/resources/model/ModelManager bakedRegistry  Ljava/util/Map;
