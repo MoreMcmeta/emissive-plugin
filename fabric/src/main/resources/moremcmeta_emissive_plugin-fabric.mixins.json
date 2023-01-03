@@ -3,7 +3,7 @@
   "package": "io.github.moremcmeta.emissiveplugin.fabric.mixin",
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
-  "plugin": "io.github.moremcmeta.emissiveplugin.fabric.ConditionalMixinLoader",
+  "plugin": "io.github.moremcmeta.emissiveplugin.fabric.ConditionalMixinPlugin",
   "client": [
     "ModelManagerMixin"
   ],
