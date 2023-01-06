@@ -1,0 +1,23 @@
+package io.github.moremcmeta.emissiveplugin.forge.mixin;
+
+import io.github.moremcmeta.emissiveplugin.forge.EmissiveModelBlockRenderer;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.level.block.state.BlockState;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+
+@Mixin(ItemBlockRenderTypes.class)
+public class ItemBlockRenderTypesMixin {
+    @Inject(method = "canRenderInLayer(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/client/renderer/RenderType;)Z",
+            at = @At("HEAD"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, remap = false)
+    private static void enableBlockTransparencyOverlay(BlockState state, RenderType type,
+                                                       CallbackInfoReturnable<Boolean> callbackInfo) {
+        if (EmissiveModelBlockRenderer.ALWAYS_RENDER_ON_TRANSPARENCY.get() && type == RenderType.translucent()) {
+            callbackInfo.setReturnValue(true);
+        }
+    }
+}

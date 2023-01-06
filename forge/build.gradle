@@ -16,7 +16,7 @@ loom {
         convertAccessWideners = true
         extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
 
-        mixinConfig "moremcmeta_emissive_plugin-common.mixins.json"
+        mixinConfig "moremcmeta_emissive_plugin-common.mixins.json", "moremcmeta_emissive_plugin-forge.mixins.json"
     }
 }
 
