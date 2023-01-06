@@ -72,6 +72,14 @@ public class OverlayBakedModel extends ForwardingBakedModel {
         context.popTransform();
     }
 
+    @Override
+    public boolean isVanillaAdapter() {
+
+        // Sodium/Indium won't display the overlays if this is true
+        return false;
+
+    }
+
     private static class OverlayQuadTransform implements RenderContext.QuadTransform {
         private final QuadEmitter EMITTER;
         private final TextureAtlas BLOCK_ATLAS;
