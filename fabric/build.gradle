@@ -26,21 +26,15 @@ dependencies {
 
     [
             "fabric-api-base",
-            "fabric-textures-v0"
+            "fabric-textures-v0",
+            "fabric-renderer-api-v1",
+            "fabric-renderer-indigo"
     ].forEach {
         modImplementation(include(fabricApi.module(it, rootProject.fabric_api_version)))
     }
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
-
-    // Optional dependencies
-    [
-            "fabric-renderer-api-v1"
-    ].forEach {
-        modCompileOnly(fabricApi.module(it, rootProject.fabric_api_version))
-    }
-
 }
 
 processResources {
