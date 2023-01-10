@@ -19,10 +19,9 @@ package io.github.moremcmeta.emissiveplugin.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import io.github.moremcmeta.emissiveplugin.render.EntityRenderingState;
 import io.github.moremcmeta.emissiveplugin.ModConstants;
 import io.github.moremcmeta.emissiveplugin.metadata.OverlayMetadata;
-import io.github.moremcmeta.emissiveplugin.SpriteNameConverter;
+import io.github.moremcmeta.emissiveplugin.render.EntityRenderingState;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataRegistry;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.ParsedMetadata;
 import net.minecraft.client.Minecraft;
@@ -103,7 +102,7 @@ public class ModelPartMixin {
 
     private VertexConsumer makeBuffer(MultiBufferSource bufferSource, ResourceLocation spriteName,
                                       Function<ResourceLocation, RenderType> renderTypeFunction) {
-        ResourceLocation overlayLocation = SpriteNameConverter.toTextureLocation(spriteName);
+        ResourceLocation overlayLocation = toTextureLocation(spriteName);
         Optional<VertexConsumer> spriteBuffer;
 
         // Check the cached atlas before checking all atlases
@@ -168,4 +167,16 @@ public class ModelPartMixin {
 
         return Optional.empty();
     }
+
+    /**
+     * Converts a sprite name to a standard texture location (with textures/ prefix and .png suffix).
+     * @param spriteName      the sprite name to convert
+     * @return the texture location corresponding to the sprite
+     */
+    private static ResourceLocation toTextureLocation(ResourceLocation spriteName) {
+        String originalPath = spriteName.getPath();
+        String fullPath = "textures/" + originalPath + ".png";
+        return new ResourceLocation(spriteName.getNamespace(), fullPath);
+    }
+
 }
