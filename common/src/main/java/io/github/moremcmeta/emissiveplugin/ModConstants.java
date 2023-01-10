@@ -2,9 +2,12 @@ package io.github.moremcmeta.emissiveplugin;
 
 import com.google.common.collect.ImmutableSet;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataParser;
+import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataRegistry;
 import io.github.moremcmeta.moremcmeta.api.client.texture.ComponentProvider;
 import io.github.moremcmeta.moremcmeta.api.client.texture.TextureComponent;
 import net.minecraft.resources.ResourceLocation;
+
+import java.util.function.Consumer;
 
 /**
  * Constants for both Fabric and Forge implementations of the plugin.
@@ -27,4 +30,8 @@ public class ModConstants {
             new ResourceLocation("textures/atlas/paintings.png"),
             new ResourceLocation("textures/atlas/mob_effects.png")
     );
+    public static final Consumer<Consumer<ResourceLocation>> SPRITE_REGISTRAR_CONSUMER = (registrar) ->
+            MetadataRegistry.INSTANCE.metadataByPlugin(ModConstants.DISPLAY_NAME).values().forEach(
+                    (metadata) -> registrar.accept(((OverlayMetadata) metadata).overlayLocation())
+            );
 }

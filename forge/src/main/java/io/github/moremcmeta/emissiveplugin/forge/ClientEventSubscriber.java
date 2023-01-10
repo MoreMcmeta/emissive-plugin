@@ -4,6 +4,7 @@ import io.github.moremcmeta.emissiveplugin.ModConstants;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -23,5 +24,9 @@ public class ClientEventSubscriber {
                         (modelLocation, model) -> new OverlayWithBaseBakedModel(model)
                 )
         );
+    }
+    @SubscribeEvent()
+    public static void onSpriteStich(TextureStitchEvent.Pre event) {
+        ModConstants.SPRITE_REGISTRAR_CONSUMER.accept(event::addSprite);
     }
 }
