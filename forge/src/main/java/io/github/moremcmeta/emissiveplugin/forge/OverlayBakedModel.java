@@ -21,16 +21,31 @@ import java.util.Random;
 import java.util.function.Function;
 
 public class OverlayBakedModel extends BakedModelWrapper<BakedModel> {
+    private final TextureAtlas ATLAS;
+
     public OverlayBakedModel(BakedModel originalModel) {
         super(originalModel);
+        ATLAS = Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS);
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand, IModelData extraData)  {
-        TextureAtlas atlas = Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS);
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand)  {
+        return makeOverlayQuads(originalModel.getQuads(state, side, rand));
+    }
 
-        return originalModel.getQuads(state, side, rand, extraData)
-                .stream()
+    @Override
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand,
+                                    IModelData extraData)  {
+        return makeOverlayQuads(originalModel.getQuads(state, side, rand, extraData));
+    }
+
+    @Override
+    public boolean useAmbientOcclusion() {
+        return false;
+    }
+
+    private List<BakedQuad> makeOverlayQuads(List<BakedQuad> quads) {
+        return quads.stream()
                 .filter(
                         (quad) -> MetadataRegistry.INSTANCE
                                 .metadataFromSpriteName(ModConstants.DISPLAY_NAME, quad.getSprite().getName())
@@ -41,7 +56,7 @@ public class OverlayBakedModel extends BakedModelWrapper<BakedModel> {
                                     .metadataFromSpriteName(ModConstants.DISPLAY_NAME, quad.getSprite().getName())
                                     .orElseThrow());
 
-                            TextureAtlasSprite sprite = atlas.getSprite(metadata.overlayLocation());
+                            TextureAtlasSprite sprite = ATLAS.getSprite(metadata.overlayLocation());
 
                             return new BakedQuad(
                                     makeVerticesFullBright(
@@ -58,11 +73,6 @@ public class OverlayBakedModel extends BakedModelWrapper<BakedModel> {
                         }
                 )
                 .toList();
-    }
-
-    @Override
-    public boolean useAmbientOcclusion() {
-        return false;
     }
 
     private int[] makeVerticesFullBright(int[] vertexData, TextureAtlasSprite newSprite, TextureAtlasSprite oldSprite,
