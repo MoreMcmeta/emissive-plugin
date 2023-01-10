@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Map;
 
+@SuppressWarnings("unused")
 @Mixin(ModelManager.class)
 public class ModelManagerMixin {
 

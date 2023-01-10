@@ -45,6 +45,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import java.util.Optional;
 import java.util.function.Function;
 
+@SuppressWarnings("unused")
 @Mixin(ModelPart.class)
 public class ModelPartMixin {
     private final Minecraft MINECRAFT = Minecraft.getInstance();
