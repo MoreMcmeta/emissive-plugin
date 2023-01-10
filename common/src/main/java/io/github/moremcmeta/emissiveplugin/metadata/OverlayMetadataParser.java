@@ -1,5 +1,6 @@
-package io.github.moremcmeta.emissiveplugin;
+package io.github.moremcmeta.emissiveplugin.metadata;
 
+import io.github.moremcmeta.emissiveplugin.ModConstants;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.InvalidMetadataException;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataParser;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataView;

@@ -1,4 +1,4 @@
-package io.github.moremcmeta.emissiveplugin;
+package io.github.moremcmeta.emissiveplugin.metadata;
 
 import io.github.moremcmeta.moremcmeta.api.client.metadata.ParsedMetadata;
 import net.minecraft.resources.ResourceLocation;

@@ -19,9 +19,9 @@ package io.github.moremcmeta.emissiveplugin.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import io.github.moremcmeta.emissiveplugin.EntityRenderingState;
+import io.github.moremcmeta.emissiveplugin.render.EntityRenderingState;
 import io.github.moremcmeta.emissiveplugin.ModConstants;
-import io.github.moremcmeta.emissiveplugin.OverlayMetadata;
+import io.github.moremcmeta.emissiveplugin.metadata.OverlayMetadata;
 import io.github.moremcmeta.emissiveplugin.SpriteNameConverter;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataRegistry;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.ParsedMetadata;

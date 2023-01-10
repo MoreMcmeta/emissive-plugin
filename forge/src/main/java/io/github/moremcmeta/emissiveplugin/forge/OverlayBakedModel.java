@@ -1,7 +1,7 @@
 package io.github.moremcmeta.emissiveplugin.forge;
 
 import io.github.moremcmeta.emissiveplugin.ModConstants;
-import io.github.moremcmeta.emissiveplugin.OverlayMetadata;
+import io.github.moremcmeta.emissiveplugin.metadata.OverlayMetadata;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;

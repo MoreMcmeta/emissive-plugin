@@ -1,6 +1,8 @@
 package io.github.moremcmeta.emissiveplugin;
 
 import com.google.common.collect.ImmutableSet;
+import io.github.moremcmeta.emissiveplugin.metadata.OverlayMetadata;
+import io.github.moremcmeta.emissiveplugin.metadata.OverlayMetadataParser;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataParser;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataRegistry;
 import io.github.moremcmeta.moremcmeta.api.client.texture.ComponentProvider;

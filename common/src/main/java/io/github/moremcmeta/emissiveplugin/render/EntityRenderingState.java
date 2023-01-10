@@ -1,4 +1,4 @@
-package io.github.moremcmeta.emissiveplugin;
+package io.github.moremcmeta.emissiveplugin.render;
 
 import io.github.moremcmeta.emissiveplugin.mixin.ModelPartMixin;
 import net.minecraft.client.renderer.RenderType;

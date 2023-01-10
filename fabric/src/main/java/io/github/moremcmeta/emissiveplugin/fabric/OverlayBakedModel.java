@@ -1,7 +1,7 @@
 package io.github.moremcmeta.emissiveplugin.fabric;
 
 import io.github.moremcmeta.emissiveplugin.ModConstants;
-import io.github.moremcmeta.emissiveplugin.OverlayMetadata;
+import io.github.moremcmeta.emissiveplugin.metadata.OverlayMetadata;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataRegistry;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;

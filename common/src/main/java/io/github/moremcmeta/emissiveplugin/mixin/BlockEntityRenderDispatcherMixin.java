@@ -17,8 +17,8 @@
 
 package io.github.moremcmeta.emissiveplugin.mixin;
 
-import io.github.moremcmeta.emissiveplugin.EntityRenderingState;
-import io.github.moremcmeta.emissiveplugin.WrappedBufferSource;
+import io.github.moremcmeta.emissiveplugin.render.EntityRenderingState;
+import io.github.moremcmeta.emissiveplugin.render.WrappedBufferSource;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import org.spongepowered.asm.mixin.Mixin;
