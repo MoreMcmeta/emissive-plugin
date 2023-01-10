@@ -1,6 +1,7 @@
-package io.github.moremcmeta.emissiveplugin.forge;
+package io.github.moremcmeta.emissiveplugin.forge.event;
 
 import io.github.moremcmeta.emissiveplugin.ModConstants;
+import io.github.moremcmeta.emissiveplugin.forge.model.OverlayWithBaseBakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;

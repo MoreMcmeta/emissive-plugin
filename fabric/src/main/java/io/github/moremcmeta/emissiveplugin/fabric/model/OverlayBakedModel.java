@@ -1,4 +1,4 @@
-package io.github.moremcmeta.emissiveplugin.fabric;
+package io.github.moremcmeta.emissiveplugin.fabric.model;
 
 import io.github.moremcmeta.emissiveplugin.ModConstants;
 import io.github.moremcmeta.emissiveplugin.metadata.OverlayMetadata;

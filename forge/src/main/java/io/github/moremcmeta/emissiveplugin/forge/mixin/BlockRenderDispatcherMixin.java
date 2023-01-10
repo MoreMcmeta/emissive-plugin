@@ -1,6 +1,6 @@
 package io.github.moremcmeta.emissiveplugin.forge.mixin;
 
-import io.github.moremcmeta.emissiveplugin.forge.EmissiveModelBlockRenderer;
+import io.github.moremcmeta.emissiveplugin.forge.render.EmissiveModelBlockRenderer;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import org.objectweb.asm.Opcodes;

@@ -1,4 +1,4 @@
-package io.github.moremcmeta.emissiveplugin.forge;
+package io.github.moremcmeta.emissiveplugin.forge.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;

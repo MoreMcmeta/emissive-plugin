@@ -1,6 +1,6 @@
 package io.github.moremcmeta.emissiveplugin.forge.mixin;
 
-import io.github.moremcmeta.emissiveplugin.forge.EmissiveModelBlockRenderer;
+import io.github.moremcmeta.emissiveplugin.forge.render.EmissiveModelBlockRenderer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.level.block.state.BlockState;

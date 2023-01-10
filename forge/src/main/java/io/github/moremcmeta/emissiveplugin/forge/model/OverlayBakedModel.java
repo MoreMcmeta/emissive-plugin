@@ -1,4 +1,4 @@
-package io.github.moremcmeta.emissiveplugin.forge;
+package io.github.moremcmeta.emissiveplugin.forge.model;
 
 import io.github.moremcmeta.emissiveplugin.ModConstants;
 import io.github.moremcmeta.emissiveplugin.metadata.OverlayMetadata;

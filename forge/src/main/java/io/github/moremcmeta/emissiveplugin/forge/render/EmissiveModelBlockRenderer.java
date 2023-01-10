@@ -1,7 +1,8 @@
-package io.github.moremcmeta.emissiveplugin.forge;
+package io.github.moremcmeta.emissiveplugin.forge.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import io.github.moremcmeta.emissiveplugin.forge.model.OverlayBakedModel;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;

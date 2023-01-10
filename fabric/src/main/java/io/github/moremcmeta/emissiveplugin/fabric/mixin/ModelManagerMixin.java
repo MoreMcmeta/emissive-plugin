@@ -1,6 +1,6 @@
 package io.github.moremcmeta.emissiveplugin.fabric.mixin;
 
-import io.github.moremcmeta.emissiveplugin.fabric.OverlayBakedModel;
+import io.github.moremcmeta.emissiveplugin.fabric.model.OverlayBakedModel;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.resources.ResourceLocation;
