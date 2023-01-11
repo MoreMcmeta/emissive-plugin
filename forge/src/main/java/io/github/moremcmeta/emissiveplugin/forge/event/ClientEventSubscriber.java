@@ -1,7 +1,7 @@
 package io.github.moremcmeta.emissiveplugin.forge.event;
 
 import io.github.moremcmeta.emissiveplugin.ModConstants;
-import io.github.moremcmeta.emissiveplugin.forge.model.OverlayWithBaseBakedModel;
+import io.github.moremcmeta.emissiveplugin.forge.model.OverlayBakedItemModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -23,7 +23,7 @@ public class ClientEventSubscriber {
         itemModels.forEach((location) ->
                 event.getModelRegistry().computeIfPresent(
                         location,
-                        (modelLocation, model) -> new OverlayWithBaseBakedModel(model)
+                        (modelLocation, model) -> new OverlayBakedItemModel(model)
                 )
         );
     }

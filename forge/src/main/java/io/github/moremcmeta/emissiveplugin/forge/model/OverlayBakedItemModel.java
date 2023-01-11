@@ -12,17 +12,17 @@ import net.minecraftforge.client.model.BakedModelWrapper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OverlayWithBaseBakedModel extends BakedModelWrapper<BakedModel> {
+public class OverlayBakedItemModel extends BakedModelWrapper<BakedModel> {
     private final Pair<BakedModel, RenderType> OVERLAY_LAYER;
 
-    public OverlayWithBaseBakedModel(BakedModel originalModel) {
+    public OverlayBakedItemModel(BakedModel originalModel) {
         super(originalModel);
         OVERLAY_LAYER = Pair.of(new OverlayBakedModel(originalModel), Sheets.translucentCullBlockSheet());
     }
 
     @Override
     public BakedModel handlePerspective(ItemTransforms.TransformType cameraTransformType, PoseStack poseStack) {
-        return new OverlayWithBaseBakedModel(super.handlePerspective(cameraTransformType, poseStack));
+        return new OverlayBakedItemModel(super.handlePerspective(cameraTransformType, poseStack));
     }
 
     @Override
