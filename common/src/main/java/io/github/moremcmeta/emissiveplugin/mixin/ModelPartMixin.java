@@ -54,7 +54,7 @@ public class ModelPartMixin {
     @Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;IIFFFF)V",
             at = @At(value = "HEAD"))
     private void onEntry(CallbackInfo callbackInfo) {
-        EntityRenderingState.partRenderDepth++;
+        EntityRenderingState.partRenderDepth.set(EntityRenderingState.partRenderDepth.get() + 1);
     }
 
     @Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;IIFFFF)V",
@@ -65,7 +65,7 @@ public class ModelPartMixin {
         MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
 
         // Check depth to avoid getting stuck in infinite recursion or re-rendering child parts multiple times
-        if (EntityRenderingState.partRenderDepth == 0) {
+        if (EntityRenderingState.partRenderDepth.get() == 0) {
             Optional<ParsedMetadata> metadataOptional = Optional.empty();
 
             // Handle a sprite being rendered
@@ -74,7 +74,7 @@ public class ModelPartMixin {
                 metadataOptional = MetadataRegistry.INSTANCE.metadataFromSpriteName(ModConstants.DISPLAY_NAME, location);
 
             // Handle a regular texture being rendered
-            } else if (EntityRenderingState.currentRenderType instanceof RenderType.CompositeRenderType compositeType
+            } else if (EntityRenderingState.currentRenderType.get() instanceof RenderType.CompositeRenderType compositeType
                     && compositeType.state().textureState.cutoutTexture().isPresent()) {
 
                 ResourceLocation location = compositeType.state().textureState.cutoutTexture().get();
@@ -87,7 +87,7 @@ public class ModelPartMixin {
                 ResourceLocation overlay = overlayMetadata.overlayLocation();
                 int overlayLight = overlayMetadata.isEmissive() ? LightTexture.FULL_BRIGHT : packedLight;
 
-                RenderType lastType = EntityRenderingState.currentRenderType;
+                RenderType lastType = EntityRenderingState.currentRenderType.get();
                 VertexConsumer newConsumer = makeBuffer(bufferSource, overlay, RenderType::entityCutoutNoCullZOffset);
                 thisPart.render(poseStack, newConsumer, overlayLight, packedOverlay, red, blue, green, alpha);
 
@@ -98,7 +98,7 @@ public class ModelPartMixin {
 
         }
 
-        EntityRenderingState.partRenderDepth--;
+        EntityRenderingState.partRenderDepth.set(EntityRenderingState.partRenderDepth.get() - 1);
     }
 
     private VertexConsumer makeBuffer(MultiBufferSource bufferSource, ResourceLocation spriteName,

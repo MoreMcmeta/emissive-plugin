@@ -8,6 +8,10 @@ import net.minecraft.client.renderer.RenderType;
  * @author soir20
  */
 public class EntityRenderingState {
-    public static RenderType currentRenderType;
-    public static int partRenderDepth = -1;
+
+    /* Entity and block entity rendering should be single-threaded, but use thread locals to
+       avoid difficult bugs in case something changes. */
+    public static ThreadLocal<RenderType> currentRenderType = new ThreadLocal<>();
+    public static ThreadLocal<Integer> partRenderDepth = ThreadLocal.withInitial(() -> -1);
+
 }

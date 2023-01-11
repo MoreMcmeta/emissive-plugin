@@ -33,12 +33,12 @@ public class EntityRenderDispatcherMixin {
 
     @ModifyVariable(method = "render", at = @At("HEAD"))
     private MultiBufferSource wrapBufferSource(MultiBufferSource bufferSource) {
-        return WrappedBufferSource.wrap(bufferSource, (renderType) -> EntityRenderingState.currentRenderType = renderType);
+        return WrappedBufferSource.wrap(bufferSource, (renderType) -> EntityRenderingState.currentRenderType.set(renderType));
     }
 
     @Inject(method = "render", at = @At(value = "RETURN"))
     private void onReturn(CallbackInfo callbackInfo) {
-        EntityRenderingState.currentRenderType = null;
+        EntityRenderingState.currentRenderType.set(null);
     }
 
 }
