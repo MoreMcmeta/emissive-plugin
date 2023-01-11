@@ -14,6 +14,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.pipeline.ForgeBlockModelRenderer;
 
+import javax.annotation.Nullable;
 import java.util.Random;
 
 public class EmissiveModelBlockRenderer extends ForgeBlockModelRenderer {
@@ -65,6 +66,15 @@ public class EmissiveModelBlockRenderer extends ForgeBlockModelRenderer {
             didRender = didRender || didOverlayRender;
         }
         return didRender;
+    }
+
+    @Override
+    public void renderModel(PoseStack.Pose poseStack, VertexConsumer buffer, @Nullable BlockState state,
+                            BakedModel model, float tintR, float tintG, float tintB, int packedLight, int packedOverlay,
+                            IModelData modelData) {
+        super.renderModel(poseStack, buffer, state, model, tintR, tintG, tintB, packedLight, packedOverlay, modelData);
+        super.renderModel(poseStack, buffer, state, new OverlayBakedModel(model), tintR, tintG, tintB, packedLight,
+                packedOverlay, modelData);
     }
 
 }
