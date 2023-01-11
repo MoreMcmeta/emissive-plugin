@@ -61,7 +61,10 @@ public class ModelPartMixin {
             at = @At(value = "RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
     private void onReturn(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay,
                           float red, float blue, float green, float alpha, CallbackInfo callbackInfo) {
+
+        @SuppressWarnings("DataFlowIssue")
         ModelPart thisPart = (ModelPart) (Object) this;
+
         MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
 
         // Check depth to avoid getting stuck in infinite recursion or re-rendering child parts multiple times
