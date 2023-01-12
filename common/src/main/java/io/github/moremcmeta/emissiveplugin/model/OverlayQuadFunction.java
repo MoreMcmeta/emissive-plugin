@@ -1,4 +1,4 @@
-package io.github.moremcmeta.emissiveplugin.forge.model;
+package io.github.moremcmeta.emissiveplugin.model;
 
 import io.github.moremcmeta.emissiveplugin.ModConstants;
 import io.github.moremcmeta.emissiveplugin.metadata.OverlayMetadata;
@@ -8,43 +8,19 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.BakedModelWrapper;
-import net.minecraftforge.client.model.data.IModelData;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Random;
 import java.util.function.Function;
 
-public class OverlayBakedModel extends BakedModelWrapper<BakedModel> {
+public class OverlayQuadFunction implements Function<List<BakedQuad>, List<BakedQuad>> {
     private final TextureAtlas ATLAS;
 
-    public OverlayBakedModel(BakedModel originalModel) {
-        super(originalModel);
+    public OverlayQuadFunction() {
         ATLAS = Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS);
     }
 
-    @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand)  {
-        return makeOverlayQuads(originalModel.getQuads(state, side, rand));
-    }
-
-    @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand,
-                                    IModelData extraData)  {
-        return makeOverlayQuads(originalModel.getQuads(state, side, rand, extraData));
-    }
-
-    @Override
-    public boolean useAmbientOcclusion() {
-        return false;
-    }
-
-    private List<BakedQuad> makeOverlayQuads(List<BakedQuad> quads) {
+    public List<BakedQuad> apply(List<BakedQuad> quads) {
         return quads.stream()
                 .filter(
                         (quad) -> MetadataRegistry.INSTANCE
@@ -58,7 +34,9 @@ public class OverlayBakedModel extends BakedModelWrapper<BakedModel> {
 
                             TextureAtlasSprite sprite = ATLAS.getSprite(metadata.overlayLocation());
 
-                            return new BakedQuad(
+                            /* We have to cast because Minecraft's BakedModel interface expects a List<BakedQuad>,
+                               not List<? extends BakedQuad>. */
+                            return (BakedQuad) new OverlayBakedQuad(
                                     makeVerticesFullBright(
                                             quad.getVertices(),
                                             sprite,
@@ -68,8 +46,10 @@ public class OverlayBakedModel extends BakedModelWrapper<BakedModel> {
                                     quad.getTintIndex(),
                                     quad.getDirection(),
                                     sprite,
-                                    false
+                                    false,
+                                    metadata.isEmissive()
                             );
+
                         }
                 )
                 .toList();

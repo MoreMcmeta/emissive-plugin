@@ -2,7 +2,7 @@ package io.github.moremcmeta.emissiveplugin.forge.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import io.github.moremcmeta.emissiveplugin.forge.model.OverlayBakedModel;
+import io.github.moremcmeta.emissiveplugin.forge.model.OverlayOnlyBakedModel;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -39,7 +39,7 @@ public class EmissiveModelBlockRenderer extends ForgeBlockModelRenderer {
         ALWAYS_RENDER_ON_TRANSPARENCY.set(true);
 
         if (renderType == RenderType.translucent()) {
-            boolean didOverlayRender = super.tesselateWithoutAO(level, new OverlayBakedModel(model), state, pos,
+            boolean didOverlayRender = super.tesselateWithoutAO(level, new OverlayOnlyBakedModel(model), state, pos,
                     poseStack, buffer, checkSides, rand, seed, packedOverlay, modelData);
             didRender = didRender || didOverlayRender;
         }
@@ -61,7 +61,7 @@ public class EmissiveModelBlockRenderer extends ForgeBlockModelRenderer {
         ALWAYS_RENDER_ON_TRANSPARENCY.set(true);
 
         if (renderType == RenderType.translucent()) {
-            boolean didOverlayRender = super.tesselateWithoutAO(level, new OverlayBakedModel(model), state, pos,
+            boolean didOverlayRender = super.tesselateWithoutAO(level, new OverlayOnlyBakedModel(model), state, pos,
                     poseStack, buffer, checkSides, rand, seed, packedOverlay, modelData);
             didRender = didRender || didOverlayRender;
         }
@@ -73,7 +73,7 @@ public class EmissiveModelBlockRenderer extends ForgeBlockModelRenderer {
                             BakedModel model, float tintR, float tintG, float tintB, int packedLight, int packedOverlay,
                             IModelData modelData) {
         super.renderModel(poseStack, buffer, state, model, tintR, tintG, tintB, packedLight, packedOverlay, modelData);
-        super.renderModel(poseStack, buffer, state, new OverlayBakedModel(model), tintR, tintG, tintB, packedLight,
+        super.renderModel(poseStack, buffer, state, new OverlayOnlyBakedModel(model), tintR, tintG, tintB, packedLight,
                 packedOverlay, modelData);
     }
 

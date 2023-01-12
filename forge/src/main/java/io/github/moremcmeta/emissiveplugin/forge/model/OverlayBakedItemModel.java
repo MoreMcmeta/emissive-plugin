@@ -17,7 +17,7 @@ public class OverlayBakedItemModel extends BakedModelWrapper<BakedModel> {
 
     public OverlayBakedItemModel(BakedModel originalModel) {
         super(originalModel);
-        OVERLAY_LAYER = Pair.of(new OverlayBakedModel(originalModel), Sheets.translucentCullBlockSheet());
+        OVERLAY_LAYER = Pair.of(new OverlayOnlyBakedModel(originalModel), Sheets.translucentCullBlockSheet());
     }
 
     @Override
