@@ -85,12 +85,12 @@ public class ModelPartMixin {
             }
 
             // Do rendering
-            if (metadataOptional.isPresent()) {
+            RenderType lastType = EntityRenderingState.currentRenderType.get();
+            if (metadataOptional.isPresent() && lastType != null) {
                 OverlayMetadata overlayMetadata = (OverlayMetadata) metadataOptional.get();
                 ResourceLocation overlay = overlayMetadata.overlayLocation();
                 int overlayLight = overlayMetadata.isEmissive() ? LightTexture.FULL_BRIGHT : packedLight;
 
-                RenderType lastType = EntityRenderingState.currentRenderType.get();
                 VertexConsumer newConsumer = makeBuffer(bufferSource, overlay, RenderType::entityCutoutNoCullZOffset);
                 thisPart.render(poseStack, newConsumer, overlayLight, packedOverlay, red, blue, green, alpha);
 
