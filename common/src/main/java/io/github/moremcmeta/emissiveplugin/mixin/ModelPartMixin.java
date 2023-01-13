@@ -91,7 +91,7 @@ public class ModelPartMixin {
                 ResourceLocation overlay = overlayMetadata.overlayLocation();
                 int overlayLight = overlayMetadata.isEmissive() ? LightTexture.FULL_BRIGHT : packedLight;
 
-                VertexConsumer newConsumer = makeBuffer(bufferSource, overlay, RenderType::entityCutoutNoCullZOffset);
+                VertexConsumer newConsumer = makeBuffer(bufferSource, overlay, RenderType::entityTranslucentCull);
                 thisPart.render(poseStack, newConsumer, overlayLight, packedOverlay, red, blue, green, alpha);
 
                 // Restore original render type
