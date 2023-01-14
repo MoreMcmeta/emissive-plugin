@@ -27,7 +27,7 @@ public class ClientEventSubscriber {
                 )
         );
     }
-    @SubscribeEvent()
+    @SubscribeEvent
     public static void onSpriteStitch(TextureStitchEvent.Pre event) {
         ModConstants.SPRITE_REGISTRAR_CONSUMER.accept(event::addSprite);
     }
