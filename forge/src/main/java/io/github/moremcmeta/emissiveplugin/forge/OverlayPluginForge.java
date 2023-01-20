@@ -32,4 +32,9 @@ public class OverlayPluginForge implements MoreMcmetaTexturePlugin {
     public String displayName() {
         return ModConstants.DISPLAY_NAME;
     }
+
+    @Override
+    public boolean allowTextureAndSectionInDifferentPacks() {
+        return true;
+    }
 }
