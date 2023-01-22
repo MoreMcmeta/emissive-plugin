@@ -2,11 +2,9 @@ package io.github.moremcmeta.emissiveplugin.forge.event;
 
 import io.github.moremcmeta.emissiveplugin.ModConstants;
 import io.github.moremcmeta.emissiveplugin.forge.model.OverlayBakedItemModel;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -27,11 +25,5 @@ public class ClientEventSubscriber {
                         (modelLocation, model) -> new OverlayBakedItemModel(model)
                 )
         );
-    }
-    @SubscribeEvent
-    public static void onSpriteStitch(TextureStitchEvent.Pre event) {
-        if (event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS)) {
-            ModConstants.SPRITE_REGISTRAR_CONSUMER.accept(event::addSprite);
-        }
     }
 }

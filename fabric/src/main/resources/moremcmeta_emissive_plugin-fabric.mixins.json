@@ -6,7 +6,8 @@
   "client": [
     "ModelManagerMixin",
     "BlockRenderDispatcherMixin",
-    "ModelBlockRendererMixin"
+    "ModelBlockRendererMixin",
+    "ModelBakeryMixin"
   ],
   "mixins": [
   ],

@@ -5,10 +5,19 @@ import io.github.moremcmeta.emissiveplugin.metadata.OverlayMetadataParser;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataParser;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataRegistry;
 import io.github.moremcmeta.moremcmeta.api.client.texture.ComponentProvider;
+import io.github.moremcmeta.moremcmeta.api.client.texture.SpriteName;
 import io.github.moremcmeta.moremcmeta.api.client.texture.TextureComponent;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * Constants for both Fabric and Forge implementations of the plugin.
@@ -20,8 +29,27 @@ public class ModConstants {
     public static final String DISPLAY_NAME = "MoreMcmeta Emissive Textures";
     public static final MetadataParser PARSER = new OverlayMetadataParser();
     public static final ComponentProvider COMPONENT_PROVIDER = (metadata, frames) -> new TextureComponent<>() {};
-    public static final Consumer<Consumer<ResourceLocation>> SPRITE_REGISTRAR_CONSUMER = (registrar) ->
-            MetadataRegistry.INSTANCE.metadataByPlugin(ModConstants.DISPLAY_NAME).values().forEach(
-                    (metadata) -> registrar.accept(((OverlayMetadata) metadata).overlayLocation())
-            );
+    public static final Consumer<Map<ResourceLocation, List<Material>>> SPRITE_REGISTRAR = (spritesByAtlas) -> {
+        List<Material> sprites = spritesByAtlas.computeIfAbsent(
+                TextureAtlas.LOCATION_BLOCKS,
+                (ignored) -> new ArrayList<>()
+        );
+        Set<ResourceLocation> spriteTextures = spritesByAtlas
+                .values()
+                .stream()
+                .flatMap(Collection::stream)
+                .map(Material::texture)
+                .collect(Collectors.toSet());
+
+        MetadataRegistry.INSTANCE.metadataByPlugin(ModConstants.DISPLAY_NAME).forEach(
+                (textureLocation, metadata) -> {
+                    if (spriteTextures.contains(SpriteName.fromTexturePath(textureLocation))) {
+                        sprites.add(new Material(
+                                TextureAtlas.LOCATION_BLOCKS,
+                                ((OverlayMetadata) metadata).overlayLocation()
+                        ));
+                    }
+                }
+        );
+    };
 }

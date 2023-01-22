@@ -35,6 +35,7 @@ import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
+import org.apache.logging.log4j.LogManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -105,9 +106,10 @@ public class ModelPartMixin {
     private VertexConsumer makeBuffer(MultiBufferSource bufferSource, ResourceLocation spriteName,
                                       Function<ResourceLocation, RenderType> renderTypeFunction) {
         ResourceLocation overlayLocation = toTextureLocation(spriteName);
+        Optional<VertexConsumer> spriteBuffer;
 
-        // All overlay textures are stitched to the block atlas
-        return makeBufferFromSprite(
+        // All overlays are either stitched to the block atlas or an individual texture
+        spriteBuffer = makeBufferIfSprite(
                 TextureAtlas.LOCATION_BLOCKS,
                 overlayLocation,
                 spriteName,
@@ -115,21 +117,21 @@ public class ModelPartMixin {
                 renderTypeFunction
         );
 
+        return spriteBuffer.orElseGet(() -> bufferSource.getBuffer(renderTypeFunction.apply(overlayLocation)));
     }
 
-    private VertexConsumer makeBufferFromSprite(ResourceLocation atlasLocation,
-                                                ResourceLocation overlayLocation,
-                                                ResourceLocation spriteName,
-                                                MultiBufferSource bufferSource,
-                                                Function<ResourceLocation, RenderType> renderTypeFunction) {
+    private Optional<VertexConsumer> makeBufferIfSprite(ResourceLocation atlasLocation,
+                                                        ResourceLocation overlayLocation,
+                                                        ResourceLocation spriteName,
+                                                        MultiBufferSource bufferSource,
+                                                        Function<ResourceLocation, RenderType> renderTypeFunction) {
         AbstractTexture abstractTexture = MINECRAFT.getTextureManager().getTexture(atlasLocation);
         if (!(abstractTexture instanceof TextureAtlas atlas)) {
-            throw new IllegalStateException(
-                    String.format(
-                            "MoreMcmeta Emissive Plugin: Atlas %s is not a subclass of TextureAtlas",
-                            atlasLocation
-                    )
+            LogManager.getLogger().warn(
+                    "Atlas {} is not a subclass of TextureAtlas; sprites from this atlas will not be used as overlays",
+                    atlasLocation
             );
+            return Optional.empty();
         }
 
         TextureAtlasSprite sprite = atlas.getSprite(spriteName);
@@ -137,8 +139,12 @@ public class ModelPartMixin {
             sprite = atlas.getSprite(overlayLocation);
         }
 
-        RenderType renderType = renderTypeFunction.apply(atlasLocation);
-        return sprite.wrap(bufferSource.getBuffer(renderType));
+        if (!sprite.getName().equals(MissingTextureAtlasSprite.getLocation())) {
+            RenderType renderType = renderTypeFunction.apply(atlasLocation);
+            return Optional.of(sprite.wrap(bufferSource.getBuffer(renderType)));
+        }
+
+        return Optional.empty();
     }
 
     /**
