@@ -8,16 +8,17 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.util.Mth;
 
 import java.util.List;
 import java.util.function.Function;
 
 public class OverlayQuadFunction implements Function<List<BakedQuad>, List<BakedQuad>> {
-    private final TextureAtlas ATLAS;
+    private final ModelManager MODEL_MANAGER;
 
     public OverlayQuadFunction() {
-        ATLAS = Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS);
+        MODEL_MANAGER = Minecraft.getInstance().getModelManager();
     }
 
     public List<BakedQuad> apply(List<BakedQuad> quads) {
@@ -32,7 +33,9 @@ public class OverlayQuadFunction implements Function<List<BakedQuad>, List<Baked
                                     .metadataFromSpriteName(ModConstants.DISPLAY_NAME, quad.getSprite().getName())
                                     .orElseThrow());
 
-                            TextureAtlasSprite sprite = ATLAS.getSprite(metadata.overlayLocation());
+                            TextureAtlasSprite sprite = MODEL_MANAGER
+                                    .getAtlas(TextureAtlas.LOCATION_BLOCKS)
+                                    .getSprite(metadata.overlayLocation());
 
                             /* We have to cast because Minecraft's BakedModel interface expects a List<BakedQuad>,
                                not List<? extends BakedQuad>. */

@@ -1,5 +1,6 @@
 package io.github.moremcmeta.emissiveplugin;
 
+import com.mojang.datafixers.util.Pair;
 import io.github.moremcmeta.emissiveplugin.metadata.OverlayMetadata;
 import io.github.moremcmeta.emissiveplugin.metadata.OverlayMetadataParser;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataParser;
@@ -9,10 +10,14 @@ import io.github.moremcmeta.moremcmeta.api.client.texture.SpriteName;
 import io.github.moremcmeta.moremcmeta.api.client.texture.TextureComponent;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
+import org.apache.commons.lang3.function.ToBooleanBiFunction;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -51,5 +56,15 @@ public class ModConstants {
                     }
                 }
         );
+    };
+    public static final ToBooleanBiFunction<ModelBakery, UnbakedModel> USES_OVERLAY = (bakery, original) -> {
+        Set<Pair<String, String>> missingTextures = new HashSet<>();
+        return original.getMaterials(bakery::getModel, missingTextures)
+                .stream()
+                .map(Material::texture)
+                .anyMatch((spriteName) -> MetadataRegistry.INSTANCE.metadataFromSpriteName(
+                        ModConstants.DISPLAY_NAME,
+                        spriteName
+                ).isPresent());
     };
 }

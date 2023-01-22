@@ -3,7 +3,6 @@ accessible  method  net/minecraft/client/renderer/RenderType$CompositeRenderType
 accessible  field   net/minecraft/client/renderer/RenderType$CompositeState textureState  Lnet/minecraft/client/renderer/RenderStateShard$EmptyTextureStateShard;
 accessible  method  net/minecraft/client/renderer/RenderStateShard$EmptyTextureStateShard    cutoutTexture    ()Ljava/util/Optional;
 accessible  field   net/minecraft/client/renderer/SpriteCoordinateExpander sprite  Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;
-accessible  field   net/minecraft/client/resources/model/ModelManager bakedRegistry  Ljava/util/Map;
 accessible  field   net/minecraft/client/renderer/block/BlockRenderDispatcher modelRenderer  Lnet/minecraft/client/renderer/block/ModelBlockRenderer;
 mutable  field   net/minecraft/client/renderer/block/BlockRenderDispatcher modelRenderer  Lnet/minecraft/client/renderer/block/ModelBlockRenderer;
 accessible  field   net/minecraft/client/renderer/block/BlockRenderDispatcher blockColors  Lnet/minecraft/client/color/block/BlockColors;

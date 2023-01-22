@@ -18,6 +18,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -51,8 +52,7 @@ public class OverlayBakedModel extends ForwardingBakedModel {
             NON_EMISSIVE_MATERIAL = null;
         }
     }
-    private final TextureAtlas BLOCK_ATLAS = Minecraft.getInstance().getModelManager()
-            .getAtlas(TextureAtlas.LOCATION_BLOCKS);
+    private final ModelManager MODEL_MANAGER = Minecraft.getInstance().getModelManager();
 
     public OverlayBakedModel(BakedModel model) {
         wrapped = requireNonNull(model, "Baked model cannot be null");
@@ -67,7 +67,10 @@ public class OverlayBakedModel extends ForwardingBakedModel {
         }
 
         MeshBuilder builder = RENDERER.meshBuilder();
-        OverlayQuadTransform transform = new OverlayQuadTransform(builder.getEmitter(), BLOCK_ATLAS);
+        OverlayQuadTransform transform = new OverlayQuadTransform(
+                builder.getEmitter(),
+                MODEL_MANAGER.getAtlas(TextureAtlas.LOCATION_BLOCKS)
+        );
 
         context.pushTransform(transform);
         super.emitBlockQuads(blockView, state, pos, randomSupplier, context);
@@ -89,7 +92,10 @@ public class OverlayBakedModel extends ForwardingBakedModel {
         }
 
         MeshBuilder builder = RENDERER.meshBuilder();
-        OverlayQuadTransform transform = new OverlayQuadTransform(builder.getEmitter(), BLOCK_ATLAS);
+        OverlayQuadTransform transform = new OverlayQuadTransform(
+                builder.getEmitter(),
+                MODEL_MANAGER.getAtlas(TextureAtlas.LOCATION_BLOCKS)
+        );
 
         context.pushTransform(transform);
         super.emitItemQuads(stack, randomSupplier, context);
