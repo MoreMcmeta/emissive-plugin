@@ -36,6 +36,7 @@ public class ModelBakeryMixin {
     private void wrapModels(ResourceLocation modelLocation, ModelState state,
                             Function<Material, TextureAtlasSprite> materialToSprite,
                             CallbackInfoReturnable<BakedModel> callbackInfo) {
+        @SuppressWarnings("DataFlowIssue")
         ModelBakery bakery = (ModelBakery) (Object) this;
         boolean usesOverlay = ModConstants.USES_OVERLAY.applyAsBoolean(
                 bakery,
