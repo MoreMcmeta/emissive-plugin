@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 public class ModelBlockRendererMixin {
 
     @ModifyArgs(method = "renderQuadList", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;putBulkData(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/model/BakedQuad;FFFII)V"))
-    private static void onPutBulkData(Args args) {
+    private static void moremcmeta_emissive_onPutBulkData(Args args) {
         BakedQuad quad = args.get(1);
         if (quad instanceof OverlayBakedQuad overlayQuad && overlayQuad.isEmissive()) {
             args.set(5, LightTexture.FULL_BRIGHT);

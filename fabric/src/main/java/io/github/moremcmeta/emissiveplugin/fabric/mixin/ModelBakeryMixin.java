@@ -22,7 +22,7 @@ import java.util.Map;
 public class ModelBakeryMixin {
 
     @ModifyVariable(method = "<init>(Lnet/minecraft/server/packs/resources;Lnet/minecraft/client/color/block;Lnet/minecraft/util/profiling/ProfilerFiller;I)V", at = @At("STORE"), ordinal = 0)
-    private Map<ResourceLocation, List<Material>> addOverlaySprites(
+    private Map<ResourceLocation, List<Material>> moremcmeta_emissive_addOverlaySprites(
             Map<ResourceLocation, List<Material>> materialsByAtlas
     ) {
         ModConstants.SPRITE_REGISTRAR.accept(materialsByAtlas);
@@ -30,8 +30,8 @@ public class ModelBakeryMixin {
     }
 
     @Inject(method = "bake", at = @At("RETURN"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    private void wrapModels(ResourceLocation modelLocation, ModelState state,
-                            CallbackInfoReturnable<BakedModel> callbackInfo) {
+    private void moremcmeta_emissive_wrapModels(ResourceLocation modelLocation, ModelState state,
+                                                CallbackInfoReturnable<BakedModel> callbackInfo) {
         @SuppressWarnings("DataFlowIssue")
         ModelBakery bakery = (ModelBakery) (Object) this;
         boolean usesOverlay = ModConstants.USES_OVERLAY.applyAsBoolean(

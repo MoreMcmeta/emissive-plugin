@@ -32,12 +32,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class BlockEntityRenderDispatcherMixin {
 
     @ModifyVariable(method = "render", at = @At("HEAD"))
-    private MultiBufferSource wrapBufferSource(MultiBufferSource bufferSource) {
+    private MultiBufferSource moremcmeta_emissive_wrapBufferSource(MultiBufferSource bufferSource) {
         return WrappedBufferSource.wrap(bufferSource, (renderType) -> EntityRenderingState.currentRenderType.set(renderType));
     }
 
     @Inject(method = "render", at = @At(value = "RETURN"))
-    private void onReturn(CallbackInfo callbackInfo) {
+    private void moremcmeta_emissive_onReturn(CallbackInfo callbackInfo) {
         EntityRenderingState.currentRenderType.set(null);
     }
 }

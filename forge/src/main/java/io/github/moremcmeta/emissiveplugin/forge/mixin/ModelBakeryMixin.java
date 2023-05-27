@@ -25,7 +25,7 @@ public class ModelBakeryMixin {
 
     @ModifyVariable(method = "processLoading(Lnet/minecraft/util/profiling/ProfilerFiller;I)V",
             at = @At("STORE"), ordinal = 0, remap = false)
-    private Map<ResourceLocation, List<Material>> addOverlaySprites(
+    private Map<ResourceLocation, List<Material>> moremcmeta_emissive_addOverlaySprites(
             Map<ResourceLocation, List<Material>> materialsByAtlas
     ) {
         ModConstants.SPRITE_REGISTRAR.accept(materialsByAtlas);
@@ -33,9 +33,9 @@ public class ModelBakeryMixin {
     }
 
     @Inject(method = "bake(Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/client/resources/model/ModelState;Ljava/util/function/Function;)Lnet/minecraft/client/resources/model/BakedModel;", at = @At("RETURN"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, remap = false)
-    private void wrapModels(ResourceLocation modelLocation, ModelState state,
-                            Function<Material, TextureAtlasSprite> materialToSprite,
-                            CallbackInfoReturnable<BakedModel> callbackInfo) {
+    private void moremcmeta_emissive_wrapModels(ResourceLocation modelLocation, ModelState state,
+                                                Function<Material, TextureAtlasSprite> materialToSprite,
+                                                CallbackInfoReturnable<BakedModel> callbackInfo) {
         @SuppressWarnings("DataFlowIssue")
         ModelBakery bakery = (ModelBakery) (Object) this;
         boolean usesOverlay = ModConstants.USES_OVERLAY.applyAsBoolean(

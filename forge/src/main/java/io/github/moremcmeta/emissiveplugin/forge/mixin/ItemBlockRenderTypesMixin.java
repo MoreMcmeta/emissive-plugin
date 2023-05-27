@@ -15,8 +15,8 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public class ItemBlockRenderTypesMixin {
     @Inject(method = "canRenderInLayer(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/client/renderer/RenderType;)Z",
             at = @At("HEAD"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, remap = false)
-    private static void enableBlockTransparencyOverlay(BlockState state, RenderType type,
-                                                       CallbackInfoReturnable<Boolean> callbackInfo) {
+    private static void moremcmeta_emissive_enableBlockTransparencyOverlay(BlockState state, RenderType type,
+                                                                           CallbackInfoReturnable<Boolean> callbackInfo) {
         if (EmissiveModelBlockRenderer.ALWAYS_RENDER_ON_TRANSPARENCY.get() && type == RenderType.translucent()) {
             callbackInfo.setReturnValue(true);
         }

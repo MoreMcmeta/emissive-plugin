@@ -24,6 +24,7 @@ import io.github.moremcmeta.emissiveplugin.metadata.OverlayMetadata;
 import io.github.moremcmeta.emissiveplugin.render.EntityRenderingState;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataRegistry;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.ParsedMetadata;
+import io.github.moremcmeta.moremcmeta.api.client.texture.SpriteName;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.LightTexture;
@@ -37,6 +38,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -52,14 +54,15 @@ public class ModelPartMixin {
 
     @Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;IIFFFF)V",
             at = @At(value = "HEAD"))
-    private void onEntry(CallbackInfo callbackInfo) {
+    private void moremcmeta_emissive_onEntry(CallbackInfo callbackInfo) {
         EntityRenderingState.partRenderDepth.set(EntityRenderingState.partRenderDepth.get() + 1);
     }
 
     @Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;IIFFFF)V",
             at = @At(value = "RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void onReturn(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay,
-                          float red, float blue, float green, float alpha, CallbackInfo callbackInfo) {
+    private void moremcmeta_emissive_onReturn(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight,
+                                              int packedOverlay, float red, float blue, float green, float alpha,
+                                              CallbackInfo callbackInfo) {
 
         @SuppressWarnings("DataFlowIssue")
         ModelPart thisPart = (ModelPart) (Object) this;
@@ -103,9 +106,10 @@ public class ModelPartMixin {
         EntityRenderingState.partRenderDepth.set(EntityRenderingState.partRenderDepth.get() - 1);
     }
 
+    @Unique
     private VertexConsumer makeBuffer(MultiBufferSource bufferSource, ResourceLocation spriteName,
                                       Function<ResourceLocation, RenderType> renderTypeFunction) {
-        ResourceLocation overlayLocation = toTextureLocation(spriteName);
+        ResourceLocation overlayLocation = SpriteName.toTexturePath(spriteName);
         Optional<VertexConsumer> spriteBuffer;
 
         // All overlays are either stitched to the block atlas or an individual texture
@@ -120,6 +124,7 @@ public class ModelPartMixin {
         return spriteBuffer.orElseGet(() -> bufferSource.getBuffer(renderTypeFunction.apply(overlayLocation)));
     }
 
+    @Unique
     private Optional<VertexConsumer> makeBufferIfSprite(ResourceLocation atlasLocation,
                                                         ResourceLocation overlayLocation,
                                                         ResourceLocation spriteName,
@@ -145,17 +150,6 @@ public class ModelPartMixin {
         }
 
         return Optional.empty();
-    }
-
-    /**
-     * Converts a sprite name to a standard texture location (with textures/ prefix and .png suffix).
-     * @param spriteName      the sprite name to convert
-     * @return the texture location corresponding to the sprite
-     */
-    private static ResourceLocation toTextureLocation(ResourceLocation spriteName) {
-        String originalPath = spriteName.getPath();
-        String fullPath = "textures/" + originalPath + ".png";
-        return new ResourceLocation(spriteName.getNamespace(), fullPath);
     }
 
 }

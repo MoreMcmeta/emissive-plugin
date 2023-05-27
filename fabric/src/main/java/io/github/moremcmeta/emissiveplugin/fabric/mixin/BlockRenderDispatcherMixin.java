@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(BlockRenderDispatcher.class)
 public class BlockRenderDispatcherMixin {
     @Redirect(method = "<init>(Lnet/minecraft/client/renderer/block/BlockModelShaper;Lnet/minecraft/client/renderer/BlockEntityWithoutLevelRenderer;Lnet/minecraft/client/color/block/BlockColors;)V", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/block/BlockRenderDispatcher;modelRenderer:Lnet/minecraft/client/renderer/block/ModelBlockRenderer;", opcode = Opcodes.PUTFIELD))
-    private void replaceBlockRenderer(BlockRenderDispatcher dispatcher, ModelBlockRenderer renderer) {
+    private void moremcmeta_emissive_replaceBlockRenderer(BlockRenderDispatcher dispatcher, ModelBlockRenderer renderer) {
         dispatcher.modelRenderer = new EmissiveModelBlockRenderer(dispatcher.blockColors);
     }
 }
