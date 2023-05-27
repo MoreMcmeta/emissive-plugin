@@ -3,6 +3,7 @@ package io.github.moremcmeta.emissiveplugin.forge.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.moremcmeta.emissiveplugin.forge.model.OverlayOnlyBakedModel;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -15,8 +16,11 @@ import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.pipeline.ForgeBlockModelRenderer;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class EmissiveModelBlockRenderer extends ForgeBlockModelRenderer {
     public static final ThreadLocal<Boolean> ALWAYS_RENDER_ON_TRANSPARENCY = ThreadLocal.withInitial(() -> true);
 
