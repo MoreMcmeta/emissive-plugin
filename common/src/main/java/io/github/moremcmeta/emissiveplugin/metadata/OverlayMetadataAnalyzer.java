@@ -1,10 +1,9 @@
 package io.github.moremcmeta.emissiveplugin.metadata;
 
-import io.github.moremcmeta.emissiveplugin.ModConstants;
+import io.github.moremcmeta.moremcmeta.api.client.metadata.AnalyzedMetadata;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.InvalidMetadataException;
-import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataParser;
+import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataAnalyzer;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataView;
-import io.github.moremcmeta.moremcmeta.api.client.metadata.ParsedMetadata;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Optional;
@@ -15,13 +14,12 @@ import static java.util.Objects.requireNonNull;
  * Parses overlay metadata into {@link OverlayMetadata}.
  * @author soir20
  */
-public class OverlayMetadataParser implements MetadataParser {
+public class OverlayMetadataAnalyzer implements MetadataAnalyzer {
     @Override
-    public ParsedMetadata parse(MetadataView metadata, int imageWidth, int imageHeight) throws InvalidMetadataException {
+    public AnalyzedMetadata analyze(MetadataView metadata, int imageWidth, int imageHeight) throws InvalidMetadataException {
         requireNonNull(metadata, "Metadata cannot be null");
 
-        MetadataView sectionMetadata = metadata.subView(ModConstants.SECTION_NAME).orElseThrow();
-        Optional<String> rawOverlayLocation = sectionMetadata.stringValue("texture");
+        Optional<String> rawOverlayLocation = metadata.stringValue("texture");
         if (rawOverlayLocation.isEmpty()) {
             throw new InvalidMetadataException("Overlays must have a texture defined");
         }
@@ -31,7 +29,7 @@ public class OverlayMetadataParser implements MetadataParser {
             throw new InvalidMetadataException("Non [a-z0-9_.-] character in overlay texture location");
         }
 
-        boolean isEmissive = sectionMetadata.booleanValue("emissive").orElse(false);
+        boolean isEmissive = metadata.booleanValue("emissive").orElse(false);
 
         return new OverlayMetadata(overlayLocationAsSprite, isEmissive);
     }

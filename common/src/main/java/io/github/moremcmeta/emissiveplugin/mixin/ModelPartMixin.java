@@ -22,8 +22,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.moremcmeta.emissiveplugin.ModConstants;
 import io.github.moremcmeta.emissiveplugin.metadata.OverlayMetadata;
 import io.github.moremcmeta.emissiveplugin.render.EntityRenderingState;
+import io.github.moremcmeta.moremcmeta.api.client.metadata.AnalyzedMetadata;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataRegistry;
-import io.github.moremcmeta.moremcmeta.api.client.metadata.ParsedMetadata;
 import io.github.moremcmeta.moremcmeta.api.client.texture.SpriteName;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
@@ -71,19 +71,19 @@ public class ModelPartMixin {
 
         // Check depth to avoid getting stuck in infinite recursion or re-rendering child parts multiple times
         if (EntityRenderingState.partRenderDepth.get() == 0) {
-            Optional<ParsedMetadata> metadataOptional = Optional.empty();
+            Optional<AnalyzedMetadata> metadataOptional = Optional.empty();
 
             // Handle a sprite being rendered
             if (vertexConsumer instanceof SpriteCoordinateExpander spriteVertexConsumer) {
                 ResourceLocation location = spriteVertexConsumer.sprite.getName();
-                metadataOptional = MetadataRegistry.INSTANCE.metadataFromSpriteName(ModConstants.DISPLAY_NAME, location);
+                metadataOptional = MetadataRegistry.INSTANCE.metadataFromSpriteName(ModConstants.MOD_ID, location);
 
             // Handle a regular texture being rendered
             } else if (EntityRenderingState.currentRenderType.get() instanceof RenderType.CompositeRenderType compositeType
                     && compositeType.state().textureState.cutoutTexture().isPresent()) {
 
                 ResourceLocation location = compositeType.state().textureState.cutoutTexture().get();
-                metadataOptional = MetadataRegistry.INSTANCE.metadataFromPath(ModConstants.DISPLAY_NAME, location);
+                metadataOptional = MetadataRegistry.INSTANCE.metadataFromPath(ModConstants.MOD_ID, location);
             }
 
             // Do rendering

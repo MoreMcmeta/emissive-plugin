@@ -25,12 +25,12 @@ public class OverlayQuadFunction implements Function<List<BakedQuad>, List<Baked
         return quads.stream()
                 .filter(
                         (quad) -> MetadataRegistry.INSTANCE
-                                .metadataFromSpriteName(ModConstants.DISPLAY_NAME, quad.getSprite().getName())
+                                .metadataFromSpriteName(ModConstants.MOD_ID, quad.getSprite().getName())
                                 .isPresent()
                 ).map(
                         (quad) -> {
                             OverlayMetadata metadata = ((OverlayMetadata) MetadataRegistry.INSTANCE
-                                    .metadataFromSpriteName(ModConstants.DISPLAY_NAME, quad.getSprite().getName())
+                                    .metadataFromSpriteName(ModConstants.MOD_ID, quad.getSprite().getName())
                                     .orElseThrow());
 
                             TextureAtlasSprite sprite = MODEL_MANAGER

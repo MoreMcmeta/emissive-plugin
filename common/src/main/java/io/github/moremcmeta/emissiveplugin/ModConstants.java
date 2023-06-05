@@ -2,10 +2,10 @@ package io.github.moremcmeta.emissiveplugin;
 
 import com.mojang.datafixers.util.Pair;
 import io.github.moremcmeta.emissiveplugin.metadata.OverlayMetadata;
-import io.github.moremcmeta.emissiveplugin.metadata.OverlayMetadataParser;
-import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataParser;
+import io.github.moremcmeta.emissiveplugin.metadata.OverlayMetadataAnalyzer;
+import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataAnalyzer;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataRegistry;
-import io.github.moremcmeta.moremcmeta.api.client.texture.ComponentProvider;
+import io.github.moremcmeta.moremcmeta.api.client.texture.ComponentBuilder;
 import io.github.moremcmeta.moremcmeta.api.client.texture.SpriteName;
 import io.github.moremcmeta.moremcmeta.api.client.texture.TextureComponent;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -31,9 +31,8 @@ import java.util.stream.Collectors;
 public class ModConstants {
     public static final String MOD_ID = "moremcmeta_emissive_plugin";
     public static final String SECTION_NAME = "overlay";
-    public static final String DISPLAY_NAME = "MoreMcmeta Emissive Textures";
-    public static final MetadataParser PARSER = new OverlayMetadataParser();
-    public static final ComponentProvider COMPONENT_PROVIDER = (metadata, frames) -> new TextureComponent<>() {};
+    public static final MetadataAnalyzer ANALYZER = new OverlayMetadataAnalyzer();
+    public static final ComponentBuilder COMPONENT_BUILDER = (metadata, frames) -> new TextureComponent<>() {};
     public static final Consumer<Map<ResourceLocation, List<Material>>> SPRITE_REGISTRAR = (spritesByAtlas) -> {
         List<Material> sprites = spritesByAtlas.computeIfAbsent(
                 TextureAtlas.LOCATION_BLOCKS,
@@ -46,7 +45,7 @@ public class ModConstants {
                 .map(Material::texture)
                 .collect(Collectors.toSet());
 
-        MetadataRegistry.INSTANCE.metadataByPlugin(ModConstants.DISPLAY_NAME).forEach(
+        MetadataRegistry.INSTANCE.metadataByPlugin(ModConstants.MOD_ID).forEach(
                 (textureLocation, metadata) -> {
                     if (spriteTextures.contains(SpriteName.fromTexturePath(textureLocation))) {
                         sprites.add(new Material(
@@ -63,7 +62,7 @@ public class ModConstants {
                 .stream()
                 .map(Material::texture)
                 .anyMatch((spriteName) -> MetadataRegistry.INSTANCE.metadataFromSpriteName(
-                        ModConstants.DISPLAY_NAME,
+                        ModConstants.MOD_ID,
                         spriteName
                 ).isPresent());
     };

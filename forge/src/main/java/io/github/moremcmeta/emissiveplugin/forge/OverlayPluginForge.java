@@ -2,8 +2,8 @@ package io.github.moremcmeta.emissiveplugin.forge;
 
 import io.github.moremcmeta.emissiveplugin.ModConstants;
 import io.github.moremcmeta.moremcmeta.api.client.MoreMcmetaTexturePlugin;
-import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataParser;
-import io.github.moremcmeta.moremcmeta.api.client.texture.ComponentProvider;
+import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataAnalyzer;
+import io.github.moremcmeta.moremcmeta.api.client.texture.ComponentBuilder;
 import io.github.moremcmeta.moremcmeta.forge.api.client.MoreMcmetaClientPlugin;
 
 /**
@@ -19,22 +19,17 @@ public class OverlayPluginForge implements MoreMcmetaTexturePlugin {
     }
 
     @Override
-    public MetadataParser parser() {
-        return ModConstants.PARSER;
+    public MetadataAnalyzer analyzer() {
+        return ModConstants.ANALYZER;
     }
 
     @Override
-    public ComponentProvider componentProvider() {
-        return ModConstants.COMPONENT_PROVIDER;
+    public ComponentBuilder componentBuilder() {
+        return ModConstants.COMPONENT_BUILDER;
     }
 
     @Override
-    public String displayName() {
-        return ModConstants.DISPLAY_NAME;
-    }
-
-    @Override
-    public boolean allowTextureAndSectionInDifferentPacks() {
-        return true;
+    public String id() {
+        return ModConstants.MOD_ID;
     }
 }

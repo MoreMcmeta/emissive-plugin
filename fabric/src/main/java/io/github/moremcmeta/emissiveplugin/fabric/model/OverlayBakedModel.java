@@ -131,7 +131,7 @@ public class OverlayBakedModel extends ForwardingBakedModel {
         @Override
         public boolean transform(MutableQuadView quad) {
             Optional<OverlayMetadata> metadataOptional = MetadataRegistry.INSTANCE
-                    .metadataFromSpriteName(ModConstants.DISPLAY_NAME, spriteFromQuad(quad).getName())
+                    .metadataFromSpriteName(ModConstants.MOD_ID, spriteFromQuad(quad).getName())
                     .map(((metadata) -> (OverlayMetadata) metadata));
 
             if (metadataOptional.isEmpty()) {
