@@ -14,7 +14,7 @@ public class OverlayMetadata implements AnalyzedMetadata {
         IS_EMISSIVE = isEmissive;
     }
 
-    public ResourceLocation overlayLocation() {
+    public ResourceLocation overlaySpriteName() {
         return OVERLAY_LOCATION;
     }
 

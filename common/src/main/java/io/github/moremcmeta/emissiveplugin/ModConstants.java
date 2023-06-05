@@ -50,7 +50,7 @@ public class ModConstants {
                     if (spriteTextures.contains(SpriteName.fromTexturePath(textureLocation))) {
                         sprites.add(new Material(
                                 TextureAtlas.LOCATION_BLOCKS,
-                                ((OverlayMetadata) metadata).overlayLocation()
+                                ((OverlayMetadata) metadata).overlaySpriteName()
                         ));
                     }
                 }

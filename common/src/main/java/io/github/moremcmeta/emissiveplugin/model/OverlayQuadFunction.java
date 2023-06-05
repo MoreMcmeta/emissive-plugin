@@ -35,7 +35,7 @@ public class OverlayQuadFunction implements Function<List<BakedQuad>, List<Baked
 
                             TextureAtlasSprite sprite = MODEL_MANAGER
                                     .getAtlas(TextureAtlas.LOCATION_BLOCKS)
-                                    .getSprite(metadata.overlayLocation());
+                                    .getSprite(metadata.overlaySpriteName());
 
                             /* We have to cast because Minecraft's BakedModel interface expects a List<BakedQuad>,
                                not List<? extends BakedQuad>. */

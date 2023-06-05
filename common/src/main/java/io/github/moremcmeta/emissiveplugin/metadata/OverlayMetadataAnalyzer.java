@@ -4,6 +4,7 @@ import io.github.moremcmeta.moremcmeta.api.client.metadata.AnalyzedMetadata;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.InvalidMetadataException;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataAnalyzer;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataView;
+import io.github.moremcmeta.moremcmeta.api.client.texture.SpriteName;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Optional;
@@ -24,14 +25,14 @@ public class OverlayMetadataAnalyzer implements MetadataAnalyzer {
             throw new InvalidMetadataException("Overlays must have a texture defined");
         }
 
-        ResourceLocation overlayLocationAsSprite = ResourceLocation.tryParse(rawOverlayLocation.get());
-        if (overlayLocationAsSprite == null) {
+        ResourceLocation overlayLocation = ResourceLocation.tryParse(rawOverlayLocation.get());
+        if (overlayLocation == null) {
             throw new InvalidMetadataException("Non [a-z0-9_.-] character in overlay texture location");
         }
 
         boolean isEmissive = metadata.booleanValue("emissive").orElse(false);
 
-        return new OverlayMetadata(overlayLocationAsSprite, isEmissive);
+        return new OverlayMetadata(SpriteName.fromTexturePath(overlayLocation), isEmissive);
     }
 
 }

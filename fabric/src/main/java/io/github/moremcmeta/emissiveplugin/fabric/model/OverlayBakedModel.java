@@ -145,7 +145,7 @@ public class OverlayBakedModel extends ForwardingBakedModel {
 
             EMITTER.spriteBake(
                     0,
-                    BLOCK_ATLAS.getSprite(metadata.overlayLocation()),
+                    BLOCK_ATLAS.getSprite(metadata.overlaySpriteName()),
                     MutableQuadView.BAKE_LOCK_UV
             );
 
