@@ -31,6 +31,10 @@ import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * {@link BakedModel} that renders the original model and its overlay.
+ * @author soir20
+ */
 public class OverlayBakedModel extends ForwardingBakedModel {
     private static final Renderer RENDERER = RendererAccess.INSTANCE.getRenderer();
     private static final RenderMaterial EMISSIVE_MATERIAL;
@@ -54,6 +58,10 @@ public class OverlayBakedModel extends ForwardingBakedModel {
     }
     private final ModelManager MODEL_MANAGER = Minecraft.getInstance().getModelManager();
 
+    /**
+     * Creates a new overlay model.
+     * @param model     original model to wrap
+     */
     public OverlayBakedModel(BakedModel model) {
         wrapped = requireNonNull(model, "Baked model cannot be null");
     }
@@ -118,11 +126,20 @@ public class OverlayBakedModel extends ForwardingBakedModel {
 
     }
 
+    /**
+     * Emits overlay quads given the original quads.
+     * @author soir20
+     */
     private static class OverlayQuadTransform implements RenderContext.QuadTransform {
         private final QuadEmitter EMITTER;
         private final TextureAtlas BLOCK_ATLAS;
         private boolean emittedAny;
 
+        /**
+         * Creates a new overlay transform.
+         * @param emitter       emitter to emit overlay quads to
+         * @param blockAtlas    texture atlas for block textures
+         */
         public OverlayQuadTransform(QuadEmitter emitter, TextureAtlas blockAtlas) {
             EMITTER = requireNonNull(emitter, "Emitter cannot be null");
             BLOCK_ATLAS = requireNonNull(blockAtlas, "Block atlas cannot be null");
@@ -154,12 +171,22 @@ public class OverlayBakedModel extends ForwardingBakedModel {
             return true;
         }
 
+        /**
+         * Checks if any quads were emitted from this transform.
+         * @return whether any quads were emitted
+         */
         public boolean emittedAny() {
             return emittedAny;
         }
 
+        /**
+         * Gets the sprite used by a given quad.
+         * @param quad      quad to get the sprite of
+         * @return quad's sprite
+         */
         private TextureAtlasSprite spriteFromQuad(QuadView quad) {
             return SpriteFinder.get(BLOCK_ATLAS).find(quad, 0);
         }
+
     }
 }

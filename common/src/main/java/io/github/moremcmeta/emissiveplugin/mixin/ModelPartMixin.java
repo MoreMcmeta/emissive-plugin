@@ -47,17 +47,37 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import java.util.Optional;
 import java.util.function.Function;
 
+/**
+ * Renders overlays over {@link ModelPart}s.
+ * @author soir20
+ */
 @SuppressWarnings("unused")
 @Mixin(ModelPart.class)
 public class ModelPartMixin {
     private final Minecraft MINECRAFT = Minecraft.getInstance();
 
+    /**
+     * Sets the render depth to track when the parent model part has finished rendering.
+     * @param callbackInfo      callback info from Mixin
+     */
     @Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;IIFFFF)V",
             at = @At(value = "HEAD"))
     private void moremcmeta_emissive_onEntry(CallbackInfo callbackInfo) {
         EntityRenderingState.partRenderDepth.set(EntityRenderingState.partRenderDepth.get() + 1);
     }
 
+    /**
+     * Renders overlay quads once the base model part and its children have finished rendering.
+     * @param poseStack         pose stack for rendering
+     * @param vertexConsumer    render buffer
+     * @param packedLight       light strength packed into an integer
+     * @param packedOverlay     overlay coordinates packed into an integer
+     * @param red               red component of light
+     * @param blue              blue component of light
+     * @param green             green component of light
+     * @param alpha             alpha component of light
+     * @param callbackInfo      callback info from Mixin
+     */
     @Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;IIFFFF)V",
             at = @At(value = "RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
     private void moremcmeta_emissive_onReturn(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight,
@@ -106,6 +126,13 @@ public class ModelPartMixin {
         EntityRenderingState.partRenderDepth.set(EntityRenderingState.partRenderDepth.get() - 1);
     }
 
+    /**
+     * Creates a buffer to render an overlay texture.
+     * @param bufferSource          source of buffers for rendering
+     * @param spriteName            name of the overlay texture as a sprite
+     * @param renderTypeFunction    creates a render type given the location of a texture used while rendering
+     * @return buffer to render the overlay texture
+     */
     @Unique
     private VertexConsumer makeBuffer(MultiBufferSource bufferSource, ResourceLocation spriteName,
                                       Function<ResourceLocation, RenderType> renderTypeFunction) {
@@ -124,6 +151,15 @@ public class ModelPartMixin {
         return spriteBuffer.orElseGet(() -> bufferSource.getBuffer(renderTypeFunction.apply(overlayLocation)));
     }
 
+    /**
+     * Creates a render buffer if the overlay is a sprite.
+     * @param atlasLocation         atlas to search for the overlay texture
+     * @param overlayLocation       location of the overlay texture
+     * @param spriteName            overlay location as a sprite name
+     * @param bufferSource          source of render buffers
+     * @param renderTypeFunction    creates a {@link RenderType} given the location of a texture atlas
+     * @return render buffer if the overlay is a sprite
+     */
     @Unique
     private Optional<VertexConsumer> makeBufferIfSprite(ResourceLocation atlasLocation,
                                                         ResourceLocation overlayLocation,

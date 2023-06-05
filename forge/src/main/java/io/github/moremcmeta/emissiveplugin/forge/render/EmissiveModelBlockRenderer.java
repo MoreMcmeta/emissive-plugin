@@ -19,11 +19,19 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
 
+/**
+ * A {@link EmissiveModelBlockRenderer} that can render emissive overlays on blocks.
+ * @author soir20
+ */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class EmissiveModelBlockRenderer extends ForgeBlockModelRenderer {
     public static final ThreadLocal<Boolean> ALWAYS_RENDER_ON_TRANSPARENCY = ThreadLocal.withInitial(() -> true);
 
+    /**
+     * Creates a new emissive block renderer.
+     * @param colors    Minecraft's tint colors for various blocks
+     */
     public EmissiveModelBlockRenderer(BlockColors colors) {
         super(colors);
     }

@@ -27,15 +27,28 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/**
+ * Sets the current {@link EntityRenderingState} when regular entities are rendered.
+ * @author soir20
+ */
 @SuppressWarnings("unused")
 @Mixin(EntityRenderDispatcher.class)
 public class EntityRenderDispatcherMixin {
 
+    /**
+     * Wraps the buffer source so that its buffers set the render type when the entity is rendered.
+     * @param bufferSource      buffer source to wrap
+     * @return wrapped buffer source
+     */
     @ModifyVariable(method = "render", at = @At("HEAD"))
     private MultiBufferSource moremcmeta_emissive_wrapBufferSource(MultiBufferSource bufferSource) {
         return WrappedBufferSource.wrap(bufferSource, EntityRenderingState.currentRenderType::set);
     }
 
+    /**
+     * Clears the render type after the entity finishes rendering.
+     * @param callbackInfo      callback info from Mixin
+     */
     @Inject(method = "render", at = @At(value = "RETURN"))
     private void moremcmeta_emissive_onReturn(CallbackInfo callbackInfo) {
         EntityRenderingState.currentRenderType.set(null);

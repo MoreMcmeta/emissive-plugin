@@ -10,9 +10,22 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+/**
+ * Allows blocks to be rendered in the {@link RenderType#translucent()} render layer if an overlay is
+ * being rendered on Forge.
+ * @author soir20
+ */
 @SuppressWarnings("unused")
 @Mixin(ItemBlockRenderTypes.class)
 public class ItemBlockRenderTypesMixin {
+
+    /**
+     * Allows blocks to be rendered in the {@link RenderType#translucent()} render layer if an overlay is
+     * being rendered on Forge.
+     * @param state         state of the block being rendered
+     * @param type          layer that is being rendered
+     * @param callbackInfo  callback info from Mixin
+     */
     @Inject(method = "canRenderInLayer(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/client/renderer/RenderType;)Z",
             at = @At("HEAD"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, remap = false)
     private static void moremcmeta_emissive_enableBlockTransparencyOverlay(BlockState state, RenderType type,
@@ -21,4 +34,5 @@ public class ItemBlockRenderTypesMixin {
             callbackInfo.setReturnValue(true);
         }
     }
+
 }

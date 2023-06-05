@@ -11,9 +11,17 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Renders only the overlay quads for a {@link BakedModel}.
+ * @author soir20
+ */
 public class OverlayOnlyBakedModel extends ForwardingBakedModel {
     private final OverlayQuadFunction OVERLAY_QUAD_FUNCTION;
 
+    /**
+     * Creates a new baked model that only renders the overlay quads for the given model.
+     * @param model     original model whose overlay quads need to be rendered
+     */
     public OverlayOnlyBakedModel(BakedModel model) {
         wrapped = model;
         OVERLAY_QUAD_FUNCTION = new OverlayQuadFunction();

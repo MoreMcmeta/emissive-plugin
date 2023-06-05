@@ -14,13 +14,22 @@ import net.minecraft.util.Mth;
 import java.util.List;
 import java.util.function.Function;
 
+/**
+ * From a list of original {@link BakedQuad}s, produces a list of overlay quads that should be rendered
+ * overtop the original quads.
+ * @author soir20
+ */
 public class OverlayQuadFunction implements Function<List<BakedQuad>, List<BakedQuad>> {
     private final ModelManager MODEL_MANAGER;
 
+    /**
+     * Creates a new quad function.
+     */
     public OverlayQuadFunction() {
         MODEL_MANAGER = Minecraft.getInstance().getModelManager();
     }
 
+    @Override
     public List<BakedQuad> apply(List<BakedQuad> quads) {
         return quads.stream()
                 .filter(
@@ -40,7 +49,7 @@ public class OverlayQuadFunction implements Function<List<BakedQuad>, List<Baked
                             /* We have to cast because Minecraft's BakedModel interface expects a List<BakedQuad>,
                                not List<? extends BakedQuad>. */
                             return (BakedQuad) new OverlayBakedQuad(
-                                    makeVerticesFullBright(
+                                    makeOverlayVertexData(
                                             quad.getVertices(),
                                             sprite,
                                             quad.getSprite(),
@@ -58,8 +67,16 @@ public class OverlayQuadFunction implements Function<List<BakedQuad>, List<Baked
                 .toList();
     }
 
-    private int[] makeVerticesFullBright(int[] vertexData, TextureAtlasSprite newSprite, TextureAtlasSprite oldSprite,
-                                         boolean emissive) {
+    /**
+     * Recomputes vertex data for overlay quads.
+     * @param vertexData        original vertex data
+     * @param newSprite         sprite that will be used as the overlay
+     * @param oldSprite         sprite that will have an overlay applied
+     * @param emissive          whether the overlay quads should be emissive
+     * @return new vertex data for the overlay quads
+     */
+    private static int[] makeOverlayVertexData(int[] vertexData, TextureAtlasSprite newSprite,
+                                               TextureAtlasSprite oldSprite, boolean emissive) {
         final int VERTEX_SIZE = 8;
         final int TEX_U_OFFSET = 4;
         final int TEX_V_OFFSET = 5;
@@ -82,7 +99,14 @@ public class OverlayQuadFunction implements Function<List<BakedQuad>, List<Baked
         return newVertexData;
     }
 
-    private int recomputeSpriteU(int u, TextureAtlasSprite oldSprite, TextureAtlasSprite newSprite) {
+    /**
+     * Computes the new u-coordinate for the overlay sprite.
+     * @param u             u-coordinate in the original sprite
+     * @param oldSprite     sprite that will have an overlay applied
+     * @param newSprite     sprite that will be used as the overlay
+     * @return equivalent u-coordinate for the overlay sprite
+     */
+    private static int recomputeSpriteU(int u, TextureAtlasSprite oldSprite, TextureAtlasSprite newSprite) {
         return Float.floatToRawIntBits(
                 recomputeSpriteCoordinate(
                         Float.intBitsToFloat(u),
@@ -94,7 +118,14 @@ public class OverlayQuadFunction implements Function<List<BakedQuad>, List<Baked
         );
     }
 
-    private int recomputeSpriteV(int v, TextureAtlasSprite oldSprite, TextureAtlasSprite newSprite) {
+    /**
+     * Computes the new v-coordinate for the overlay sprite.
+     * @param v             v-coordinate in the original sprite
+     * @param oldSprite     sprite that will have an overlay applied
+     * @param newSprite     sprite that will be used as the overlay
+     * @return equivalent v-coordinate for the overlay sprite
+     */
+    private static int recomputeSpriteV(int v, TextureAtlasSprite oldSprite, TextureAtlasSprite newSprite) {
         return Float.floatToRawIntBits(
                 recomputeSpriteCoordinate(
                         Float.intBitsToFloat(v),
@@ -106,12 +137,24 @@ public class OverlayQuadFunction implements Function<List<BakedQuad>, List<Baked
         );
     }
 
-    private float recomputeSpriteCoordinate(float coord, TextureAtlasSprite oldSprite, TextureAtlasSprite newSprite,
-                                            Function<TextureAtlasSprite, Float> getCoord0,
-                                            Function<TextureAtlasSprite, Float> getCoord1) {
+    /**
+     * Given a coordinate in the old sprite, recomputes that coordinate to be in the same location in the
+     * new sprite (with respect to the size of the new sprite).
+     * @param coord         coordinate to recompute
+     * @param oldSprite     old sprite with the coordinate
+     * @param newSprite     new sprite, which may be a different size, to recompute the coordinate for
+     * @param getCoord0     retrieves the first coordinate (u or v) of a sprite
+     * @param getCoord1     retrieves the second coordinate (u or v) of a sprite
+     * @return recomputed coordinate for the new sprite
+     */
+    private static float recomputeSpriteCoordinate(float coord, TextureAtlasSprite oldSprite,
+                                                   TextureAtlasSprite newSprite,
+                                                   Function<TextureAtlasSprite, Float> getCoord0,
+                                                   Function<TextureAtlasSprite, Float> getCoord1) {
         float oldCoord0 = getCoord0.apply(oldSprite);
         float oldCoord1 = getCoord1.apply(oldSprite);
         float proportionInSprite = (coord - oldCoord0) / (oldCoord1 - oldCoord0);
         return Mth.lerp(proportionInSprite, getCoord0.apply(newSprite), getCoord1.apply(newSprite));
     }
+
 }

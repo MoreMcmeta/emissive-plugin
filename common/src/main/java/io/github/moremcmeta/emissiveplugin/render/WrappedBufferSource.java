@@ -25,12 +25,22 @@ import net.minecraft.client.renderer.RenderType;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Consumer;
 
+/**
+ * Wraps render buffer sources so that an action is run when a buffer is retrieved.
+ * @author soir20
+ */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public final class WrappedBufferSource implements MultiBufferSource {
     private final MultiBufferSource DELEGATE;
     private final Consumer<RenderType> ACTION;
 
+    /**
+     * Wraps the given buffer source so that it runs the given action when a buffer is retrieved.
+     * @param bufferSource      buffer source to wrap
+     * @param action            action to perform when a buffer is retrieved from the source
+     * @return wrapped buffer source
+     */
     public static MultiBufferSource wrap(MultiBufferSource bufferSource, Consumer<RenderType> action) {
         if (bufferSource instanceof WrappedBufferSource) {
             return bufferSource;
@@ -39,14 +49,20 @@ public final class WrappedBufferSource implements MultiBufferSource {
         return new WrappedBufferSource(bufferSource, action);
     }
 
-    public WrappedBufferSource(MultiBufferSource delegate, Consumer<RenderType> action) {
-        DELEGATE = delegate;
-        ACTION = action;
-    }
-
     @Override
     public VertexConsumer getBuffer(RenderType renderType) {
         ACTION.accept(renderType);
         return DELEGATE.getBuffer(renderType);
     }
+
+    /**
+     * Creates a new wrapped buffer source.
+     * @param delegate      buffer source to wrap
+     * @param action        action to perform when a buffer is retrieved from the source
+     */
+    private WrappedBufferSource(MultiBufferSource delegate, Consumer<RenderType> action) {
+        DELEGATE = delegate;
+        ACTION = action;
+    }
+
 }

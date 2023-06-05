@@ -12,9 +12,18 @@ import net.minecraft.world.level.block.state.BlockState;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+/**
+ * A {@link EmissiveModelBlockRenderer} that can render emissive overlays on blocks.
+ * @author soir20
+ */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class EmissiveModelBlockRenderer extends ModelBlockRenderer {
+
+    /**
+     * Creates a new emissive block renderer.
+     * @param colors    Minecraft's tint colors for various blocks
+     */
     public EmissiveModelBlockRenderer(BlockColors colors) {
         super(colors);
     }

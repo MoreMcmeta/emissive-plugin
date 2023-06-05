@@ -15,11 +15,19 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Renders only the overlay quads for a {@link BakedModel}.
+ * @author soir20
+ */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class OverlayOnlyBakedModel extends BakedModelWrapper<BakedModel> {
     private final OverlayQuadFunction OVERLAY_QUAD_FUNCTION;
 
+    /**
+     * Creates a new baked model that only renders the overlay quads for the given model.
+     * @param originalModel     original model whose overlay quads need to be rendered
+     */
     public OverlayOnlyBakedModel(BakedModel originalModel) {
         super(originalModel);
         OVERLAY_QUAD_FUNCTION = new OverlayQuadFunction();

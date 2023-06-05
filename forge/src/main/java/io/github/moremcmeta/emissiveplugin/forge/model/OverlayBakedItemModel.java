@@ -14,11 +14,19 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Renders an item model and its overlay.
+ * @author soir20
+ */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class OverlayBakedItemModel extends BakedModelWrapper<BakedModel> {
     private final Pair<BakedModel, RenderType> OVERLAY_LAYER;
 
+    /**
+     * Creates a new overlay model for items.
+     * @param originalModel     original model to wrap
+     */
     public OverlayBakedItemModel(BakedModel originalModel) {
         super(originalModel);
         OVERLAY_LAYER = Pair.of(new OverlayOnlyBakedModel(originalModel), Sheets.translucentCullBlockSheet());
@@ -40,4 +48,5 @@ public class OverlayBakedItemModel extends BakedModelWrapper<BakedModel> {
         layers.add(OVERLAY_LAYER);
         return layers;
     }
+
 }
