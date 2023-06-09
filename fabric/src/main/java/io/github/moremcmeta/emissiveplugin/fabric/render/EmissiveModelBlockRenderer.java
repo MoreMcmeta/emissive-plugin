@@ -35,7 +35,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class EmissiveModelBlockRenderer extends ModelBlockRenderer {
+public final class EmissiveModelBlockRenderer extends ModelBlockRenderer {
 
     /**
      * Creates a new emissive block renderer.

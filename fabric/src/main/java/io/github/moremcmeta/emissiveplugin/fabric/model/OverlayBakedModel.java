@@ -52,7 +52,7 @@ import static java.util.Objects.requireNonNull;
  * {@link BakedModel} that renders the original model and its overlay.
  * @author soir20
  */
-public class OverlayBakedModel extends ForwardingBakedModel {
+public final class OverlayBakedModel extends ForwardingBakedModel {
     private static final Renderer RENDERER = RendererAccess.INSTANCE.getRenderer();
     private static final RenderMaterial EMISSIVE_MATERIAL;
     private static final RenderMaterial NON_EMISSIVE_MATERIAL;

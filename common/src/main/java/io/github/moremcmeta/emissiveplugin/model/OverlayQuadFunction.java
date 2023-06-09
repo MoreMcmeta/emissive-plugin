@@ -36,7 +36,7 @@ import java.util.function.Function;
  * overtop the original quads.
  * @author soir20
  */
-public class OverlayQuadFunction implements Function<List<BakedQuad>, List<BakedQuad>> {
+public final class OverlayQuadFunction implements Function<List<BakedQuad>, List<BakedQuad>> {
     private final ModelManager MODEL_MANAGER;
 
     /**

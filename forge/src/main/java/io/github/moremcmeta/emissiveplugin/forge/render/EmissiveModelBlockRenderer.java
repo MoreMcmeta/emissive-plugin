@@ -42,7 +42,7 @@ import java.util.Random;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class EmissiveModelBlockRenderer extends ForgeBlockModelRenderer {
+public final class EmissiveModelBlockRenderer extends ForgeBlockModelRenderer {
     public static final ThreadLocal<Boolean> ALWAYS_RENDER_ON_TRANSPARENCY = ThreadLocal.withInitial(() -> true);
 
     /**

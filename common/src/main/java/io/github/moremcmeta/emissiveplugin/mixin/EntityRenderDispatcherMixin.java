@@ -33,7 +33,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  */
 @SuppressWarnings("unused")
 @Mixin(EntityRenderDispatcher.class)
-public class EntityRenderDispatcherMixin {
+public final class EntityRenderDispatcherMixin {
 
     /**
      * Wraps the buffer source so that its buffers set the render type when the entity is rendered.

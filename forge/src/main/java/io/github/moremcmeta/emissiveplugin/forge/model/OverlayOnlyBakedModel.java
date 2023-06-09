@@ -38,7 +38,7 @@ import java.util.Random;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class OverlayOnlyBakedModel extends BakedModelWrapper<BakedModel> {
+public final class OverlayOnlyBakedModel extends BakedModelWrapper<BakedModel> {
     private final OverlayQuadFunction OVERLAY_QUAD_FUNCTION;
 
     /**

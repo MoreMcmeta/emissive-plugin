@@ -32,7 +32,7 @@ import java.util.Random;
  * Renders only the overlay quads for a {@link BakedModel}.
  * @author soir20
  */
-public class OverlayOnlyBakedModel extends ForwardingBakedModel {
+public final class OverlayOnlyBakedModel extends ForwardingBakedModel {
     private final OverlayQuadFunction OVERLAY_QUAD_FUNCTION;
 
     /**

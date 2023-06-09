@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
  * Constants for both Fabric and Forge implementations of the plugin.
  * @author soir20
  */
-public class ModConstants {
+public final class ModConstants {
     public static final String MOD_ID = "moremcmeta_emissive_plugin";
     public static final String SECTION_NAME = "overlay";
     public static final MetadataAnalyzer ANALYZER = new OverlayMetadataAnalyzer();

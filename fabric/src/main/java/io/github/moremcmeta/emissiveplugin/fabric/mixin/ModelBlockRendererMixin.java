@@ -32,7 +32,7 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
  */
 @SuppressWarnings("unused")
 @Mixin(ModelBlockRenderer.class)
-public class ModelBlockRendererMixin {
+public final class ModelBlockRendererMixin {
 
     /**
      * Sets a quad to full-bright if it is an emissive overlay quad.

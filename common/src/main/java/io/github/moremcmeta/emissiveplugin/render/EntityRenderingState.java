@@ -24,7 +24,7 @@ import net.minecraft.client.renderer.RenderType;
  * Holds global state for the {@link ModelPartMixin}.
  * @author soir20
  */
-public class EntityRenderingState {
+public final class EntityRenderingState {
 
     /* Entity and block entity rendering should be single-threaded, but use thread locals to
        avoid difficult bugs in case something changes. */

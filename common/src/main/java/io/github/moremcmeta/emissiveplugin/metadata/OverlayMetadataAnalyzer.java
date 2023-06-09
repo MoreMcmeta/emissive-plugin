@@ -32,7 +32,7 @@ import static java.util.Objects.requireNonNull;
  * Parses overlay metadata into {@link OverlayMetadata}.
  * @author soir20
  */
-public class OverlayMetadataAnalyzer implements MetadataAnalyzer {
+public final class OverlayMetadataAnalyzer implements MetadataAnalyzer {
     @Override
     public AnalyzedMetadata analyze(MetadataView metadata, int imageWidth, int imageHeight) throws InvalidMetadataException {
         requireNonNull(metadata, "Metadata cannot be null");

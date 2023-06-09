@@ -27,7 +27,7 @@ import io.github.moremcmeta.moremcmeta.api.client.texture.ComponentBuilder;
  * @author soir20
  */
 @SuppressWarnings("unused")
-public class OverlayPluginFabric implements MoreMcmetaTexturePlugin {
+public final class OverlayPluginFabric implements MoreMcmetaTexturePlugin {
     @Override
     public String sectionName() {
         return ModConstants.SECTION_NAME;

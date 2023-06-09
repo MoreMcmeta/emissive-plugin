@@ -26,7 +26,7 @@ import static java.util.Objects.requireNonNull;
  * Contains configuration data for texture overlays as read by the {@link OverlayMetadataAnalyzer}.
  * @author soir20
  */
-public class OverlayMetadata implements AnalyzedMetadata {
+public final class OverlayMetadata implements AnalyzedMetadata {
     private final ResourceLocation OVERLAY_SPRITE_NAME;
     private final boolean IS_EMISSIVE;
 

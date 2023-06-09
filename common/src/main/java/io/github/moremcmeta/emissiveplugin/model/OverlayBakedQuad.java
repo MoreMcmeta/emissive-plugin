@@ -25,7 +25,7 @@ import net.minecraft.core.Direction;
  * A quad that overlays another quad.
  * @author soir20
  */
-public class OverlayBakedQuad extends BakedQuad {
+public final class OverlayBakedQuad extends BakedQuad {
     private final boolean EMISSIVE;
 
     /**

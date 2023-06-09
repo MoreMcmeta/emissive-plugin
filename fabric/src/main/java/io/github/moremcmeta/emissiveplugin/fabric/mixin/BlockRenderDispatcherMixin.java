@@ -31,7 +31,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
  */
 @SuppressWarnings("unused")
 @Mixin(BlockRenderDispatcher.class)
-public class BlockRenderDispatcherMixin {
+public final class BlockRenderDispatcherMixin {
 
     /**
      * Replaces Minecraft's default {@link ModelBlockRenderer} with one that supports emissive overlays.

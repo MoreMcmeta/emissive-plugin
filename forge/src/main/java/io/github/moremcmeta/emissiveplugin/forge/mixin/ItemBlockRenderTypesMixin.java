@@ -34,7 +34,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
  */
 @SuppressWarnings("unused")
 @Mixin(ItemBlockRenderTypes.class)
-public class ItemBlockRenderTypesMixin {
+public final class ItemBlockRenderTypesMixin {
 
     /**
      * Allows blocks to be rendered in the {@link RenderType#translucent()} render layer if an overlay is

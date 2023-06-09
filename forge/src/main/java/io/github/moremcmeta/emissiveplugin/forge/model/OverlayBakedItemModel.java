@@ -37,7 +37,7 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class OverlayBakedItemModel extends BakedModelWrapper<BakedModel> {
+public final class OverlayBakedItemModel extends BakedModelWrapper<BakedModel> {
     private final Pair<BakedModel, RenderType> OVERLAY_LAYER;
 
     /**

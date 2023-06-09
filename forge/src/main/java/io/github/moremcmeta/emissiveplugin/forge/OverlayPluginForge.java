@@ -29,7 +29,7 @@ import io.github.moremcmeta.moremcmeta.forge.api.client.MoreMcmetaClientPlugin;
  */
 @SuppressWarnings("unused")
 @MoreMcmetaClientPlugin
-public class OverlayPluginForge implements MoreMcmetaTexturePlugin {
+public final class OverlayPluginForge implements MoreMcmetaTexturePlugin {
     @Override
     public String sectionName() {
         return ModConstants.SECTION_NAME;

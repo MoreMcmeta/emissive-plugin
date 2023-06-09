@@ -53,7 +53,7 @@ import java.util.function.Function;
  */
 @SuppressWarnings("unused")
 @Mixin(ModelPart.class)
-public class ModelPartMixin {
+public final class ModelPartMixin {
     private final Minecraft MINECRAFT = Minecraft.getInstance();
 
     /**

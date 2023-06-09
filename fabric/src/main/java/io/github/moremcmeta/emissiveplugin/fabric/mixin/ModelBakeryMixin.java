@@ -40,7 +40,7 @@ import java.util.Map;
  */
 @SuppressWarnings("unused")
 @Mixin(ModelBakery.class)
-public class ModelBakeryMixin {
+public final class ModelBakeryMixin {
 
     /**
      * Adds overlay textures to the list of sprites to be stitched.
