@@ -17,16 +17,17 @@
 
 package io.github.moremcmeta.emissiveplugin.fabric.model;
 
+import io.github.moremcmeta.emissiveplugin.model.OverlayBakedQuad;
 import io.github.moremcmeta.emissiveplugin.model.OverlayQuadFunction;
 import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Random;
 
 /**
  * Renders only the overlay quads for a {@link BakedModel}.
@@ -41,11 +42,11 @@ public final class OverlayOnlyBakedModel extends ForwardingBakedModel {
      */
     public OverlayOnlyBakedModel(BakedModel model) {
         wrapped = model;
-        OVERLAY_QUAD_FUNCTION = new OverlayQuadFunction();
+        OVERLAY_QUAD_FUNCTION = new OverlayQuadFunction(OverlayBakedQuad::new);
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand)  {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand)  {
         return OVERLAY_QUAD_FUNCTION.apply(wrapped.getQuads(state, side, rand));
     }
 

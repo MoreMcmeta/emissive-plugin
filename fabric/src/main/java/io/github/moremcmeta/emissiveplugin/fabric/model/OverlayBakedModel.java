@@ -37,13 +37,13 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.Optional;
-import java.util.Random;
 import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
@@ -85,7 +85,7 @@ public final class OverlayBakedModel extends ForwardingBakedModel {
 
     @Override
     public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos,
-                               Supplier<Random> randomSupplier, RenderContext context) {
+                               Supplier<RandomSource> randomSupplier, RenderContext context) {
         if (!RendererAccess.INSTANCE.hasRenderer()) {
             super.emitBlockQuads(blockView, state, pos, randomSupplier, context);
             return;
@@ -110,7 +110,7 @@ public final class OverlayBakedModel extends ForwardingBakedModel {
     }
 
     @Override
-    public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
+    public void emitItemQuads(ItemStack stack, Supplier<RandomSource> randomSupplier, RenderContext context) {
         if (!RendererAccess.INSTANCE.hasRenderer()) {
             super.emitItemQuads(stack, randomSupplier, context);
             return;
@@ -165,7 +165,7 @@ public final class OverlayBakedModel extends ForwardingBakedModel {
         @Override
         public boolean transform(MutableQuadView quad) {
             Optional<OverlayMetadata> metadataOptional = MetadataRegistry.INSTANCE
-                    .metadataFromSpriteName(ModConstants.MOD_ID, spriteFromQuad(quad).getName())
+                    .metadataFromSpriteName(ModConstants.MOD_ID, spriteFromQuad(quad).contents().name())
                     .map(((metadata) -> (OverlayMetadata) metadata));
 
             if (metadataOptional.isEmpty()) {

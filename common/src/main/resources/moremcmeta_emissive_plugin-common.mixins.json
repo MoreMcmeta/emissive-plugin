@@ -6,7 +6,8 @@
   "client": [
     "ModelPartMixin",
     "EntityRenderDispatcherMixin",
-    "BlockEntityRenderDispatcherMixin"
+    "BlockEntityRenderDispatcherMixin",
+    "SpriteLoaderMixin"
   ],
   "mixins": [
   ],

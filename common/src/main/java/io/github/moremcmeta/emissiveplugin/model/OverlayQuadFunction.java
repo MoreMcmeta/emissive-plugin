@@ -31,6 +31,8 @@ import net.minecraft.util.Mth;
 import java.util.List;
 import java.util.function.Function;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * From a list of original {@link BakedQuad}s, produces a list of overlay quads that should be rendered
  * overtop the original quads.
@@ -38,12 +40,15 @@ import java.util.function.Function;
  */
 public final class OverlayQuadFunction implements Function<List<BakedQuad>, List<BakedQuad>> {
     private final ModelManager MODEL_MANAGER;
+    private final OverlayBakedQuad.Builder QUAD_BUILDER;
 
     /**
      * Creates a new quad function.
+     * @param quadBuilder       builds overlay quads returned by this function
      */
-    public OverlayQuadFunction() {
+    public OverlayQuadFunction(OverlayBakedQuad.Builder quadBuilder) {
         MODEL_MANAGER = Minecraft.getInstance().getModelManager();
+        QUAD_BUILDER = requireNonNull(quadBuilder, "Quad builder cannot be null");
     }
 
     @Override
@@ -51,12 +56,12 @@ public final class OverlayQuadFunction implements Function<List<BakedQuad>, List
         return quads.stream()
                 .filter(
                         (quad) -> MetadataRegistry.INSTANCE
-                                .metadataFromSpriteName(ModConstants.MOD_ID, quad.getSprite().getName())
+                                .metadataFromSpriteName(ModConstants.MOD_ID, quad.getSprite().contents().name())
                                 .isPresent()
                 ).map(
                         (quad) -> {
                             OverlayMetadata metadata = ((OverlayMetadata) MetadataRegistry.INSTANCE
-                                    .metadataFromSpriteName(ModConstants.MOD_ID, quad.getSprite().getName())
+                                    .metadataFromSpriteName(ModConstants.MOD_ID, quad.getSprite().contents().name())
                                     .orElseThrow());
 
                             TextureAtlasSprite sprite = MODEL_MANAGER
@@ -65,7 +70,7 @@ public final class OverlayQuadFunction implements Function<List<BakedQuad>, List
 
                             /* We have to cast because Minecraft's BakedModel interface expects a List<BakedQuad>,
                                not List<? extends BakedQuad>. */
-                            return (BakedQuad) new OverlayBakedQuad(
+                            return (BakedQuad) QUAD_BUILDER.build(
                                     makeOverlayVertexData(
                                             quad.getVertices(),
                                             sprite,
@@ -75,7 +80,6 @@ public final class OverlayQuadFunction implements Function<List<BakedQuad>, List
                                     quad.getTintIndex(),
                                     quad.getDirection(),
                                     sprite,
-                                    false,
                                     metadata.isEmissive()
                             );
 

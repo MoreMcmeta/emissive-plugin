@@ -26,7 +26,6 @@ dependencies {
 
     [
             "fabric-api-base",
-            "fabric-textures-v0",
             "fabric-renderer-api-v1",
             "fabric-renderer-indigo"
     ].forEach {

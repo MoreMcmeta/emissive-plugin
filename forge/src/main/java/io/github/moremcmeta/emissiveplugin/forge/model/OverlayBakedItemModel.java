@@ -18,14 +18,22 @@
 package io.github.moremcmeta.emissiveplugin.forge.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.datafixers.util.Pair;
+import io.github.moremcmeta.emissiveplugin.model.OverlayQuadFunction;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.ChunkRenderTypeSet;
 import net.minecraftforge.client.model.BakedModelWrapper;
+import net.minecraftforge.client.model.data.ModelData;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
@@ -38,7 +46,7 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public final class OverlayBakedItemModel extends BakedModelWrapper<BakedModel> {
-    private final Pair<BakedModel, RenderType> OVERLAY_LAYER;
+    private final OverlayQuadFunction OVERLAY_QUAD_FUNCTION;
 
     /**
      * Creates a new overlay model for items.
@@ -46,24 +54,65 @@ public final class OverlayBakedItemModel extends BakedModelWrapper<BakedModel> {
      */
     public OverlayBakedItemModel(BakedModel originalModel) {
         super(originalModel);
-        OVERLAY_LAYER = Pair.of(new OverlayOnlyBakedModel(originalModel), Sheets.translucentCullBlockSheet());
+        OVERLAY_QUAD_FUNCTION = new OverlayQuadFunction(OverlayBakedQuadForge::new);
     }
 
     @Override
-    public BakedModel handlePerspective(ItemTransforms.TransformType cameraTransformType, PoseStack poseStack) {
-        return new OverlayBakedItemModel(super.handlePerspective(cameraTransformType, poseStack));
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
+        List<BakedQuad> quads = new ArrayList<>(
+                super.getQuads(state, side, rand)
+        );
+        quads.addAll(OVERLAY_QUAD_FUNCTION.apply(quads));
+
+        return quads;
     }
 
     @Override
-    public boolean isLayered() {
-        return true;
+    public BakedModel applyTransform(ItemDisplayContext cameraTransformType, PoseStack poseStack,
+                                     boolean applyLeftHandTransform) {
+        return new OverlayBakedItemModel(
+                originalModel.applyTransform(cameraTransformType, poseStack, applyLeftHandTransform)
+        );
     }
 
     @Override
-    public List<Pair<BakedModel, RenderType>> getLayerModels(ItemStack itemStack, boolean fabulous) {
-        List<Pair<BakedModel, RenderType>> layers = new ArrayList<>(super.getLayerModels(itemStack, fabulous));
-        layers.add(OVERLAY_LAYER);
-        return layers;
+    @NotNull
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource rand,
+                                    @NotNull ModelData extraData, @Nullable RenderType renderType) {
+        List<BakedQuad> quads = new ArrayList<>(
+                super.getQuads(state, side, rand, extraData, renderType)
+        );
+
+        if (renderType == Sheets.translucentCullBlockSheet() || renderType == RenderType.translucent()) {
+            quads.addAll(OVERLAY_QUAD_FUNCTION.apply(quads));
+        }
+
+        return quads;
+    }
+
+    @Override
+    public ChunkRenderTypeSet getRenderTypes(@NotNull BlockState state, @NotNull RandomSource rand,
+                                             @NotNull ModelData data) {
+        return ChunkRenderTypeSet.union(
+                ChunkRenderTypeSet.of(RenderType.translucent()),
+                super.getRenderTypes(state, rand, data)
+        );
+    }
+
+
+    @Override
+    public List<RenderType> getRenderTypes(ItemStack itemStack, boolean fabulous) {
+        List<RenderType> renderTypes = new ArrayList<>(super.getRenderTypes(itemStack, fabulous));
+        renderTypes.add(Sheets.translucentCullBlockSheet());
+        renderTypes.add(RenderType.translucent());
+        return renderTypes;
+    }
+
+    @Override
+    public List<BakedModel> getRenderPasses(ItemStack itemStack, boolean fabulous) {
+        return originalModel.getRenderPasses(itemStack, fabulous).stream().map(
+                (model) -> (BakedModel) new OverlayBakedItemModel(model)
+        ).toList();
     }
 
 }

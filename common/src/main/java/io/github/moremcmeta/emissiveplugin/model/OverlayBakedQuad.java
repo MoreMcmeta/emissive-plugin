@@ -25,7 +25,7 @@ import net.minecraft.core.Direction;
  * A quad that overlays another quad.
  * @author soir20
  */
-public final class OverlayBakedQuad extends BakedQuad {
+public class OverlayBakedQuad extends BakedQuad {
     private final boolean EMISSIVE;
 
     /**
@@ -34,12 +34,11 @@ public final class OverlayBakedQuad extends BakedQuad {
      * @param tintIndex     index to use to tint this quad
      * @param direction     direction the quad faces
      * @param sprite        sprite to use to texture this quad
-     * @param shade         whether to apply shade to this quad
      * @param emissive      whether to make this quad emissive
      */
     public OverlayBakedQuad(int[] vertices, int tintIndex, Direction direction, TextureAtlasSprite sprite,
-                            boolean shade, boolean emissive) {
-        super(vertices, tintIndex, direction, sprite, shade);
+                             boolean emissive) {
+        super(vertices, tintIndex, direction, sprite, !emissive);
         EMISSIVE = emissive;
     }
 
@@ -49,6 +48,26 @@ public final class OverlayBakedQuad extends BakedQuad {
      */
     public boolean isEmissive() {
         return EMISSIVE;
+    }
+
+    /**
+     * Creates {@link OverlayBakedQuad}s that may be subclasses.
+     * @author soir20
+     */
+    public interface Builder {
+
+        /**
+         * Creates a new overlay quad.
+         * @param vertices      quad vertex data
+         * @param tintIndex     index to use to tint this quad
+         * @param direction     direction the quad faces
+         * @param sprite        sprite to use to texture this quad
+         * @param emissive      whether to make this quad emissive
+         * @return overlay quad
+         */
+        OverlayBakedQuad build(int[] vertices, int tintIndex, Direction direction, TextureAtlasSprite sprite,
+                               boolean emissive);
+
     }
 
 }
