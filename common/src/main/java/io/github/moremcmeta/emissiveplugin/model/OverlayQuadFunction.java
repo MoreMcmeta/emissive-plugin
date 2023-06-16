@@ -75,7 +75,6 @@ public final class OverlayQuadFunction implements Function<List<BakedQuad>, List
                                     quad.getTintIndex(),
                                     quad.getDirection(),
                                     sprite,
-                                    false,
                                     metadata.isEmissive()
                             );
 
