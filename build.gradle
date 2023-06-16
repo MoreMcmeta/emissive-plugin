@@ -26,6 +26,12 @@ subprojects {
 
         testImplementation "junit:junit:${project.junit_version}"
     }
+
+    processResources {
+        filesMatching("**/*.mixins.json") {
+            expand "javaVersion": project.java_version
+        }
+    }
 }
 
 allprojects {
