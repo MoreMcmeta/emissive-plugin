@@ -38,7 +38,7 @@ public final class OverlayMetadataAnalyzer implements MetadataAnalyzer {
         requireNonNull(metadata, "Metadata cannot be null");
 
         Optional<String> rawOverlayLocation = metadata.stringValue("texture");
-        if (rawOverlayLocation.isEmpty()) {
+        if (!rawOverlayLocation.isPresent()) {
             throw new InvalidMetadataException("Overlays must have a texture defined");
         }
 

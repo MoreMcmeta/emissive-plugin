@@ -20,7 +20,6 @@ package io.github.moremcmeta.emissiveplugin.forge.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.moremcmeta.emissiveplugin.forge.model.OverlayOnlyBakedModel;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -41,7 +40,6 @@ import java.util.Random;
  * @author soir20
  */
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public final class EmissiveModelBlockRenderer extends ForgeBlockModelRenderer {
     public static final ThreadLocal<Boolean> ALWAYS_RENDER_ON_TRANSPARENCY = ThreadLocal.withInitial(() -> true);
 
@@ -54,21 +52,21 @@ public final class EmissiveModelBlockRenderer extends ForgeBlockModelRenderer {
     }
 
     @Override
-    public boolean tesselateWithAO(BlockAndTintGetter level, BakedModel model, BlockState state, BlockPos pos,
-                                   PoseStack poseStack, VertexConsumer buffer, boolean checkSides, Random rand,
-                                   long seed, int packedOverlay, IModelData modelData) {
+    public boolean renderModelSmooth(BlockAndTintGetter level, BakedModel model, BlockState state, BlockPos pos,
+                                     PoseStack poseStack, VertexConsumer buffer, boolean checkSides, Random rand,
+                                     long seed, int packedOverlay, IModelData modelData) {
         boolean didRender = false;
         RenderType renderType = MinecraftForgeClient.getRenderLayer();
 
         ALWAYS_RENDER_ON_TRANSPARENCY.set(false);
         if (ItemBlockRenderTypes.canRenderInLayer(state, renderType)) {
-            didRender = super.tesselateWithAO(level, model, state, pos, poseStack, buffer, checkSides, rand, seed,
+            didRender = super.renderModelSmooth(level, model, state, pos, poseStack, buffer, checkSides, rand, seed,
                     packedOverlay, modelData);
         }
         ALWAYS_RENDER_ON_TRANSPARENCY.set(true);
 
         if (renderType == RenderType.translucent()) {
-            boolean didOverlayRender = super.tesselateWithoutAO(level, new OverlayOnlyBakedModel(model), state, pos,
+            boolean didOverlayRender = super.renderModelFlat(level, new OverlayOnlyBakedModel(model), state, pos,
                     poseStack, buffer, checkSides, rand, seed, packedOverlay, modelData);
             didRender = didRender || didOverlayRender;
         }
@@ -76,21 +74,21 @@ public final class EmissiveModelBlockRenderer extends ForgeBlockModelRenderer {
     }
 
     @Override
-    public boolean tesselateWithoutAO(BlockAndTintGetter level, BakedModel model, BlockState state, BlockPos pos,
-                                      PoseStack poseStack, VertexConsumer buffer, boolean checkSides, Random rand,
-                                      long seed, int packedOverlay, IModelData modelData) {
+    public boolean renderModelFlat(BlockAndTintGetter level, BakedModel model, BlockState state, BlockPos pos,
+                                   PoseStack poseStack, VertexConsumer buffer, boolean checkSides, Random rand,
+                                   long seed, int packedOverlay, IModelData modelData) {
         boolean didRender = false;
         RenderType renderType = MinecraftForgeClient.getRenderLayer();
 
         ALWAYS_RENDER_ON_TRANSPARENCY.set(false);
         if (ItemBlockRenderTypes.canRenderInLayer(state, renderType)) {
-            didRender = super.tesselateWithoutAO(level, model, state, pos, poseStack, buffer, checkSides, rand, seed,
+            didRender = super.renderModelFlat(level, model, state, pos, poseStack, buffer, checkSides, rand, seed,
                     packedOverlay, modelData);
         }
         ALWAYS_RENDER_ON_TRANSPARENCY.set(true);
 
         if (renderType == RenderType.translucent()) {
-            boolean didOverlayRender = super.tesselateWithoutAO(level, new OverlayOnlyBakedModel(model), state, pos,
+            boolean didOverlayRender = super.renderModelFlat(level, new OverlayOnlyBakedModel(model), state, pos,
                     poseStack, buffer, checkSides, rand, seed, packedOverlay, modelData);
             didRender = didRender || didOverlayRender;
         }

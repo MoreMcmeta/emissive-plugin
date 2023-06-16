@@ -18,7 +18,6 @@
 package io.github.moremcmeta.emissiveplugin.forge.model;
 
 import io.github.moremcmeta.emissiveplugin.model.OverlayQuadFunction;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
@@ -37,7 +36,6 @@ import java.util.Random;
  * @author soir20
  */
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public final class OverlayOnlyBakedModel extends BakedModelWrapper<BakedModel> {
     private final OverlayQuadFunction OVERLAY_QUAD_FUNCTION;
 

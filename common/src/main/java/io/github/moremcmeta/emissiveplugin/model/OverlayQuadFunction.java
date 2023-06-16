@@ -21,7 +21,6 @@ import io.github.moremcmeta.emissiveplugin.ModConstants;
 import io.github.moremcmeta.emissiveplugin.metadata.OverlayMetadata;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataRegistry;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -30,6 +29,7 @@ import net.minecraft.util.Mth;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * From a list of original {@link BakedQuad}s, produces a list of overlay quads that should be rendered
@@ -51,13 +51,13 @@ public final class OverlayQuadFunction implements Function<List<BakedQuad>, List
         return quads.stream()
                 .filter(
                         (quad) -> MetadataRegistry.INSTANCE
-                                .metadataFromSpriteName(ModConstants.MOD_ID, quad.getSprite().getName())
+                                .metadataFromSpriteName(ModConstants.MOD_ID, quad.sprite.getName())
                                 .isPresent()
                 ).map(
                         (quad) -> {
                             OverlayMetadata metadata = ((OverlayMetadata) MetadataRegistry.INSTANCE
-                                    .metadataFromSpriteName(ModConstants.MOD_ID, quad.getSprite().getName())
-                                    .orElseThrow());
+                                    .metadataFromSpriteName(ModConstants.MOD_ID, quad.sprite.getName())
+                                    .get());
 
                             TextureAtlasSprite sprite = MODEL_MANAGER
                                     .getAtlas(TextureAtlas.LOCATION_BLOCKS)
@@ -69,7 +69,7 @@ public final class OverlayQuadFunction implements Function<List<BakedQuad>, List
                                     makeOverlayVertexData(
                                             quad.getVertices(),
                                             sprite,
-                                            quad.getSprite(),
+                                            quad.sprite,
                                             metadata.isEmissive()
                                     ),
                                     quad.getTintIndex(),
@@ -80,7 +80,7 @@ public final class OverlayQuadFunction implements Function<List<BakedQuad>, List
 
                         }
                 )
-                .toList();
+                .collect(Collectors.toList());
     }
 
     /**
@@ -108,7 +108,7 @@ public final class OverlayQuadFunction implements Function<List<BakedQuad>, List
             newVertexData[texUOffset] = recomputeSpriteU(newVertexData[texUOffset], oldSprite, newSprite);
             newVertexData[texVOffset] = recomputeSpriteV(newVertexData[texVOffset], oldSprite, newSprite);
             if (emissive) {
-                newVertexData[vertexOffset + LIGHT_OFFSET] = LightTexture.FULL_BRIGHT;
+                newVertexData[vertexOffset + LIGHT_OFFSET] = ModConstants.FULL_BRIGHT;
             }
         }
 

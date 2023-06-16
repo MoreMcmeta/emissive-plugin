@@ -168,7 +168,7 @@ public final class OverlayBakedModel extends ForwardingBakedModel {
                     .metadataFromSpriteName(ModConstants.MOD_ID, spriteFromQuad(quad).getName())
                     .map(((metadata) -> (OverlayMetadata) metadata));
 
-            if (metadataOptional.isEmpty()) {
+            if (!metadataOptional.isPresent()) {
                 return true;
             }
 

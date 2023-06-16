@@ -27,7 +27,6 @@ import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataRegistry;
 import io.github.moremcmeta.moremcmeta.api.client.texture.SpriteName;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SpriteCoordinateExpander;
@@ -94,16 +93,20 @@ public final class ModelPartMixin {
             Optional<AnalyzedMetadata> metadataOptional = Optional.empty();
 
             // Handle a sprite being rendered
-            if (vertexConsumer instanceof SpriteCoordinateExpander spriteVertexConsumer) {
+            if (vertexConsumer instanceof SpriteCoordinateExpander) {
+                SpriteCoordinateExpander spriteVertexConsumer = (SpriteCoordinateExpander) vertexConsumer;
                 ResourceLocation location = spriteVertexConsumer.sprite.getName();
                 metadataOptional = MetadataRegistry.INSTANCE.metadataFromSpriteName(ModConstants.MOD_ID, location);
 
             // Handle a regular texture being rendered
-            } else if (EntityRenderingState.currentRenderType.get() instanceof RenderType.CompositeRenderType compositeType
-                    && compositeType.state().textureState.cutoutTexture().isPresent()) {
+            } else if (EntityRenderingState.currentRenderType.get() instanceof RenderType.CompositeRenderType) {
+                RenderType.CompositeRenderType compositeType = (RenderType.CompositeRenderType)
+                        EntityRenderingState.currentRenderType.get();
 
-                ResourceLocation location = compositeType.state().textureState.cutoutTexture().get();
-                metadataOptional = MetadataRegistry.INSTANCE.metadataFromPath(ModConstants.MOD_ID, location);
+                if (compositeType.state.textureState.texture().isPresent()) {
+                    ResourceLocation location = compositeType.state.textureState.texture().get();
+                    metadataOptional = MetadataRegistry.INSTANCE.metadataFromPath(ModConstants.MOD_ID, location);
+                }
             }
 
             // Do rendering
@@ -111,7 +114,7 @@ public final class ModelPartMixin {
             if (metadataOptional.isPresent() && lastType != null) {
                 OverlayMetadata overlayMetadata = (OverlayMetadata) metadataOptional.get();
                 ResourceLocation overlay = overlayMetadata.overlaySpriteName();
-                int overlayLight = overlayMetadata.isEmissive() ? LightTexture.FULL_BRIGHT : packedLight;
+                int overlayLight = overlayMetadata.isEmissive() ? ModConstants.FULL_BRIGHT : packedLight;
 
                 VertexConsumer newConsumer = makeBuffer(bufferSource, overlay, RenderType::entityTranslucentCull);
                 thisPart.render(poseStack, newConsumer, overlayLight, packedOverlay, red, blue, green, alpha);
@@ -167,13 +170,15 @@ public final class ModelPartMixin {
                                                         MultiBufferSource bufferSource,
                                                         Function<ResourceLocation, RenderType> renderTypeFunction) {
         AbstractTexture abstractTexture = MINECRAFT.getTextureManager().getTexture(atlasLocation);
-        if (!(abstractTexture instanceof TextureAtlas atlas)) {
+        if (!(abstractTexture instanceof TextureAtlas)) {
             LogManager.getLogger().warn(
                     "Atlas {} is not a subclass of TextureAtlas; sprites from this atlas will not be used as overlays",
                     atlasLocation
             );
             return Optional.empty();
         }
+
+        TextureAtlas atlas = (TextureAtlas) abstractTexture;
 
         TextureAtlasSprite sprite = atlas.getSprite(spriteName);
         if (sprite.getName().equals(MissingTextureAtlasSprite.getLocation())) {

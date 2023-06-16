@@ -19,7 +19,6 @@ package io.github.moremcmeta.emissiveplugin.forge.mixin;
 
 import io.github.moremcmeta.emissiveplugin.ModConstants;
 import io.github.moremcmeta.emissiveplugin.forge.model.OverlayBakedItemModel;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBakery;
@@ -34,7 +33,6 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 /**
  * Adds overlay textures to the list of sprites and wraps models with an overlay, if needed.
@@ -62,13 +60,11 @@ public final class ModelBakeryMixin {
      * Wraps models that need to be able to render an overlay.
      * @param modelLocation     location of the model being baked
      * @param state             state of the model being baked
-     * @param materialToSprite  retrieves an atlas sprite given a material
      * @param callbackInfo      callback info from Mixin
      */
-    @Inject(method = "bake(Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/client/resources/model/ModelState;Ljava/util/function/Function;)Lnet/minecraft/client/resources/model/BakedModel;",
+    @Inject(method = "bake(Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/client/resources/model/ModelState;)Lnet/minecraft/client/resources/model/BakedModel;",
             at = @At("RETURN"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, remap = false)
     private void moremcmeta_emissive_wrapModels(ResourceLocation modelLocation, ModelState state,
-                                                Function<Material, TextureAtlasSprite> materialToSprite,
                                                 CallbackInfoReturnable<BakedModel> callbackInfo) {
         @SuppressWarnings("DataFlowIssue")
         ModelBakery bakery = (ModelBakery) (Object) this;

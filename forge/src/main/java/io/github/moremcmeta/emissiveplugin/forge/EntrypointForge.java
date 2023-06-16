@@ -18,10 +18,11 @@
 package io.github.moremcmeta.emissiveplugin.forge;
 
 import io.github.moremcmeta.emissiveplugin.ModConstants;
-import net.minecraftforge.fml.IExtensionPoint;
+import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fmllegacy.network.FMLNetworkConstants;
+import net.minecraftforge.fml.network.FMLNetworkConstants;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Mod entrypoint on Forge.
@@ -39,8 +40,8 @@ public final class EntrypointForge {
         /* Make sure the mod being absent on the other network side does not
            cause the client to display the server as incompatible. */
         ModLoadingContext.get().registerExtensionPoint(
-                IExtensionPoint.DisplayTest.class,
-                ()-> new IExtensionPoint.DisplayTest(
+                ExtensionPoint.DISPLAYTEST,
+                ()-> Pair.of(
                         () -> FMLNetworkConstants.IGNORESERVERONLY,
                         (remoteVersion, isServer)-> true
                 )

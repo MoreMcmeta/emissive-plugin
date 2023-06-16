@@ -23,8 +23,10 @@ import io.github.moremcmeta.emissiveplugin.metadata.OverlayMetadataAnalyzer;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataAnalyzer;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataRegistry;
 import io.github.moremcmeta.moremcmeta.api.client.texture.ComponentBuilder;
+import io.github.moremcmeta.moremcmeta.api.client.texture.CurrentFrameView;
 import io.github.moremcmeta.moremcmeta.api.client.texture.SpriteName;
 import io.github.moremcmeta.moremcmeta.api.client.texture.TextureComponent;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBakery;
@@ -49,7 +51,8 @@ public final class ModConstants {
     public static final String MOD_ID = "moremcmeta_emissive_plugin";
     public static final String SECTION_NAME = "overlay";
     public static final MetadataAnalyzer ANALYZER = new OverlayMetadataAnalyzer();
-    public static final ComponentBuilder COMPONENT_BUILDER = (metadata, frames) -> new TextureComponent<>() {};
+    public static final ComponentBuilder COMPONENT_BUILDER = (metadata, frames) -> new TextureComponent<CurrentFrameView>() {};
+    public static final int FULL_BRIGHT = LightTexture.pack(15, 15);
     public static final Consumer<Map<ResourceLocation, List<Material>>> SPRITE_REGISTRAR = (spritesByAtlas) -> {
         List<Material> sprites = spritesByAtlas.computeIfAbsent(
                 TextureAtlas.LOCATION_BLOCKS,

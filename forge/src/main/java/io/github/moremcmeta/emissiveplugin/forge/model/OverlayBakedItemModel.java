@@ -19,7 +19,6 @@ package io.github.moremcmeta.emissiveplugin.forge.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -36,7 +35,6 @@ import java.util.List;
  * @author soir20
  */
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public final class OverlayBakedItemModel extends BakedModelWrapper<BakedModel> {
     private final Pair<BakedModel, RenderType> OVERLAY_LAYER;
 
