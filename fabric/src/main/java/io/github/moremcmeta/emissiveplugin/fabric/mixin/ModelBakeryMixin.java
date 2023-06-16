@@ -47,7 +47,7 @@ public final class ModelBakeryMixin {
      * @param materialsByAtlas      current materials to be stitched by texture atlas location
      * @return materials map with overlay sprites added
      */
-    @ModifyVariable(method = "<init>(Lnet/minecraft/server/packs/resources;Lnet/minecraft/client/color/block;Lnet/minecraft/util/profiling/ProfilerFiller;I)V", at = @At("STORE"), ordinal = 0)
+    @ModifyVariable(method = "<init>(Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/client/color/block/BlockColors;Lnet/minecraft/util/profiling/ProfilerFiller;I)V", at = @At("STORE"), ordinal = 0)
     private Map<ResourceLocation, List<Material>> moremcmeta_emissive_addOverlaySprites(
             Map<ResourceLocation, List<Material>> materialsByAtlas
     ) {
