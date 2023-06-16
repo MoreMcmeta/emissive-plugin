@@ -58,7 +58,7 @@ public final class EmissiveModelBlockRenderer extends ForgeBlockModelRenderer {
                                    PoseStack poseStack, VertexConsumer buffer, boolean checkSides, Random rand,
                                    long seed, int packedOverlay, IModelData modelData) {
         boolean didRender = false;
-        RenderType renderType = MinecraftForgeClient.getRenderType();
+        RenderType renderType = MinecraftForgeClient.getRenderLayer();
 
         ALWAYS_RENDER_ON_TRANSPARENCY.set(false);
         if (ItemBlockRenderTypes.canRenderInLayer(state, renderType)) {
@@ -80,7 +80,7 @@ public final class EmissiveModelBlockRenderer extends ForgeBlockModelRenderer {
                                       PoseStack poseStack, VertexConsumer buffer, boolean checkSides, Random rand,
                                       long seed, int packedOverlay, IModelData modelData) {
         boolean didRender = false;
-        RenderType renderType = MinecraftForgeClient.getRenderType();
+        RenderType renderType = MinecraftForgeClient.getRenderLayer();
 
         ALWAYS_RENDER_ON_TRANSPARENCY.set(false);
         if (ItemBlockRenderTypes.canRenderInLayer(state, renderType)) {

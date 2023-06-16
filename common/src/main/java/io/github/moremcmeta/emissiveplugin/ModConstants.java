@@ -30,7 +30,6 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
-import org.apache.commons.lang3.function.ToBooleanBiFunction;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,6 +37,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -73,7 +73,7 @@ public final class ModConstants {
                 }
         );
     };
-    public static final ToBooleanBiFunction<ModelBakery, UnbakedModel> USES_OVERLAY = (bakery, original) -> {
+    public static final BiFunction<ModelBakery, UnbakedModel, Boolean> USES_OVERLAY = (bakery, original) -> {
         Set<Pair<String, String>> missingTextures = new HashSet<>();
         return original.getMaterials(bakery::getModel, missingTextures)
                 .stream()

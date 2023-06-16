@@ -21,7 +21,7 @@ import io.github.moremcmeta.emissiveplugin.ModConstants;
 import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.network.NetworkConstants;
+import net.minecraftforge.fmllegacy.network.FMLNetworkConstants;
 
 /**
  * Mod entrypoint on Forge.
@@ -41,7 +41,7 @@ public final class EntrypointForge {
         ModLoadingContext.get().registerExtensionPoint(
                 IExtensionPoint.DisplayTest.class,
                 ()-> new IExtensionPoint.DisplayTest(
-                        () -> NetworkConstants.IGNORESERVERONLY,
+                        () -> FMLNetworkConstants.IGNORESERVERONLY,
                         (remoteVersion, isServer)-> true
                 )
         );

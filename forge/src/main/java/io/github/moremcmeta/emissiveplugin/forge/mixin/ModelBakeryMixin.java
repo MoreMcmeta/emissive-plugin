@@ -72,7 +72,7 @@ public final class ModelBakeryMixin {
                                                 CallbackInfoReturnable<BakedModel> callbackInfo) {
         @SuppressWarnings("DataFlowIssue")
         ModelBakery bakery = (ModelBakery) (Object) this;
-        boolean usesOverlay = ModConstants.USES_OVERLAY.applyAsBoolean(
+        boolean usesOverlay = ModConstants.USES_OVERLAY.apply(
                 bakery,
                 bakery.getModel(modelLocation)
         );
