@@ -6,6 +6,7 @@ license = "LGPL-3.0"
 modId = "moremcmeta_emissive_plugin"
 version = "${modVersion}"
 displayName = "MoreMcmeta Emissive Textures Plugin"
+updateJSONURL="https://moremcmeta.github.io/update/emissive.json"
 authors = "soir20"
 description = '''
 Plugin for MoreMcmeta to enable emissive textures for blocks, items, entities, and block entities.
