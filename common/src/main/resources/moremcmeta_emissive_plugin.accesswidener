@@ -1,8 +1,11 @@
 accessWidener   v2  named
 accessible  class   net/minecraft/client/resources/model/ModelBakery$ModelBakerImpl
-accessible  method  net/minecraft/client/renderer/RenderType$CompositeRenderType    state    ()Lnet/minecraft/client/renderer/RenderType$CompositeState;
+accessible  class  net/minecraft/client/renderer/RenderType$CompositeRenderType
+accessible  method  net/minecraft/client/renderer/RenderType$CompositeRenderType    state   ()Lnet/minecraft/client/renderer/RenderType$CompositeState;
+accessible  class   net/minecraft/client/renderer/RenderType$CompositeState
 accessible  field   net/minecraft/client/renderer/RenderType$CompositeState textureState  Lnet/minecraft/client/renderer/RenderStateShard$EmptyTextureStateShard;
-accessible  method  net/minecraft/client/renderer/RenderStateShard$EmptyTextureStateShard    cutoutTexture    ()Ljava/util/Optional;
+accessible  class  net/minecraft/client/renderer/RenderStateShard$EmptyTextureStateShard
+accessible  method  net/minecraft/client/renderer/RenderStateShard$EmptyTextureStateShard    cutoutTexture  ()Ljava/util/Optional;
 accessible  field   net/minecraft/client/renderer/SpriteCoordinateExpander sprite  Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;
 accessible  field   net/minecraft/client/renderer/block/BlockRenderDispatcher modelRenderer  Lnet/minecraft/client/renderer/block/ModelBlockRenderer;
 mutable  field   net/minecraft/client/renderer/block/BlockRenderDispatcher modelRenderer  Lnet/minecraft/client/renderer/block/ModelBlockRenderer;
