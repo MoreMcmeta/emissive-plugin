@@ -1,7 +1,10 @@
 accessWidener   v2  named
-accessible  field  net/minecraft/client/renderer/RenderType$CompositeRenderType    state    Lnet/minecraft/client/renderer/RenderType$CompositeState;
+accessible  class  net/minecraft/client/renderer/RenderType$CompositeRenderType
+accessible  field  net/minecraft/client/renderer/RenderType$CompositeRenderType    state   Lnet/minecraft/client/renderer/RenderType$CompositeState;
+accessible  class   net/minecraft/client/renderer/RenderType$CompositeState
 accessible  field   net/minecraft/client/renderer/RenderType$CompositeState textureState  Lnet/minecraft/client/renderer/RenderStateShard$TextureStateShard;
-accessible  method  net/minecraft/client/renderer/RenderStateShard$TextureStateShard    texture    ()Ljava/util/Optional;
+accessible  class  net/minecraft/client/renderer/RenderStateShard$TextureStateShard
+accessible  method  net/minecraft/client/renderer/RenderStateShard$TextureStateShard    texture  ()Ljava/util/Optional;
 accessible  field   net/minecraft/client/renderer/SpriteCoordinateExpander sprite  Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;
 accessible  field   net/minecraft/client/renderer/block/BlockRenderDispatcher modelRenderer  Lnet/minecraft/client/renderer/block/ModelBlockRenderer;
 mutable  field   net/minecraft/client/renderer/block/BlockRenderDispatcher modelRenderer  Lnet/minecraft/client/renderer/block/ModelBlockRenderer;
