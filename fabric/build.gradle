@@ -53,6 +53,7 @@ processResources {
 }
 
 shadowJar {
+    exclude loom.accessWidenerPath.get().asFile.name
     exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
@@ -60,6 +61,7 @@ shadowJar {
 }
 
 remapJar {
+    injectAccessWidener = true
     inputFile.set shadowJar.archiveFile
     dependsOn shadowJar
     classifier "fabric"
@@ -70,9 +72,15 @@ jar {
 }
 
 sourcesJar {
-    def commonSources = project(":common").sourcesJar
-    dependsOn commonSources
-    from commonSources.archiveFile.map { zipTree(it) }
+    afterEvaluate {
+        [":common"].forEach {
+            def depSources = project(it).sourcesJar
+            dependsOn depSources
+            from(depSources.archiveFile.map { zipTree(it) }) {
+                exclude loom.accessWidenerPath.get().asFile.name
+            }
+        }
+    }
 }
 
 components.java {
