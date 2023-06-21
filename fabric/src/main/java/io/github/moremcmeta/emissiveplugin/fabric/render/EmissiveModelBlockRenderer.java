@@ -26,14 +26,10 @@ import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.level.block.state.BlockState;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-
 /**
  * A {@link EmissiveModelBlockRenderer} that can render emissive overlays on blocks.
  * @author soir20
  */
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public final class EmissiveModelBlockRenderer extends ModelBlockRenderer {
 
@@ -46,7 +42,7 @@ public final class EmissiveModelBlockRenderer extends ModelBlockRenderer {
     }
 
     @Override
-    public void renderModel(PoseStack.Pose poseStack, VertexConsumer buffer, @Nullable BlockState state,
+    public void renderModel(PoseStack.Pose poseStack, VertexConsumer buffer, BlockState state,
                             BakedModel model, float tintR, float tintG, float tintB, int packedLight, int packedOverlay) {
         super.renderModel(poseStack, buffer, state, model, tintR, tintG, tintB, packedLight, packedOverlay);
         super.renderModel(poseStack, buffer, state, new OverlayOnlyBakedModel(model), tintR, tintG, tintB, packedLight,
