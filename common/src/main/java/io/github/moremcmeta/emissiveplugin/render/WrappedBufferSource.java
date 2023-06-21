@@ -21,14 +21,12 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Consumer;
 
 /**
  * Wraps render buffer sources so that an action is run when a buffer is retrieved.
  * @author soir20
  */
-@ParametersAreNonnullByDefault
 public final class WrappedBufferSource implements MultiBufferSource {
     private final MultiBufferSource DELEGATE;
     private final Consumer<RenderType> ACTION;
