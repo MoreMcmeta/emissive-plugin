@@ -48,7 +48,7 @@ public final class ModelBakeryMixin {
      * @return materials map with overlay sprites added
      */
     @ModifyVariable(method = "processLoading(Lnet/minecraft/util/profiling/ProfilerFiller;I)V",
-            at = @At("STORE"), ordinal = 0, remap = false)
+            at = @At("STORE"), ordinal = 0)
     private Map<ResourceLocation, List<Material>> moremcmeta_emissive_addOverlaySprites(
             Map<ResourceLocation, List<Material>> materialsByAtlas
     ) {
@@ -63,7 +63,7 @@ public final class ModelBakeryMixin {
      * @param callbackInfo      callback info from Mixin
      */
     @Inject(method = "bake(Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/client/resources/model/ModelState;)Lnet/minecraft/client/resources/model/BakedModel;",
-            at = @At("RETURN"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, remap = false)
+            at = @At("RETURN"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     private void moremcmeta_emissive_wrapModels(ResourceLocation modelLocation, ModelState state,
                                                 CallbackInfoReturnable<BakedModel> callbackInfo) {
         @SuppressWarnings("DataFlowIssue")
