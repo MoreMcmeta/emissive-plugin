@@ -44,7 +44,7 @@ public final class ItemBlockRenderTypesMixin {
      * @param callbackInfo  callback info from Mixin
      */
     @Inject(method = "canRenderInLayer(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/client/renderer/RenderType;)Z",
-            at = @At("HEAD"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, remap = false)
+            at = @At("HEAD"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     private static void moremcmeta_emissive_enableBlockTransparencyOverlay(BlockState state, RenderType type,
                                                                            CallbackInfoReturnable<Boolean> callbackInfo) {
         if (EmissiveModelBlockRenderer.ALWAYS_RENDER_ON_TRANSPARENCY.get() && type == RenderType.translucent()) {
