@@ -32,6 +32,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -60,13 +61,13 @@ public final class OverlayBakedModel extends ForwardingBakedModel {
     static {
         if (RendererAccess.INSTANCE.hasRenderer()) {
             EMISSIVE_MATERIAL = RENDERER.materialFinder()
-                    .blendMode(0, BlendMode.TRANSLUCENT)
-                    .emissive(0, true)
-                    .disableAo(0, true)
-                    .disableDiffuse(0, true)
+                    .blendMode(BlendMode.TRANSLUCENT)
+                    .emissive(true)
+                    .ambientOcclusion(TriState.FALSE)
+                    .disableDiffuse(true)
                     .find();
             NON_EMISSIVE_MATERIAL = RENDERER.materialFinder()
-                    .blendMode(0, BlendMode.TRANSLUCENT)
+                    .blendMode(BlendMode.TRANSLUCENT)
                     .find();
         } else {
             LogManager.getLogger().warn("No renderer is present. Overlays will not be rendered.");
@@ -175,7 +176,7 @@ public final class OverlayBakedModel extends ForwardingBakedModel {
                 return true;
             }
 
-            quad.copyTo(EMITTER);
+            EMITTER.copyFrom(quad);
 
             OverlayMetadata metadata = metadataOptional.get();
             EMITTER.material(metadata.isEmissive() ? EMISSIVE_MATERIAL : NON_EMISSIVE_MATERIAL);
@@ -220,7 +221,7 @@ public final class OverlayBakedModel extends ForwardingBakedModel {
          * @return quad's sprite
          */
         private TextureAtlasSprite spriteFromQuad(QuadView quad) {
-            return SpriteFinder.get(BLOCK_ATLAS).find(quad, 0);
+            return SpriteFinder.get(BLOCK_ATLAS).find(quad);
         }
 
     }
