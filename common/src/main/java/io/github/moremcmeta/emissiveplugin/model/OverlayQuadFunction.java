@@ -40,6 +40,26 @@ public final class OverlayQuadFunction implements Function<List<BakedQuad>, List
     private final ModelManager MODEL_MANAGER;
 
     /**
+     * Given a coordinate in the old sprite, recomputes that coordinate to be in the same location in the
+     * new sprite (with respect to the size of the new sprite).
+     * @param coord         coordinate to recompute
+     * @param oldSprite     old sprite with the coordinate
+     * @param newSprite     new sprite, which may be a different size, to recompute the coordinate for
+     * @param getCoord0     retrieves the first coordinate (u or v) of a sprite
+     * @param getCoord1     retrieves the second coordinate (u or v) of a sprite
+     * @return recomputed coordinate for the new sprite
+     */
+    public static float recomputeSpriteCoordinate(float coord, TextureAtlasSprite oldSprite,
+                                                  TextureAtlasSprite newSprite,
+                                                  Function<TextureAtlasSprite, Float> getCoord0,
+                                                  Function<TextureAtlasSprite, Float> getCoord1) {
+        float oldCoord0 = getCoord0.apply(oldSprite);
+        float oldCoord1 = getCoord1.apply(oldSprite);
+        float proportionInSprite = (coord - oldCoord0) / (oldCoord1 - oldCoord0);
+        return Mth.lerp(proportionInSprite, getCoord0.apply(newSprite), getCoord1.apply(newSprite));
+    }
+
+    /**
      * Creates a new quad function.
      */
     public OverlayQuadFunction() {
@@ -151,26 +171,6 @@ public final class OverlayQuadFunction implements Function<List<BakedQuad>, List
                         TextureAtlasSprite::getV1
                 )
         );
-    }
-
-    /**
-     * Given a coordinate in the old sprite, recomputes that coordinate to be in the same location in the
-     * new sprite (with respect to the size of the new sprite).
-     * @param coord         coordinate to recompute
-     * @param oldSprite     old sprite with the coordinate
-     * @param newSprite     new sprite, which may be a different size, to recompute the coordinate for
-     * @param getCoord0     retrieves the first coordinate (u or v) of a sprite
-     * @param getCoord1     retrieves the second coordinate (u or v) of a sprite
-     * @return recomputed coordinate for the new sprite
-     */
-    private static float recomputeSpriteCoordinate(float coord, TextureAtlasSprite oldSprite,
-                                                   TextureAtlasSprite newSprite,
-                                                   Function<TextureAtlasSprite, Float> getCoord0,
-                                                   Function<TextureAtlasSprite, Float> getCoord1) {
-        float oldCoord0 = getCoord0.apply(oldSprite);
-        float oldCoord1 = getCoord1.apply(oldSprite);
-        float proportionInSprite = (coord - oldCoord0) / (oldCoord1 - oldCoord0);
-        return Mth.lerp(proportionInSprite, getCoord0.apply(newSprite), getCoord1.apply(newSprite));
     }
 
 }

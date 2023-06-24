@@ -19,6 +19,7 @@ package io.github.moremcmeta.emissiveplugin.fabric.model;
 
 import io.github.moremcmeta.emissiveplugin.ModConstants;
 import io.github.moremcmeta.emissiveplugin.metadata.OverlayMetadata;
+import io.github.moremcmeta.emissiveplugin.model.OverlayQuadFunction;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataRegistry;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
@@ -148,6 +149,7 @@ public final class OverlayBakedModel extends ForwardingBakedModel {
      * @author soir20
      */
     private static class OverlayQuadTransform implements RenderContext.QuadTransform {
+        private static final int VERTS_PER_QUAD = 4;
         private final QuadEmitter EMITTER;
         private final TextureAtlas BLOCK_ATLAS;
         private boolean emittedAny;
@@ -164,8 +166,9 @@ public final class OverlayBakedModel extends ForwardingBakedModel {
 
         @Override
         public boolean transform(MutableQuadView quad) {
+            TextureAtlasSprite baseSprite = spriteFromQuad(quad);
             Optional<OverlayMetadata> metadataOptional = MetadataRegistry.INSTANCE
-                    .metadataFromSpriteName(ModConstants.MOD_ID, spriteFromQuad(quad).getName())
+                    .metadataFromSpriteName(ModConstants.MOD_ID, baseSprite.getName())
                     .map(((metadata) -> (OverlayMetadata) metadata));
 
             if (!metadataOptional.isPresent()) {
@@ -177,11 +180,27 @@ public final class OverlayBakedModel extends ForwardingBakedModel {
             OverlayMetadata metadata = metadataOptional.get();
             EMITTER.material(metadata.isEmissive() ? EMISSIVE_MATERIAL : NON_EMISSIVE_MATERIAL);
 
-            EMITTER.spriteBake(
-                    0,
-                    BLOCK_ATLAS.getSprite(metadata.overlaySpriteName()),
-                    MutableQuadView.BAKE_LOCK_UV
-            );
+            TextureAtlasSprite overlaySprite = BLOCK_ATLAS.getSprite(metadata.overlaySpriteName());
+            for (int vertexIndex = 0; vertexIndex < VERTS_PER_QUAD; vertexIndex++) {
+                EMITTER.sprite(
+                        vertexIndex,
+                        0,
+                        OverlayQuadFunction.recomputeSpriteCoordinate(
+                                EMITTER.spriteU(vertexIndex, 0),
+                                baseSprite,
+                                overlaySprite,
+                                TextureAtlasSprite::getU0,
+                                TextureAtlasSprite::getU1
+                        ),
+                        OverlayQuadFunction.recomputeSpriteCoordinate(
+                                EMITTER.spriteV(vertexIndex, 0),
+                                baseSprite,
+                                overlaySprite,
+                                TextureAtlasSprite::getV0,
+                                TextureAtlasSprite::getV1
+                        )
+                );
+            }
 
             EMITTER.emit();
             emittedAny = true;
