@@ -8,8 +8,9 @@
     "soir20"
   ],
   "contact": {
-    "homepage": "https://github.com/MoreMcmeta",
-    "sources": "https://github.com/MoreMcmeta/emissive-plugin"
+    "homepage": "https://github.com/MoreMcmeta/emissive-plugin",
+    "sources": "https://github.com/MoreMcmeta/emissive-plugin",
+    "issues": "https://github.com/MoreMcmeta/emissive-plugin/issues"
   },
   "license": "LGPL-3.0",
   "icon": "assets/examplemod/icon.png",
