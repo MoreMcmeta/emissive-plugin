@@ -66,3 +66,23 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MOD_VERSION: ${{ steps.mod_version.outputs.result }}
           MC_VERSION: ${{ steps.mc_version.outputs.value }}
+
+      - name: Publish to CurseForge
+        if: matrix.loader != 'common'
+        uses: gradle/gradle-build-action@cfc50b189af149aeb55f94103f47753382d88d33
+        with:
+          arguments: :${{ matrix.loader }}:curseforge
+        env:
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+          MOD_VERSION: ${{ steps.mod_version.outputs.result }}
+          CHANGELOG: ${{ github.event.release.body }}
+
+      - name: Publish to Modrinth
+        if: matrix.loader != 'common'
+        uses: gradle/gradle-build-action@cfc50b189af149aeb55f94103f47753382d88d33
+        with:
+          arguments: :${{ matrix.loader }}:modrinth
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          MOD_VERSION: ${{ steps.mod_version.outputs.result }}
+          CHANGELOG: ${{ github.event.release.body }}
