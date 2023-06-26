@@ -8,6 +8,7 @@ version = "${modVersion}"
 displayName = "MoreMcmeta Emissive Textures Plugin"
 updateJSONURL="https://moremcmeta.github.io/update/emissive.json"
 displayURL="https://github.com/MoreMcmeta/emissive-plugin"
+logoFile="moremcmeta-logo-gradient.png"
 authors = "soir20"
 description = '''
 Plugin for MoreMcmeta to enable emissive textures for blocks, items, entities, and block entities.
