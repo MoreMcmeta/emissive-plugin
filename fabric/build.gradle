@@ -100,6 +100,9 @@ if (System.getenv("CURSEFORGE_TOKEN") != null) {
             addGameVersion project.minecraft_version
             mainArtifact(remapJar.archiveFile) {
                 displayName = "v$version"
+                relations {
+                    requiredDependency "moremcmeta-fabric"
+                }
             }
             changelog = System.getenv("CHANGELOG")
             changelogType = "markdown"
@@ -118,7 +121,7 @@ if (System.getenv("MODRINTH_TOKEN") != null) {
         gameVersions = [project.minecraft_version]
         loaders = ["fabric"]
         dependencies {
-            required.project "fabric-api"
+            required.project "moremcmeta"
         }
     }
 }

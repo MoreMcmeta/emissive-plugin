@@ -95,6 +95,9 @@ if (System.getenv("CURSEFORGE_TOKEN") != null) {
             addGameVersion project.minecraft_version
             mainArtifact(remapJar.archiveFile) {
                 displayName = "v$version"
+                relations {
+                    requiredDependency "moremcmeta"
+                }
             }
             changelog = System.getenv("CHANGELOG")
             changelogType = "markdown"
@@ -112,5 +115,8 @@ if (System.getenv("MODRINTH_TOKEN") != null) {
         uploadFile = remapJar
         gameVersions = [project.minecraft_version]
         loaders = ["forge"]
+        dependencies {
+            required.project "moremcmeta"
+        }
     }
 }
