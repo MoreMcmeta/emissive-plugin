@@ -19,6 +19,7 @@ package io.github.moremcmeta.emissiveplugin.fabric.mixin;
 
 import io.github.moremcmeta.emissiveplugin.fabric.model.OverlayBakedModel;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.BuiltInModel;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
@@ -47,7 +48,9 @@ public final class ModelBakeryMixin {
     private void moremcmeta_emissive_wrapModels(ResourceLocation modelLocation, ModelState state,
                                                 CallbackInfoReturnable<BakedModel> callbackInfo) {
         BakedModel original = callbackInfo.getReturnValue();
-        if (!(original instanceof OverlayBakedModel)) {
+
+        // Built-in models are empty, and wrapping them causes shulker boxes, etc. to be invisible in the inventory
+        if (!(original instanceof OverlayBakedModel) && !(original instanceof BuiltInModel)) {
             callbackInfo.setReturnValue(
                     new OverlayBakedModel(original)
             );
