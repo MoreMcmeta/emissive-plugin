@@ -21,6 +21,7 @@ import io.github.moremcmeta.emissiveplugin.ModConstants;
 import io.github.moremcmeta.emissiveplugin.forge.model.OverlayBakedItemModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.BuiltInModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
@@ -78,7 +79,9 @@ public final class ModelBakeryMixin {
         );
 
         BakedModel original = callbackInfo.getReturnValue();
-        if (usesOverlay && !(original instanceof OverlayBakedItemModel)) {
+
+        // Built-in models are empty, and wrapping them causes shulker boxes, etc. to be invisible in the inventory
+        if (usesOverlay && !(original instanceof OverlayBakedItemModel) && !(original instanceof BuiltInModel)) {
             callbackInfo.setReturnValue(
                     new OverlayBakedItemModel(callbackInfo.getReturnValue())
             );
