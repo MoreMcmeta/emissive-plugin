@@ -32,7 +32,6 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -61,13 +60,13 @@ public final class OverlayBakedModel extends ForwardingBakedModel {
     static {
         if (RendererAccess.INSTANCE.hasRenderer()) {
             EMISSIVE_MATERIAL = RENDERER.materialFinder()
-                    .blendMode(BlendMode.TRANSLUCENT)
-                    .emissive(true)
-                    .ambientOcclusion(TriState.FALSE)
-                    .disableDiffuse(true)
+                    .blendMode(0, BlendMode.TRANSLUCENT)
+                    .emissive(0, true)
+                    .disableAo(0, true)
+                    .disableDiffuse(0, true)
                     .find();
             NON_EMISSIVE_MATERIAL = RENDERER.materialFinder()
-                    .blendMode(BlendMode.TRANSLUCENT)
+                    .blendMode(0, BlendMode.TRANSLUCENT)
                     .find();
         } else {
             LogManager.getLogger().warn("No renderer is present. Overlays will not be rendered.");
@@ -169,31 +168,32 @@ public final class OverlayBakedModel extends ForwardingBakedModel {
         public boolean transform(MutableQuadView quad) {
             TextureAtlasSprite baseSprite = spriteFromQuad(quad);
             Optional<OverlayMetadata> metadataOptional = MetadataRegistry.INSTANCE
-                    .metadataFromSpriteName(ModConstants.MOD_ID, baseSprite.contents().name())
+                    .metadataFromSpriteName(ModConstants.MOD_ID, baseSprite.getName())
                     .map(((metadata) -> (OverlayMetadata) metadata));
 
             if (metadataOptional.isEmpty()) {
                 return true;
             }
 
-            EMITTER.copyFrom(quad);
+            quad.copyTo(EMITTER);
 
             OverlayMetadata metadata = metadataOptional.get();
             EMITTER.material(metadata.isEmissive() ? EMISSIVE_MATERIAL : NON_EMISSIVE_MATERIAL);
 
             TextureAtlasSprite overlaySprite = BLOCK_ATLAS.getSprite(metadata.overlaySpriteName());
             for (int vertexIndex = 0; vertexIndex < VERTS_PER_QUAD; vertexIndex++) {
-                EMITTER.uv(
+                EMITTER.sprite(
                         vertexIndex,
+                        0,
                         OverlayQuadFunction.recomputeSpriteCoordinate(
-                                EMITTER.u(vertexIndex),
+                                EMITTER.spriteU(vertexIndex, 0),
                                 baseSprite,
                                 overlaySprite,
                                 TextureAtlasSprite::getU0,
                                 TextureAtlasSprite::getU1
                         ),
                         OverlayQuadFunction.recomputeSpriteCoordinate(
-                                EMITTER.v(vertexIndex),
+                                EMITTER.spriteV(vertexIndex, 0),
                                 baseSprite,
                                 overlaySprite,
                                 TextureAtlasSprite::getV0,
@@ -221,7 +221,7 @@ public final class OverlayBakedModel extends ForwardingBakedModel {
          * @return quad's sprite
          */
         private TextureAtlasSprite spriteFromQuad(QuadView quad) {
-            return SpriteFinder.get(BLOCK_ATLAS).find(quad);
+            return SpriteFinder.get(BLOCK_ATLAS).find(quad, 0);
         }
 
     }

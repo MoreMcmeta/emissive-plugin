@@ -23,10 +23,10 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.ChunkRenderTypeSet;
@@ -68,7 +68,7 @@ public final class OverlayBakedItemModel extends BakedModelWrapper<BakedModel> {
     }
 
     @Override
-    public BakedModel applyTransform(ItemDisplayContext cameraTransformType, PoseStack poseStack,
+    public BakedModel applyTransform(ItemTransforms.TransformType cameraTransformType, PoseStack poseStack,
                                      boolean applyLeftHandTransform) {
         return new OverlayBakedItemModel(
                 originalModel.applyTransform(cameraTransformType, poseStack, applyLeftHandTransform)

@@ -95,7 +95,7 @@ public final class ModelPartMixin {
 
             // Handle a sprite being rendered
             if (vertexConsumer instanceof SpriteCoordinateExpander spriteVertexConsumer) {
-                ResourceLocation location = spriteVertexConsumer.sprite.contents().name();
+                ResourceLocation location = spriteVertexConsumer.sprite.getName();
                 metadataOptional = MetadataRegistry.INSTANCE.metadataFromSpriteName(ModConstants.MOD_ID, location);
 
             // Handle a regular texture being rendered
@@ -177,11 +177,11 @@ public final class ModelPartMixin {
 
         TextureAtlasSprite sprite = atlas.getSprite(spriteName);
 
-        if (sprite.contents().name().equals(MissingTextureAtlasSprite.getLocation())) {
+        if (sprite.getName().equals(MissingTextureAtlasSprite.getLocation())) {
             sprite = atlas.getSprite(overlayLocation);
         }
 
-        if (!sprite.contents().name().equals(MissingTextureAtlasSprite.getLocation())) {
+        if (!sprite.getName().equals(MissingTextureAtlasSprite.getLocation())) {
             RenderType renderType = renderTypeFunction.apply(atlasLocation);
             return Optional.of(sprite.wrap(bufferSource.getBuffer(renderType)));
         }
