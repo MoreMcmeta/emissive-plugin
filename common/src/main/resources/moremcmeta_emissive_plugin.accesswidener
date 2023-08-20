@@ -10,3 +10,6 @@ accessible  field   net/minecraft/client/renderer/block/BlockRenderDispatcher mo
 mutable  field   net/minecraft/client/renderer/block/BlockRenderDispatcher modelRenderer  Lnet/minecraft/client/renderer/block/ModelBlockRenderer;
 accessible  field   net/minecraft/client/renderer/block/BlockRenderDispatcher blockColors  Lnet/minecraft/client/color/block/BlockColors;
 accessible  field   net/minecraft/client/renderer/block/model/BakedQuad sprite  Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;
+accessible class net/minecraft/client/renderer/chunk/ChunkRenderDispatcher$RenderChunk$RebuildTask
+accessible field net/minecraft/client/renderer/chunk/ChunkRenderDispatcher$CompiledChunk hasLayer Ljava/util/Set;
+accessible field net/minecraft/client/renderer/chunk/ChunkRenderDispatcher$CompiledChunk hasBlocks Ljava/util/Set;
