@@ -10,3 +10,5 @@ accessible  field   net/minecraft/client/renderer/SpriteCoordinateExpander sprit
 accessible  field   net/minecraft/client/renderer/block/BlockRenderDispatcher modelRenderer  Lnet/minecraft/client/renderer/block/ModelBlockRenderer;
 mutable  field   net/minecraft/client/renderer/block/BlockRenderDispatcher modelRenderer  Lnet/minecraft/client/renderer/block/ModelBlockRenderer;
 accessible  field   net/minecraft/client/renderer/block/BlockRenderDispatcher blockColors  Lnet/minecraft/client/color/block/BlockColors;
+accessible class net/minecraft/client/renderer/chunk/ChunkRenderDispatcher$RenderChunk$RebuildTask
+accessible class net/minecraft/client/renderer/chunk/ChunkRenderDispatcher$RenderChunk$RebuildTask$CompileResults
