@@ -19,6 +19,7 @@ package io.github.moremcmeta.emissiveplugin.render;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.moremcmeta.emissiveplugin.ModConstants;
+import io.github.moremcmeta.emissiveplugin.fabricapi.SpriteFinder;
 import io.github.moremcmeta.emissiveplugin.metadata.OverlayMetadata;
 import io.github.moremcmeta.emissiveplugin.model.OverlayQuadFunction;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataRegistry;
@@ -42,7 +43,7 @@ import static java.util.Objects.requireNonNull;
 @MethodsReturnNonnullByDefault
 public class OverlayVertexConsumer implements VertexConsumer {
     private static final int VERTS_PER_QUAD = 4;
-    private final BaseSpriteFinder SPRITE_FINDER;
+    private final SpriteFinder SPRITE_FINDER;
     private final VertexConsumer DELEGATE;
     private final List<Task>[] TASKS;
     private final boolean[] HAS_UV;
@@ -61,7 +62,7 @@ public class OverlayVertexConsumer implements VertexConsumer {
      * @param delegate          delegate buffer to write vertices to
      */
     @SuppressWarnings("unchecked")
-    public OverlayVertexConsumer(BaseSpriteFinder spriteFinder, VertexConsumer delegate) {
+    public OverlayVertexConsumer(SpriteFinder spriteFinder, VertexConsumer delegate) {
         SPRITE_FINDER = requireNonNull(spriteFinder, "Sprite finder cannot be null");
         DELEGATE = requireNonNull(delegate, "Delegate cannot be null");
 

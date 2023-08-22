@@ -22,11 +22,8 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import io.github.moremcmeta.emissiveplugin.ModConstants;
-import io.github.moremcmeta.emissiveplugin.render.BaseSpriteFinder;
+import io.github.moremcmeta.emissiveplugin.fabricapi.SpriteFinder;
 import io.github.moremcmeta.emissiveplugin.render.OverlayVertexConsumer;
-import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataRegistry;
-import io.github.moremcmeta.moremcmeta.api.client.texture.SpriteName;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ChunkBufferBuilderPack;
 import net.minecraft.client.renderer.RenderType;
@@ -38,7 +35,6 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FluidState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -47,10 +43,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Renders overlay quads in the translucent layer after the base fluid was rendered.
@@ -60,14 +54,8 @@ import java.util.stream.Collectors;
 @Mixin(ChunkRenderDispatcher.RenderChunk.RebuildTask.class)
 public class ChunkRebuildTaskMixin {
     @Unique
-    private final BaseSpriteFinder SPRITE_FINDER = new BaseSpriteFinder(
-            MetadataRegistry.INSTANCE.metadataByPlugin(ModConstants.MOD_ID)
-                    .keySet()
-                    .stream()
-                    .map(SpriteName::fromTexturePath)
-                    .map(Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS))
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toSet())
+    private final SpriteFinder SPRITE_FINDER = new SpriteFinder(
+            Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS)
     );
 
     /**
