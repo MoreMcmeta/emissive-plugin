@@ -13,3 +13,4 @@ accessible  field   net/minecraft/client/renderer/block/model/BakedQuad sprite  
 accessible class net/minecraft/client/renderer/chunk/ChunkRenderDispatcher$RenderChunk$RebuildTask
 accessible field net/minecraft/client/renderer/chunk/ChunkRenderDispatcher$CompiledChunk hasLayer Ljava/util/Set;
 accessible field net/minecraft/client/renderer/chunk/ChunkRenderDispatcher$CompiledChunk hasBlocks Ljava/util/Set;
+accessible field net/minecraft/client/renderer/texture/TextureAtlas texturesByName Ljava/util/Map;
