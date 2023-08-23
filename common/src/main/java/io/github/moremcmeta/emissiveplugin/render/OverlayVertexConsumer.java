@@ -41,7 +41,7 @@ import static java.util.Objects.requireNonNull;
  * @author soir20
  */
 @MethodsReturnNonnullByDefault
-public class OverlayVertexConsumer implements VertexConsumer {
+public final class OverlayVertexConsumer implements VertexConsumer {
     private static final int VERTS_PER_QUAD = 4;
     private final SpriteFinder SPRITE_FINDER;
     private final VertexConsumer DELEGATE;
