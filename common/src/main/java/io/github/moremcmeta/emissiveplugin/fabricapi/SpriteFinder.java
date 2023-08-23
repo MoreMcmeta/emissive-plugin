@@ -18,12 +18,12 @@
 package io.github.moremcmeta.emissiveplugin.fabricapi;
 
 /*
- * This file was originally part of the FabricMC project under the Apache license
- * (SpriteFinderImpl.java). Unused methods referencing Fabric API code have been deleted,
- * the find() method has been refactored to return Optional<TextureAtlasSprite>, class
- * names have been updated to use the Mojang mappings, and comments have been edited for
- * clarity. The original copyright notice follows below. See APACHE.md for the full text
- * of the license.
+ * This file was originally part of the FabricMC project under the Apache license:
+ * https://github.com/FabricMC/fabric/blob/8cafc1423557e2c32f925a899af026559e78ef6c/fabric-renderer-api-v1/src/client/java/net/fabricmc/fabric/impl/renderer/SpriteFinderImpl.java.
+ * Unused methods referencing Fabric API code have been deleted, the find() method has been
+ * refactored to return Optional<TextureAtlasSprite>, class names have been updated to use
+ * the Mojang mappings, and comments have been edited for clarity. The original copyright
+ * notice follows below. See APACHE.md for the full text of the license.
  *
  * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
@@ -59,7 +59,7 @@ import java.util.function.Consumer;
  * @author FabricMC, soir20
  */
 @SuppressWarnings("MissingJavadoc")
-public class SpriteFinder {
+public final class SpriteFinder {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final Node root;
@@ -83,7 +83,7 @@ public class SpriteFinder {
         return root.find(u, v);
     }
 
-    private class Node {
+    private final class Node {
         final float midU;
         final float midV;
         final float cellRadius;

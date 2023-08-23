@@ -51,7 +51,7 @@ import java.util.Set;
  */
 @SuppressWarnings("unused")
 @Mixin(ChunkRenderDispatcher.RenderChunk.RebuildTask.class)
-public class ChunkRebuildTaskMixin {
+public final class ChunkRebuildTaskMixin {
     @Unique
     private final SpriteFinder SPRITE_FINDER = new SpriteFinder(
             Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS)
