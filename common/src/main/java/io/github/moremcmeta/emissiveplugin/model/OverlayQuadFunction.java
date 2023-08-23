@@ -19,6 +19,7 @@ package io.github.moremcmeta.emissiveplugin.model;
 
 import io.github.moremcmeta.emissiveplugin.ModConstants;
 import io.github.moremcmeta.emissiveplugin.metadata.OverlayMetadata;
+import io.github.moremcmeta.moremcmeta.api.client.metadata.AnalyzedMetadata;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
@@ -29,7 +30,9 @@ import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.util.Mth;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
@@ -74,23 +77,22 @@ public final class OverlayQuadFunction implements Function<List<BakedQuad>, List
     @Override
     public List<BakedQuad> apply(List<BakedQuad> quads) {
         return quads.stream()
-                .filter(
-                        (quad) -> MetadataRegistry.INSTANCE
-                                .metadataFromSpriteName(ModConstants.MOD_ID, quad.getSprite().getName())
-                                .isPresent()
-                ).map(
+                .flatMap(
                         (quad) -> {
-                            OverlayMetadata metadata = ((OverlayMetadata) MetadataRegistry.INSTANCE
-                                    .metadataFromSpriteName(ModConstants.MOD_ID, quad.getSprite().getName())
-                                    .orElseThrow());
+                            Optional<AnalyzedMetadata> metadataOptional = MetadataRegistry.INSTANCE
+                                    .metadataFromSpriteName(ModConstants.MOD_ID, quad.getSprite().getName());
+                            if (metadataOptional.isEmpty()) {
+                                return Stream.of();
+                            }
 
+                            OverlayMetadata metadata = (OverlayMetadata) metadataOptional.get();
                             TextureAtlasSprite sprite = MODEL_MANAGER
                                     .getAtlas(TextureAtlas.LOCATION_BLOCKS)
                                     .getSprite(metadata.overlaySpriteName());
 
                             /* We have to cast because Minecraft's BakedModel interface expects a List<BakedQuad>,
                                not List<? extends BakedQuad>. */
-                            return (BakedQuad) QUAD_BUILDER.build(
+                            return Stream.of((BakedQuad) QUAD_BUILDER.build(
                                     makeOverlayVertexData(
                                             quad.getVertices(),
                                             sprite,
@@ -101,7 +103,7 @@ public final class OverlayQuadFunction implements Function<List<BakedQuad>, List
                                     quad.getDirection(),
                                     sprite,
                                     metadata.isEmissive()
-                            );
+                            ));
 
                         }
                 )
