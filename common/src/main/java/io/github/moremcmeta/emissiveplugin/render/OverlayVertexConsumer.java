@@ -39,7 +39,7 @@ import static java.util.Objects.requireNonNull;
  * Only renders vertices that are part of overlay quads for fluids.
  * @author soir20
  */
-public class OverlayVertexConsumer implements VertexConsumer {
+public final class OverlayVertexConsumer implements VertexConsumer {
     private static final int VERTS_PER_QUAD = 4;
     private static final int FULL_BRIGHT = LightTexture.pack(15, 15);
     private final SpriteFinder SPRITE_FINDER;
