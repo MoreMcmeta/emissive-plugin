@@ -79,15 +79,16 @@ public final class OverlayBakedItemModel extends BakedModelWrapper<BakedModel> {
     @NotNull
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource rand,
                                     @NotNull ModelData extraData, @Nullable RenderType renderType) {
-        List<BakedQuad> quads = new ArrayList<>(
-                super.getQuads(state, side, rand, extraData, renderType)
-        );
+        if (state != null && (renderType == Sheets.translucentCullBlockSheet() || renderType == RenderType.translucent())) {
+            List<BakedQuad> quads = new ArrayList<>();
+            super.getRenderTypes(state, rand, extraData).forEach(
+                    (type) -> quads.addAll(super.getQuads(state, side, rand, extraData, type))
+            );
 
-        if (renderType == Sheets.translucentCullBlockSheet() || renderType == RenderType.translucent()) {
-            quads.addAll(OVERLAY_QUAD_FUNCTION.apply(quads));
+            return OVERLAY_QUAD_FUNCTION.apply(quads);
         }
 
-        return quads;
+        return super.getQuads(state, side, rand, extraData, renderType);
     }
 
     @Override
