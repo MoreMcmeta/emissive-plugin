@@ -16,6 +16,9 @@
   "icon": "tricolor-zombie.png",
   "environment": "*",
   "entrypoints": {
+    "client": [
+      "io.github.moremcmeta.emissiveplugin.fabric.EntrypointFabric"
+    ],
     "moremcmeta-client": [
       "io.github.moremcmeta.emissiveplugin.fabric.OverlayPluginFabric"
     ]

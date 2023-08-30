@@ -28,7 +28,8 @@ dependencies {
             "fabric-api-base",
             "fabric-textures-v0",
             "fabric-renderer-api-v1",
-            "fabric-renderer-indigo"
+            "fabric-renderer-indigo",
+            "fabric-resource-loader-v0"
     ].forEach {
         modImplementation(include(fabricApi.module(it, rootProject.fabric_api_version)))
     }
@@ -50,6 +51,8 @@ processResources {
                 "minecraftVersion": project.minecraft_version,
                 "minMoreMcmetaVersion": minMoreMcmetaVersion
     }
+
+    from "$projectDir/../common/src/main/resources"
 }
 
 shadowJar {
