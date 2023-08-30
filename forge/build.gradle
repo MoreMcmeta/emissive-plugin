@@ -44,6 +44,15 @@ processResources {
                 "minMoreMcmetaVersion": project.moremcmeta_min_version,
                 "loaderVersion": project.forge_version.split('-')[1].split('\\.')[0]
     }
+
+    def packRoot = "$projectDir/../common/src/main/resources/resourcepacks/z_fighting_fix"
+    from("$packRoot/assets/minecraft") {
+        into "assets/moremcmeta_emissive_plugin"
+    }
+
+    from(["$packRoot/pack.png", "$packRoot/pack.mcmeta"]) {
+        into "assets/moremcmeta_emissive_plugin"
+    }
 }
 
 shadowJar {
