@@ -18,6 +18,14 @@
 package io.github.moremcmeta.emissiveplugin.forge;
 
 import io.github.moremcmeta.emissiveplugin.ModConstants;
+import io.github.moremcmeta.emissiveplugin.forge.packs.NamespaceRemappingPack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackCompatibility;
+import net.minecraft.server.packs.repository.PackSource;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -46,6 +54,27 @@ public final class EntrypointForge {
                         (remoteVersion, isServer)-> true
                 )
         );
+
+        String displayName = ModConstants.Z_FIGHTING_PACK_ID.getNamespace() + "/" + ModConstants.Z_FIGHTING_PACK_ID.getPath();
+        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> () -> Minecraft.getInstance().getResourcePackRepository().addPackFinder(
+                (consumer, constructor) -> consumer.accept(new Pack(
+                        ModConstants.Z_FIGHTING_PACK_ID.toString(),
+                        false,
+                        () -> new NamespaceRemappingPack(
+                                displayName,
+                                ModConstants.MOD_ID,
+                                "minecraft",
+                                Minecraft.getInstance().getResourceManager()
+                        ),
+                        new TextComponent(displayName),
+                        new TextComponent("Adjusts models to prevent overlay z-fighting"),
+                        PackCompatibility.COMPATIBLE,
+                        Pack.Position.TOP,
+                        false,
+                        PackSource.BUILT_IN,
+                        false
+                ))
+        ));
     }
 
 }
