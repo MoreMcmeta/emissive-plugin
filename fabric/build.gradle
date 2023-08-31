@@ -51,7 +51,9 @@ processResources {
                 "minMoreMcmetaVersion": minMoreMcmetaVersion
     }
 
-    from "$projectDir/../common/src/main/resources"
+    from("$projectDir/../common/src/main/resources/resourcepacks") {
+        into "resourcepacks"
+    }
 }
 
 shadowJar {
