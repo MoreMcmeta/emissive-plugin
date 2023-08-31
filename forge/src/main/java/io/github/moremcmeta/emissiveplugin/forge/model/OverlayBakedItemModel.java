@@ -54,6 +54,7 @@ public final class OverlayBakedItemModel extends BakedModelWrapper<BakedModel> {
         return new OverlayBakedItemModel(super.handlePerspective(cameraTransformType, poseStack));
     }
 
+    @Override
     public boolean isLayered() {
         return true;
     }
