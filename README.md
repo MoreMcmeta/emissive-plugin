@@ -7,3 +7,6 @@ Plugin for MoreMcmeta to enable emissive textures for blocks, items, entities, a
 If you're here to make a suggestion or bug report, find out how the emissive plugin works, or contribute to its development, you're in the right place!
 
 If you're looking to download the plugin or find out more about it, check out the [CurseForge page](https://www.curseforge.com/minecraft/mc-mods/moremcmeta-emissive-fabric).
+
+## For Developers
+See the [core README](https://github.com/MoreMcmeta/core) for build instructions and contributing guidelines.
