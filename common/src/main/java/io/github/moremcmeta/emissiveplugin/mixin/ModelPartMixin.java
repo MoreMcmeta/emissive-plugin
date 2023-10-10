@@ -116,7 +116,12 @@ public final class ModelPartMixin {
                 ResourceLocation overlay = overlayMetadata.overlaySpriteName();
                 int overlayLight = overlayMetadata.isEmissive() ? ModConstants.FULL_BRIGHT : packedLight;
 
-                VertexConsumer newConsumer = makeBuffer(bufferSource, overlay, RenderType::entityTranslucentCull);
+                /* Disabling cull is needed to render emissive layers inside the slime properly, but it needs to
+                   be enabled for bed overlays to render properly. */
+                Function<ResourceLocation, RenderType> overlayType = EntityRenderingState.isBlockEntity.get()
+                        ? RenderType::entityTranslucentCull
+                        : RenderType::entityTranslucent;
+                VertexConsumer newConsumer = makeBuffer(bufferSource, overlay, overlayType);
                 thisPart.render(poseStack, newConsumer, overlayLight, packedOverlay, red, blue, green, alpha);
 
                 // Restore original render type
