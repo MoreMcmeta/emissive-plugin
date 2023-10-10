@@ -30,5 +30,6 @@ public final class EntityRenderingState {
        avoid difficult bugs in case something changes. */
     public static final ThreadLocal<RenderType> currentRenderType = new ThreadLocal<>();
     public static final ThreadLocal<Integer> partRenderDepth = ThreadLocal.withInitial(() -> -1);
+    public static final ThreadLocal<Boolean> isBlockEntity = ThreadLocal.withInitial(() -> false);
 
 }

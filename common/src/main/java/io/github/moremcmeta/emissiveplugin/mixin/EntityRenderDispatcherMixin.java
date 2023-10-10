@@ -42,7 +42,10 @@ public final class EntityRenderDispatcherMixin {
      */
     @ModifyVariable(method = "render", at = @At("HEAD"))
     private MultiBufferSource moremcmeta_emissive_wrapBufferSource(MultiBufferSource bufferSource) {
-        return WrappedBufferSource.wrap(bufferSource, EntityRenderingState.currentRenderType::set);
+        return WrappedBufferSource.wrap(bufferSource, (renderType) -> {
+            EntityRenderingState.currentRenderType.set(renderType);
+            EntityRenderingState.isBlockEntity.set(false);
+        });
     }
 
     /**
