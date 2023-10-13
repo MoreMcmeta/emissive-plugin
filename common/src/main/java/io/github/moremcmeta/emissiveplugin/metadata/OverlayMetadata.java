@@ -29,15 +29,18 @@ import static java.util.Objects.requireNonNull;
 public final class OverlayMetadata implements AnalyzedMetadata {
     private final ResourceLocation OVERLAY_SPRITE_NAME;
     private final boolean IS_EMISSIVE;
+    private final TransparencyMode TRANSPARENCY_MODE;
 
     /**
      * Creates overlay metadata.
      * @param overlaySpriteName     sprite name of the overlay texture
      * @param isEmissive            whether the overlay should be emissive
+     * @param transparencyMode      transparency mode of the overlay
      */
-    public OverlayMetadata(ResourceLocation overlaySpriteName, boolean isEmissive) {
+    public OverlayMetadata(ResourceLocation overlaySpriteName, boolean isEmissive, TransparencyMode transparencyMode) {
         OVERLAY_SPRITE_NAME = requireNonNull(overlaySpriteName, "Overlay sprite name cannot be null");
         IS_EMISSIVE = isEmissive;
+        TRANSPARENCY_MODE = requireNonNull(transparencyMode, "Transparency mode cannot be null");
     }
 
     /**
@@ -54,6 +57,14 @@ public final class OverlayMetadata implements AnalyzedMetadata {
      */
     public boolean isEmissive() {
         return IS_EMISSIVE;
+    }
+
+    /**
+     * Gets the transparency mode of the overlay.
+     * @return transparency mode of the overlay
+     */
+    public TransparencyMode transparencyMode() {
+        return TRANSPARENCY_MODE;
     }
 
 }
