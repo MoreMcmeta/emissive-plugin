@@ -51,7 +51,8 @@ public final class ModelBakeryMixin {
         BakedModel original = callbackInfo.getReturnValue();
 
         // Built-in models are empty, and wrapping them causes shulker boxes, etc. to be invisible in the inventory
-        if (!(original instanceof OverlayBakedModel) && !(original instanceof BuiltInModel) && !(original instanceof MultiPartBakedModel)) {
+        if (!(original instanceof OverlayBakedModel) && !(original instanceof BuiltInModel)
+                && !(original instanceof MultiPartBakedModel)) {
             callbackInfo.setReturnValue(
                     new OverlayBakedModel(original)
             );

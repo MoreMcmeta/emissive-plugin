@@ -17,6 +17,7 @@
 
 package io.github.moremcmeta.emissiveplugin.forge.model;
 
+import io.github.moremcmeta.emissiveplugin.metadata.TransparencyMode;
 import io.github.moremcmeta.emissiveplugin.model.OverlayBakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
@@ -29,15 +30,16 @@ public class OverlayBakedQuadForge extends OverlayBakedQuad {
 
     /**
      * Creates a new overlay quad.
-     * @param vertices  quad vertex data
-     * @param tintIndex index to use to tint this quad
-     * @param direction direction the quad faces
-     * @param sprite    sprite to use to texture this quad
-     * @param emissive  whether to make this quad emissive
+     * @param vertices          quad vertex data
+     * @param tintIndex         index to use to tint this quad
+     * @param direction         direction the quad faces
+     * @param sprite            sprite to use to texture this quad
+     * @param emissive          whether to make this quad emissive
+     * @param transparencyMode  transparency mode of the quad
      */
     public OverlayBakedQuadForge(int[] vertices, int tintIndex, Direction direction, TextureAtlasSprite sprite,
-                                 boolean emissive) {
-        super(vertices, tintIndex, direction, sprite, emissive);
+                                 boolean emissive, TransparencyMode transparencyMode) {
+        super(vertices, tintIndex, direction, sprite, emissive, transparencyMode);
     }
 
     public boolean hasAmbientOcclusion() {
