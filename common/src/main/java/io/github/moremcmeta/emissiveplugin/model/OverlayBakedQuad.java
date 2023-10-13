@@ -17,6 +17,7 @@
 
 package io.github.moremcmeta.emissiveplugin.model;
 
+import io.github.moremcmeta.emissiveplugin.metadata.TransparencyMode;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
@@ -27,19 +28,22 @@ import net.minecraft.core.Direction;
  */
 public final class OverlayBakedQuad extends BakedQuad {
     private final boolean EMISSIVE;
+    private final TransparencyMode TRANSPARENCY_MODE;
 
     /**
      * Creates a new overlay quad.
-     * @param vertices      quad vertex data
-     * @param tintIndex     index to use to tint this quad
-     * @param direction     direction the quad faces
-     * @param sprite        sprite to use to texture this quad
-     * @param emissive      whether to make this quad emissive
+     * @param vertices          quad vertex data
+     * @param tintIndex         index to use to tint this quad
+     * @param direction         direction the quad faces
+     * @param sprite            sprite to use to texture this quad
+     * @param emissive          whether to make this quad emissive
+     * @param transparencyMode  transparency mode of the quad
      */
     public OverlayBakedQuad(int[] vertices, int tintIndex, Direction direction, TextureAtlasSprite sprite,
-                            boolean emissive) {
+                            boolean emissive, TransparencyMode transparencyMode) {
         super(vertices, tintIndex, direction, sprite, !emissive);
         EMISSIVE = emissive;
+        TRANSPARENCY_MODE = transparencyMode;
     }
 
     /**
@@ -48,6 +52,14 @@ public final class OverlayBakedQuad extends BakedQuad {
      */
     public boolean isEmissive() {
         return EMISSIVE;
+    }
+
+    /**
+     * Gets the transparency mode of the quad.
+     * @return transparency mode of the quad
+     */
+    public TransparencyMode transparencyMode() {
+        return TRANSPARENCY_MODE;
     }
 
 }

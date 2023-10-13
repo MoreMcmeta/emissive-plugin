@@ -39,7 +39,7 @@ import java.util.stream.Stream;
  * overtop the original quads.
  * @author soir20
  */
-public final class OverlayQuadFunction implements Function<List<BakedQuad>, List<BakedQuad>> {
+public final class OverlayQuadFunction implements Function<List<BakedQuad>, List<OverlayBakedQuad>> {
     private final ModelManager MODEL_MANAGER;
 
     /**
@@ -70,7 +70,7 @@ public final class OverlayQuadFunction implements Function<List<BakedQuad>, List
     }
 
     @Override
-    public List<BakedQuad> apply(List<BakedQuad> quads) {
+    public List<OverlayBakedQuad> apply(List<BakedQuad> quads) {
         return quads.stream()
                 .flatMap(
                         (quad) -> {
@@ -87,7 +87,7 @@ public final class OverlayQuadFunction implements Function<List<BakedQuad>, List
 
                             /* We have to cast because Minecraft's BakedModel interface expects a List<BakedQuad>,
                                not List<? extends BakedQuad>. */
-                            return Stream.of((BakedQuad) new OverlayBakedQuad(
+                            return Stream.of(new OverlayBakedQuad(
                                     makeOverlayVertexData(
                                             quad.getVertices(),
                                             sprite,
@@ -97,7 +97,8 @@ public final class OverlayQuadFunction implements Function<List<BakedQuad>, List
                                     quad.getTintIndex(),
                                     quad.getDirection(),
                                     sprite,
-                                    metadata.isEmissive()
+                                    metadata.isEmissive(),
+                                    metadata.transparencyMode()
                             ));
 
                         }
