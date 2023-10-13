@@ -43,7 +43,7 @@ import java.util.Random;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public final class EmissiveModelBlockRenderer extends ForgeBlockModelRenderer {
-    public static final ThreadLocal<Boolean> ALWAYS_RENDER_ON_TRANSPARENCY = ThreadLocal.withInitial(() -> true);
+    public static final ThreadLocal<Boolean> ADD_OVERLAY_RENDER_TYPES = ThreadLocal.withInitial(() -> true);
 
     /**
      * Creates a new emissive block renderer.
@@ -60,18 +60,28 @@ public final class EmissiveModelBlockRenderer extends ForgeBlockModelRenderer {
         boolean didRender = false;
         RenderType renderType = MinecraftForgeClient.getRenderType();
 
-        ALWAYS_RENDER_ON_TRANSPARENCY.set(false);
+        ADD_OVERLAY_RENDER_TYPES.set(false);
         if (ItemBlockRenderTypes.canRenderInLayer(state, renderType)) {
             didRender = super.tesselateWithAO(level, model, state, pos, poseStack, buffer, checkSides, rand, seed,
                     packedOverlay, modelData);
         }
-        ALWAYS_RENDER_ON_TRANSPARENCY.set(true);
 
-        if (renderType == RenderType.translucent()) {
-            boolean didOverlayRender = super.tesselateWithoutAO(level, new OverlayOnlyBakedModel(model), state, pos,
-                    poseStack, buffer, checkSides, rand, seed, packedOverlay, modelData);
-            didRender = didRender || didOverlayRender;
-        }
+        boolean didOverlayRender = super.tesselateWithoutAO(
+                level,
+                new OverlayOnlyBakedModel(model, renderType),
+                state,
+                pos,
+                poseStack,
+                buffer,
+                checkSides,
+                rand,
+                seed,
+                packedOverlay,
+                modelData
+        );
+        didRender = didRender || didOverlayRender;
+        ADD_OVERLAY_RENDER_TYPES.set(true);
+
         return didRender;
     }
 
@@ -82,18 +92,27 @@ public final class EmissiveModelBlockRenderer extends ForgeBlockModelRenderer {
         boolean didRender = false;
         RenderType renderType = MinecraftForgeClient.getRenderType();
 
-        ALWAYS_RENDER_ON_TRANSPARENCY.set(false);
+        ADD_OVERLAY_RENDER_TYPES.set(false);
         if (ItemBlockRenderTypes.canRenderInLayer(state, renderType)) {
             didRender = super.tesselateWithoutAO(level, model, state, pos, poseStack, buffer, checkSides, rand, seed,
                     packedOverlay, modelData);
         }
-        ALWAYS_RENDER_ON_TRANSPARENCY.set(true);
 
-        if (renderType == RenderType.translucent()) {
-            boolean didOverlayRender = super.tesselateWithoutAO(level, new OverlayOnlyBakedModel(model), state, pos,
-                    poseStack, buffer, checkSides, rand, seed, packedOverlay, modelData);
-            didRender = didRender || didOverlayRender;
-        }
+        boolean didOverlayRender = super.tesselateWithoutAO(
+                level,
+                new OverlayOnlyBakedModel(model, renderType),
+                state,
+                pos,
+                poseStack,
+                buffer,
+                checkSides,
+                rand,
+                seed,
+                packedOverlay,
+                modelData
+        );
+        didRender = didRender || didOverlayRender;
+        ADD_OVERLAY_RENDER_TYPES.set(true);
         return didRender;
     }
 
@@ -102,8 +121,22 @@ public final class EmissiveModelBlockRenderer extends ForgeBlockModelRenderer {
                             BakedModel model, float tintR, float tintG, float tintB, int packedLight, int packedOverlay,
                             IModelData modelData) {
         super.renderModel(poseStack, buffer, state, model, tintR, tintG, tintB, packedLight, packedOverlay, modelData);
-        super.renderModel(poseStack, buffer, state, new OverlayOnlyBakedModel(model), tintR, tintG, tintB, packedLight,
-                packedOverlay, modelData);
+
+        RenderType renderType = MinecraftForgeClient.getRenderType();
+        super.renderModel(
+                poseStack,
+                buffer,
+                state,
+                new OverlayOnlyBakedModel(
+                        model,
+                        renderType
+                ),
+                tintR,
+                tintG,
+                tintB,
+                packedLight,
+                packedOverlay,
+                modelData);
     }
 
 }
