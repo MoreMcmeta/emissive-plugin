@@ -19,6 +19,7 @@ package io.github.moremcmeta.emissiveplugin.fabric.model;
 
 import io.github.moremcmeta.emissiveplugin.ModConstants;
 import io.github.moremcmeta.emissiveplugin.metadata.OverlayMetadata;
+import io.github.moremcmeta.emissiveplugin.metadata.TransparencyMode;
 import io.github.moremcmeta.emissiveplugin.model.OverlayQuadFunction;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataRegistry;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
@@ -34,6 +35,8 @@ import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
@@ -44,6 +47,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import org.apache.logging.log4j.LogManager;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -56,23 +60,26 @@ import static java.util.Objects.requireNonNull;
  */
 public final class OverlayBakedModel extends ForwardingBakedModel {
     private static final Renderer RENDERER = RendererAccess.INSTANCE.getRenderer();
-    private static final RenderMaterial EMISSIVE_MATERIAL;
-    private static final RenderMaterial NON_EMISSIVE_MATERIAL;
+    private static final int BLEND_MODES = BlendMode.values().length;
+    private static final RenderMaterial[] EMISSIVE_MATERIAL = new RenderMaterial[BLEND_MODES];
+    private static final RenderMaterial[] NON_EMISSIVE_MATERIAL = new RenderMaterial[BLEND_MODES];
     static {
         if (RendererAccess.INSTANCE.hasRenderer()) {
-            EMISSIVE_MATERIAL = RENDERER.materialFinder()
-                    .blendMode(BlendMode.TRANSLUCENT)
-                    .emissive(true)
-                    .ambientOcclusion(TriState.FALSE)
-                    .disableDiffuse(true)
-                    .find();
-            NON_EMISSIVE_MATERIAL = RENDERER.materialFinder()
-                    .blendMode(BlendMode.TRANSLUCENT)
-                    .find();
+            for (int modeOrdinal = 0; modeOrdinal < BLEND_MODES; modeOrdinal++) {
+                BlendMode mode = BlendMode.values()[modeOrdinal];
+
+                EMISSIVE_MATERIAL[modeOrdinal] = RENDERER.materialFinder()
+                        .blendMode(mode)
+                        .emissive(true)
+                        .ambientOcclusion(TriState.FALSE)
+                        .disableDiffuse(true)
+                        .find();
+                NON_EMISSIVE_MATERIAL[modeOrdinal] = RENDERER.materialFinder()
+                        .blendMode(mode)
+                        .find();
+            }
         } else {
             LogManager.getLogger().warn("No renderer is present. Overlays will not be rendered.");
-            EMISSIVE_MATERIAL = null;
-            NON_EMISSIVE_MATERIAL = null;
         }
     }
     private final ModelManager MODEL_MANAGER = Minecraft.getInstance().getModelManager();
@@ -96,7 +103,8 @@ public final class OverlayBakedModel extends ForwardingBakedModel {
         MeshBuilder builder = RENDERER.meshBuilder();
         OverlayQuadTransform transform = new OverlayQuadTransform(
                 builder.getEmitter(),
-                MODEL_MANAGER.getAtlas(TextureAtlas.LOCATION_BLOCKS)
+                MODEL_MANAGER.getAtlas(TextureAtlas.LOCATION_BLOCKS),
+                state
         );
 
         context.pushTransform(transform);
@@ -121,7 +129,8 @@ public final class OverlayBakedModel extends ForwardingBakedModel {
         MeshBuilder builder = RENDERER.meshBuilder();
         OverlayQuadTransform transform = new OverlayQuadTransform(
                 builder.getEmitter(),
-                MODEL_MANAGER.getAtlas(TextureAtlas.LOCATION_BLOCKS)
+                MODEL_MANAGER.getAtlas(TextureAtlas.LOCATION_BLOCKS),
+                null
         );
 
         context.pushTransform(transform);
@@ -153,16 +162,20 @@ public final class OverlayBakedModel extends ForwardingBakedModel {
         private static final int VERTS_PER_QUAD = 4;
         private final QuadEmitter EMITTER;
         private final TextureAtlas BLOCK_ATLAS;
+        private BlockState blockState;
+        private boolean isDefaultSolid;
         private boolean emittedAny;
 
         /**
          * Creates a new overlay transform.
          * @param emitter       emitter to emit overlay quads to
          * @param blockAtlas    texture atlas for block textures
+         * @param blockState    block state (or null if not a block)
          */
-        public OverlayQuadTransform(QuadEmitter emitter, TextureAtlas blockAtlas) {
-            EMITTER = requireNonNull(emitter, "Emitter cannot be null");
-            BLOCK_ATLAS = requireNonNull(blockAtlas, "Block atlas cannot be null");
+        public OverlayQuadTransform(QuadEmitter emitter, TextureAtlas blockAtlas, @Nullable BlockState blockState) {
+            EMITTER = emitter;
+            BLOCK_ATLAS = blockAtlas;
+            this.blockState = blockState;
         }
 
         @Override
@@ -179,7 +192,24 @@ public final class OverlayBakedModel extends ForwardingBakedModel {
             EMITTER.copyFrom(quad);
 
             OverlayMetadata metadata = metadataOptional.get();
-            EMITTER.material(metadata.isEmissive() ? EMISSIVE_MATERIAL : NON_EMISSIVE_MATERIAL);
+            BlendMode blendMode;
+
+            if (metadata.transparencyMode() == TransparencyMode.TRANSLUCENT) {
+                blendMode = BlendMode.TRANSLUCENT;
+            } else {
+                blendMode = quad.material().blendMode();
+
+                if (blockState != null && blendMode == BlendMode.DEFAULT) {
+                    isDefaultSolid = ItemBlockRenderTypes.getChunkRenderType(blockState).equals(RenderType.solid());
+                    blockState = null;
+                }
+
+                if (isDefaultSolid || blendMode == BlendMode.SOLID) {
+                    blendMode = BlendMode.CUTOUT_MIPPED;
+                }
+            }
+
+            EMITTER.material((metadata.isEmissive() ? EMISSIVE_MATERIAL : NON_EMISSIVE_MATERIAL)[blendMode.ordinal()]);
 
             TextureAtlasSprite overlaySprite = BLOCK_ATLAS.getSprite(metadata.overlaySpriteName());
             for (int vertexIndex = 0; vertexIndex < VERTS_PER_QUAD; vertexIndex++) {

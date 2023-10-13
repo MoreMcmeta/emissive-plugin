@@ -49,7 +49,18 @@ public final class OverlayMetadataAnalyzer implements MetadataAnalyzer {
 
         boolean isEmissive = metadata.booleanValue("emissive").orElse(false);
 
-        return new OverlayMetadata(SpriteName.fromTexturePath(overlayLocation), isEmissive);
+        String rawTransparencyMode = metadata.stringValue("transparency").orElse("auto");
+        TransparencyMode transparencyMode;
+        if (rawTransparencyMode.equals("auto")) {
+            transparencyMode = TransparencyMode.AUTO;
+        } else if (rawTransparencyMode.equals("translucent")) {
+            transparencyMode = TransparencyMode.TRANSLUCENT;
+        } else {
+            throw new InvalidMetadataException("Unknown transparency: " + rawTransparencyMode);
+        }
+
+
+        return new OverlayMetadata(SpriteName.fromTexturePath(overlayLocation), isEmissive, transparencyMode);
     }
 
 }
