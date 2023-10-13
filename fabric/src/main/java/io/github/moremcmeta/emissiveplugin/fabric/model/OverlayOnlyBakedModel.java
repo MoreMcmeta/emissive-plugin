@@ -44,9 +44,10 @@ public final class OverlayOnlyBakedModel extends ForwardingBakedModel {
         OVERLAY_QUAD_FUNCTION = new OverlayQuadFunction();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand)  {
-        return OVERLAY_QUAD_FUNCTION.apply(wrapped.getQuads(state, side, rand));
+        return (List<BakedQuad>) (List<? extends BakedQuad>) OVERLAY_QUAD_FUNCTION.apply(wrapped.getQuads(state, side, rand));
     }
 
     @Override

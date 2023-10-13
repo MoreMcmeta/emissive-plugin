@@ -25,6 +25,8 @@ import net.minecraft.client.resources.model.BuiltInModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.MultiPartBakedModel;
+import net.minecraft.client.resources.model.WeightedBakedModel;
 import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -81,7 +83,8 @@ public final class ModelBakeryMixin {
         BakedModel original = callbackInfo.getReturnValue();
 
         // Built-in models are empty, and wrapping them causes shulker boxes, etc. to be invisible in the inventory
-        if (usesOverlay && !(original instanceof OverlayBakedItemModel) && !(original instanceof BuiltInModel)) {
+        if (usesOverlay && !(original instanceof OverlayBakedItemModel) && !(original instanceof BuiltInModel)
+                && !(original instanceof MultiPartBakedModel) && !(original instanceof WeightedBakedModel)) {
             callbackInfo.setReturnValue(
                     new OverlayBakedItemModel(callbackInfo.getReturnValue())
             );

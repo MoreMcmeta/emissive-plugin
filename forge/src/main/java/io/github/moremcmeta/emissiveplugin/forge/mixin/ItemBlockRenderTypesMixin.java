@@ -27,6 +27,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import static io.github.moremcmeta.emissiveplugin.forge.model.OverlayOnlyBakedModel.SOLID_REPLACEMENT_BLOCK_TYPE;
+import static io.github.moremcmeta.emissiveplugin.forge.model.OverlayOnlyBakedModel.TRANSLUCENT_BLOCK_TYPE;
+
 /**
  * Allows blocks to be rendered in the {@link RenderType#translucent()} render layer if an overlay is
  * being rendered on Forge.
@@ -47,7 +50,8 @@ public final class ItemBlockRenderTypesMixin {
             at = @At("HEAD"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, remap = false)
     private static void moremcmeta_emissive_enableBlockTransparencyOverlay(BlockState state, RenderType type,
                                                                            CallbackInfoReturnable<Boolean> callbackInfo) {
-        if (EmissiveModelBlockRenderer.ALWAYS_RENDER_ON_TRANSPARENCY.get() && type == RenderType.translucent()) {
+        if (EmissiveModelBlockRenderer.ADD_OVERLAY_RENDER_TYPES.get()
+                && (type.equals(TRANSLUCENT_BLOCK_TYPE) || type.equals(SOLID_REPLACEMENT_BLOCK_TYPE))) {
             callbackInfo.setReturnValue(true);
         }
     }
