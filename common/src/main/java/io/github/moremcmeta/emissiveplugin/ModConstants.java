@@ -21,7 +21,6 @@ import io.github.moremcmeta.emissiveplugin.metadata.OverlayMetadataAnalyzer;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataAnalyzer;
 import io.github.moremcmeta.moremcmeta.api.client.texture.ComponentBuilder;
 import io.github.moremcmeta.moremcmeta.api.client.texture.TextureComponent;
-import net.minecraft.resources.ResourceLocation;
 
 /**
  * Constants for both Fabric and Forge implementations of the plugin.
@@ -32,5 +31,4 @@ public final class ModConstants {
     public static final String SECTION_NAME = "overlay";
     public static final MetadataAnalyzer ANALYZER = new OverlayMetadataAnalyzer();
     public static final ComponentBuilder COMPONENT_BUILDER = (metadata, frames) -> new TextureComponent<>() {};
-    public static final ResourceLocation Z_FIGHTING_PACK_ID = new ResourceLocation("moremcmeta", "z_fighting_fix");
 }
