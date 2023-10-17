@@ -83,5 +83,4 @@ public final class ModConstants {
                         spriteName
                 ).isPresent());
     };
-    public static final ResourceLocation Z_FIGHTING_PACK_ID = new ResourceLocation("moremcmeta", "z_fighting_fix");
 }
