@@ -27,8 +27,7 @@ dependencies {
     [
             "fabric-api-base",
             "fabric-renderer-api-v1",
-            "fabric-renderer-indigo",
-            "fabric-resource-loader-v0"
+            "fabric-renderer-indigo"
     ].forEach {
         modImplementation(include(fabricApi.module(it, rootProject.fabric_api_version)))
     }
@@ -49,10 +48,6 @@ processResources {
         expand "modVersion": project.version,
                 "minecraftVersion": project.minecraft_version,
                 "minMoreMcmetaVersion": minMoreMcmetaVersion
-    }
-
-    from("$projectDir/../common/src/main/resources/resourcepacks") {
-        into "resourcepacks"
     }
 }
 
