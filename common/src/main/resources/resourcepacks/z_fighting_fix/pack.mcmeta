@@ -1,6 +1,0 @@
-{
-    "pack": {
-        "pack_format": 6,
-        "description": "Adjusts models to prevent overlay z-fighting"
-    }
-}
