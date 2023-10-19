@@ -1,5 +1,8 @@
 accessWidener   v2  named
 accessible  class   net/minecraft/client/resources/model/ModelBakery$ModelBakerImpl
+accessible  field   net/minecraft/client/resources/model/ModelBakery bakedCache Ljava/util/Map;
+accessible  class   net/minecraft/client/resources/model/ModelBakery$BakedCacheKey
+accessible  method   net/minecraft/client/resources/model/ModelBakery$BakedCacheKey <init> (Lnet/minecraft/resources/ResourceLocation;Lcom/mojang/math/Transformation;Z)V
 accessible  class  net/minecraft/client/renderer/RenderType$CompositeRenderType
 accessible  method  net/minecraft/client/renderer/RenderType$CompositeRenderType    state   ()Lnet/minecraft/client/renderer/RenderType$CompositeState;
 accessible  class   net/minecraft/client/renderer/RenderType$CompositeState
