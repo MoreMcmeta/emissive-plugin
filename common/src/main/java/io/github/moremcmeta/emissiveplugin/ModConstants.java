@@ -19,8 +19,13 @@ package io.github.moremcmeta.emissiveplugin;
 
 import io.github.moremcmeta.emissiveplugin.metadata.OverlayMetadataAnalyzer;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataAnalyzer;
+import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataRegistry;
 import io.github.moremcmeta.moremcmeta.api.client.texture.ComponentBuilder;
 import io.github.moremcmeta.moremcmeta.api.client.texture.TextureComponent;
+import net.minecraft.client.resources.model.Material;
+
+import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * Constants for both Fabric and Forge implementations of the plugin.
@@ -31,4 +36,12 @@ public final class ModConstants {
     public static final String SECTION_NAME = "overlay";
     public static final MetadataAnalyzer ANALYZER = new OverlayMetadataAnalyzer();
     public static final ComponentBuilder COMPONENT_BUILDER = (metadata, frames) -> new TextureComponent<>() {};
+    public static final Predicate<Set<Material>> USES_OVERLAY = (usedMaterials) -> usedMaterials.stream()
+            .map(Material::texture)
+            .anyMatch(
+                    (spriteName) -> MetadataRegistry.INSTANCE.metadataFromSpriteName(
+                            ModConstants.MOD_ID,
+                            spriteName
+                    ).isPresent()
+            );
 }
