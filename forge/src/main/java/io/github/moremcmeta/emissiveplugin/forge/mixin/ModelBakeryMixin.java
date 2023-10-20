@@ -20,6 +20,8 @@ package io.github.moremcmeta.emissiveplugin.forge.mixin;
 import io.github.moremcmeta.emissiveplugin.ModConstants;
 import io.github.moremcmeta.emissiveplugin.forge.model.OverlayBakedItemModel;
 import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.renderer.block.model.MultiVariant;
+import net.minecraft.client.renderer.block.model.multipart.MultiPart;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.BuiltInModel;
 import net.minecraft.client.resources.model.Material;
@@ -34,6 +36,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -59,18 +62,7 @@ public final class ModelBakeryMixin {
                                                 CallbackInfoReturnable<BakedModel> callbackInfo) {
         ModelBakery.ModelBakerImpl bakeryImpl = (ModelBakery.ModelBakerImpl) (Object) this;
         UnbakedModel unbakedModel = bakeryImpl.getModel(modelLocation);
-
-        // Filter out block models for which we can check materials to improve performance
-        boolean usesOverlay = true;
-        if (unbakedModel instanceof BlockModel blockModel) {
-            if (!blockModel.getElements().isEmpty()) {
-                Set<Material> materials = blockModel.getElements().stream()
-                        .flatMap((element) -> element.faces.values().stream()
-                                .map((face) -> blockModel.getMaterial(face.texture))
-                        ).collect(Collectors.toSet());
-                usesOverlay = ModConstants.USES_OVERLAY.test(materials);
-            }
-        }
+        boolean usesOverlay = moremcmeta_emissive_usesOverlay(bakeryImpl, unbakedModel);
 
         BakedModel original = callbackInfo.getReturnValue();
         BakedModel resultModel = original;
@@ -85,6 +77,53 @@ public final class ModelBakeryMixin {
         if (bakery != null && bakery.bakedCache.containsKey(key)) {
             bakery.bakedCache.put(key, resultModel);
         }
+    }
+
+    /**
+     * Checks whether a model needs to be wrapped with an overlay model.
+     * @param bakeryImpl    model bakery
+     * @param model         model to check
+     * @return whether the model needs to be wrapped with an overlay model
+     */
+    @Unique
+    private boolean moremcmeta_emissive_usesOverlay(ModelBakery.ModelBakerImpl bakeryImpl, UnbakedModel model) {
+        boolean usesOverlay = true;
+
+        // Filter out block models for which we can check materials to improve performance
+        if (model instanceof BlockModel blockModel) {
+            Set<Material> materials = moremcmeta_emissive_modelMaterials(blockModel).stream()
+                    .map(blockModel::getMaterial)
+                    .collect(Collectors.toSet());
+            usesOverlay = ModConstants.USES_OVERLAY.test(materials);
+        } else if (model instanceof MultiPart multiPartModel) {
+            usesOverlay = multiPartModel.getMultiVariants().stream()
+                    .anyMatch((part) -> moremcmeta_emissive_usesOverlay(bakeryImpl, part));
+        } else if (model instanceof MultiVariant multiVariantModel) {
+            usesOverlay = multiVariantModel.getVariants().stream()
+                    .anyMatch((variant) -> moremcmeta_emissive_usesOverlay(
+                            bakeryImpl,
+                            bakeryImpl.getModel(variant.getModelLocation())
+                    ));
+        }
+
+        return usesOverlay;
+    }
+
+    /**
+     * Gets all materials for a given model.
+     * @param model     model to retrieve materials for
+     * @return all materials in this model and its parent models
+     */
+    private Set<String> moremcmeta_emissive_modelMaterials(BlockModel model) {
+        Set<String> materials = new HashSet<>();
+
+        BlockModel currentModel = model;
+        while (currentModel != null) {
+            materials.addAll(currentModel.textureMap.keySet());
+            currentModel = currentModel.parent;
+        }
+
+        return materials;
     }
 
 }

@@ -3,6 +3,8 @@ accessible  class   net/minecraft/client/resources/model/ModelBakery$ModelBakerI
 accessible  field   net/minecraft/client/resources/model/ModelBakery bakedCache Ljava/util/Map;
 accessible  class   net/minecraft/client/resources/model/ModelBakery$BakedCacheKey
 accessible  method   net/minecraft/client/resources/model/ModelBakery$BakedCacheKey <init> (Lnet/minecraft/resources/ResourceLocation;Lcom/mojang/math/Transformation;Z)V
+accessible  field   net/minecraft/client/renderer/block/model/BlockModel textureMap Ljava/util/Map;
+accessible  field   net/minecraft/client/renderer/block/model/BlockModel parent Lnet/minecraft/client/renderer/block/model/BlockModel;
 accessible  class  net/minecraft/client/renderer/RenderType$CompositeRenderType
 accessible  method  net/minecraft/client/renderer/RenderType$CompositeRenderType    state   ()Lnet/minecraft/client/renderer/RenderType$CompositeState;
 accessible  class   net/minecraft/client/renderer/RenderType$CompositeState
