@@ -17,6 +17,7 @@
 
 package io.github.moremcmeta.emissiveplugin.forge.mixin;
 
+import com.mojang.math.Transformation;
 import io.github.moremcmeta.emissiveplugin.ModConstants;
 import io.github.moremcmeta.emissiveplugin.forge.model.OverlayBakedItemModel;
 import net.minecraft.client.resources.model.BakedModel;
@@ -26,6 +27,7 @@ import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.WeightedBakedModel;
 import net.minecraft.resources.ResourceLocation;
+import org.apache.commons.lang3.tuple.Triple;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -76,13 +78,18 @@ public final class ModelBakeryMixin {
         );
 
         BakedModel original = callbackInfo.getReturnValue();
+        BakedModel resultModel = original;
 
         // Built-in models are empty, and wrapping them causes shulker boxes, etc. to be invisible in the inventory
         if (usesOverlay && !(original instanceof OverlayBakedItemModel) && !(original instanceof BuiltInModel)
                 && !(original instanceof WeightedBakedModel)) {
-            callbackInfo.setReturnValue(
-                    new OverlayBakedItemModel(callbackInfo.getReturnValue())
-            );
+            resultModel = new OverlayBakedItemModel(original);
+            callbackInfo.setReturnValue(resultModel);
+        }
+
+        Triple<ResourceLocation, Transformation, Boolean> key = Triple.of(modelLocation, state.getRotation(), state.isUvLocked());
+        if (bakery.bakedCache.containsKey(key)) {
+            bakery.bakedCache.put(key, resultModel);
         }
     }
 
