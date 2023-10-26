@@ -29,6 +29,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
@@ -83,4 +84,18 @@ public final class ModConstants {
                         spriteName
                 ).isPresent());
     };
+    private static final int DIRECTIONS = Direction.values().length;
+    private static final float OFFSET_COEFFICIENT = 0.001f;
+    public static final float[] X_OFFSETS = new float[DIRECTIONS];
+    public static final float[] Y_OFFSETS = new float[DIRECTIONS];
+    public static final float[] Z_OFFSETS = new float[DIRECTIONS];
+    static {
+        Direction[] values = Direction.values();
+        for (int ordinal = 0; ordinal < DIRECTIONS; ordinal++) {
+            Direction value = values[ordinal];
+            X_OFFSETS[ordinal] = OFFSET_COEFFICIENT * value.getStepX();
+            Y_OFFSETS[ordinal] = OFFSET_COEFFICIENT * value.getStepY();
+            Z_OFFSETS[ordinal] = OFFSET_COEFFICIENT * value.getStepZ();
+        }
+    }
 }
