@@ -52,6 +52,9 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.function.Supplier;
 
+import static io.github.moremcmeta.emissiveplugin.ModConstants.X_OFFSETS;
+import static io.github.moremcmeta.emissiveplugin.ModConstants.Y_OFFSETS;
+import static io.github.moremcmeta.emissiveplugin.ModConstants.Z_OFFSETS;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -217,8 +220,13 @@ public final class OverlayBakedModel extends ForwardingBakedModel {
 
             EMITTER.material((metadata.isEmissive() ? EMISSIVE_MATERIAL : NON_EMISSIVE_MATERIAL)[blendMode.ordinal()]);
 
+            int facing = quad.lightFace().ordinal();
             TextureAtlasSprite overlaySprite = BLOCK_ATLAS.getSprite(metadata.overlaySpriteName());
             for (int vertexIndex = 0; vertexIndex < VERTS_PER_QUAD; vertexIndex++) {
+                float x = EMITTER.x(vertexIndex);
+                float y = EMITTER.y(vertexIndex);
+                float z = EMITTER.z(vertexIndex);
+                EMITTER.pos(vertexIndex, x + X_OFFSETS[facing], y + Y_OFFSETS[facing], z + Z_OFFSETS[facing]);
                 EMITTER.sprite(
                         vertexIndex,
                         0,
