@@ -34,6 +34,9 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static io.github.moremcmeta.emissiveplugin.ModConstants.X_OFFSETS;
+import static io.github.moremcmeta.emissiveplugin.ModConstants.Y_OFFSETS;
+import static io.github.moremcmeta.emissiveplugin.ModConstants.Z_OFFSETS;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -42,6 +45,7 @@ import static java.util.Objects.requireNonNull;
  * @author soir20
  */
 public final class OverlayQuadFunction implements Function<List<BakedQuad>, List<OverlayBakedQuad>> {
+
     private final ModelManager MODEL_MANAGER;
     private final OverlayBakedQuad.Builder QUAD_BUILDER;
 
@@ -95,6 +99,7 @@ public final class OverlayQuadFunction implements Function<List<BakedQuad>, List
                             return Stream.of(QUAD_BUILDER.build(
                                     makeOverlayVertexData(
                                             quad.getVertices(),
+                                            quad.getDirection().ordinal(),
                                             sprite,
                                             quad.getSprite(),
                                             metadata.isEmissive()
@@ -114,14 +119,18 @@ public final class OverlayQuadFunction implements Function<List<BakedQuad>, List
     /**
      * Recomputes vertex data for overlay quads.
      * @param vertexData        original vertex data
+     * @param facing            ordinal of the direction the quad is facing
      * @param newSprite         sprite that will be used as the overlay
      * @param oldSprite         sprite that will have an overlay applied
      * @param emissive          whether the overlay quads should be emissive
      * @return new vertex data for the overlay quads
      */
-    private static int[] makeOverlayVertexData(int[] vertexData, TextureAtlasSprite newSprite,
+    private static int[] makeOverlayVertexData(int[] vertexData, int facing, TextureAtlasSprite newSprite,
                                                TextureAtlasSprite oldSprite, boolean emissive) {
         final int VERTEX_SIZE = 8;
+        final int POS_X_OFFSET = 0;
+        final int POS_Y_OFFSET = 1;
+        final int POS_Z_OFFSET = 2;
         final int TEX_U_OFFSET = 4;
         final int TEX_V_OFFSET = 5;
         final int LIGHT_OFFSET = 6;
@@ -131,16 +140,34 @@ public final class OverlayQuadFunction implements Function<List<BakedQuad>, List
 
         for (int vertex = 0; vertex < 4; vertex++) {
             int vertexOffset = vertex * VERTEX_SIZE;
+            int posXOffset = vertexOffset + POS_X_OFFSET;
+            int posYOffset = vertexOffset + POS_Y_OFFSET;
+            int posZOffset = vertexOffset + POS_Z_OFFSET;
             int texUOffset = vertexOffset + TEX_U_OFFSET;
             int texVOffset = vertexOffset + TEX_V_OFFSET;
+
+            newVertexData[posXOffset] = recomputePos(newVertexData[posXOffset], X_OFFSETS[facing]);
+            newVertexData[posYOffset] = recomputePos(newVertexData[posYOffset], Y_OFFSETS[facing]);
+            newVertexData[posZOffset] = recomputePos(newVertexData[posZOffset], Z_OFFSETS[facing]);
             newVertexData[texUOffset] = recomputeSpriteU(newVertexData[texUOffset], oldSprite, newSprite);
             newVertexData[texVOffset] = recomputeSpriteV(newVertexData[texVOffset], oldSprite, newSprite);
+
             if (emissive) {
                 newVertexData[vertexOffset + LIGHT_OFFSET] = LightTexture.FULL_BRIGHT;
             }
         }
 
         return newVertexData;
+    }
+
+    /**
+     * Recomputes the position of the quad based on the provided offset.
+     * @param pos       current position of the quad as int bits
+     * @param offset    offset to move the position
+     * @return new position of the quad as int bits
+     */
+    private static int recomputePos(int pos, float offset) {
+        return Float.floatToRawIntBits(Float.intBitsToFloat(pos) + offset);
     }
 
     /**
