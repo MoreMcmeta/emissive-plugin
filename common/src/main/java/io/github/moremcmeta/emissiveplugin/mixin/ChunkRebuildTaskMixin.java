@@ -22,6 +22,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.moremcmeta.emissiveplugin.fabricapi.SpriteFinder;
+import io.github.moremcmeta.emissiveplugin.mixinaccess.SpriteFinderSupplier;
 import io.github.moremcmeta.emissiveplugin.render.OverlayVertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ChunkBufferBuilderPack;
@@ -35,7 +36,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -52,10 +52,6 @@ import java.util.Set;
 @SuppressWarnings("unused")
 @Mixin(ChunkRenderDispatcher.RenderChunk.RebuildTask.class)
 public final class ChunkRebuildTaskMixin {
-    @Unique
-    private final SpriteFinder SPRITE_FINDER = new SpriteFinder(
-            Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS)
-    );
 
     /**
      * Renders overlay quads in the translucent layer after the base fluid was rendered.
@@ -98,7 +94,10 @@ public final class ChunkRebuildTaskMixin {
 
         }
 
-        VertexConsumer wrappedBuffer = new OverlayVertexConsumer(SPRITE_FINDER, bufferBuilder);
+        TextureAtlas blockAtlas = Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS);
+        SpriteFinder spriteFinder = ((SpriteFinderSupplier) blockAtlas).moremcmeta_emissive_spriteFinder();
+
+        VertexConsumer wrappedBuffer = new OverlayVertexConsumer(spriteFinder, bufferBuilder);
         if (blockRenderDispatcher.renderLiquid(currentPos, renderChunkRegion, wrappedBuffer, renderChunkRegion.getFluidState(currentPos))) {
             compiledChunk.hasBlocks.add(renderType);
         }
