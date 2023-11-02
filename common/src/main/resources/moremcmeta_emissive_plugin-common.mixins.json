@@ -8,7 +8,8 @@
     "EntityRenderDispatcherMixin",
     "BlockEntityRenderDispatcherMixin",
     "SpriteLoaderMixin",
-    "ChunkRebuildTaskMixin"
+    "ChunkRebuildTaskMixin",
+    "TextureAtlasMixin"
   ],
   "mixins": [
   ],
