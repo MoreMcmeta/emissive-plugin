@@ -117,10 +117,11 @@ public final class ModelPartMixin {
                 int overlayLight = overlayMetadata.isEmissive() ? ModConstants.FULL_BRIGHT : packedLight;
 
                 /* Disabling cull is needed to render emissive layers inside the slime properly, but it needs to
-                   be enabled for bed overlays to render properly. */
+                   be enabled for bed overlays to render properly. Z-layering needs to be enabled for armor overlays
+                   to render properly, so the entity shadow type is used. */
                 Function<ResourceLocation, RenderType> overlayType = EntityRenderingState.isBlockEntity.get()
                         ? RenderType::entityTranslucentCull
-                        : RenderType::entityTranslucent;
+                        : RenderType::entityShadow;
                 VertexConsumer newConsumer = makeBuffer(bufferSource, overlay, overlayType);
                 thisPart.render(poseStack, newConsumer, overlayLight, packedOverlay, red, blue, green, alpha);
 
