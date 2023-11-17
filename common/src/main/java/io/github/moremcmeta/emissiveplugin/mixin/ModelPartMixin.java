@@ -21,6 +21,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.moremcmeta.emissiveplugin.ModConstants;
 import io.github.moremcmeta.emissiveplugin.metadata.OverlayMetadata;
+import io.github.moremcmeta.emissiveplugin.render.CustomRenderTypes;
 import io.github.moremcmeta.emissiveplugin.render.EntityRenderingState;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.AnalyzedMetadata;
 import io.github.moremcmeta.moremcmeta.api.client.metadata.MetadataRegistry;
@@ -73,21 +74,19 @@ public final class ModelPartMixin {
      * @param packedLight       light strength packed into an integer
      * @param packedOverlay     overlay coordinates packed into an integer
      * @param red               red component of light
-     * @param blue              blue component of light
-     * @param green             green component of light
+     * @param green              blue component of light
+     * @param blue             green component of light
      * @param alpha             alpha component of light
      * @param callbackInfo      callback info from Mixin
      */
     @Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;IIFFFF)V",
             at = @At(value = "RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
     private void moremcmeta_emissive_onReturn(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight,
-                                              int packedOverlay, float red, float blue, float green, float alpha,
+                                              int packedOverlay, float red, float green, float blue, float alpha,
                                               CallbackInfo callbackInfo) {
 
         @SuppressWarnings("DataFlowIssue")
         ModelPart thisPart = (ModelPart) (Object) this;
-
-        MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
 
         // Check depth to avoid getting stuck in infinite recursion or re-rendering child parts multiple times
         if (EntityRenderingState.partRenderDepth.get() == 0) {
@@ -107,20 +106,23 @@ public final class ModelPartMixin {
             }
 
             // Do rendering
+            MultiBufferSource bufferSource = EntityRenderingState.currentBufferSource.get();
             RenderType lastType = EntityRenderingState.currentRenderType.get();
-            if (metadataOptional.isPresent() && lastType != null) {
+            if (metadataOptional.isPresent() && bufferSource != null && lastType != null) {
                 OverlayMetadata overlayMetadata = (OverlayMetadata) metadataOptional.get();
                 ResourceLocation overlay = overlayMetadata.overlaySpriteName();
                 int overlayLight = overlayMetadata.isEmissive() ? LightTexture.FULL_BRIGHT : packedLight;
+
 
                 /* Disabling cull is needed to render emissive layers inside the slime properly, but it needs to
                    be enabled for bed overlays to render properly. Z-layering needs to be enabled for armor overlays
                    to render properly, so the entity shadow type is used. */
                 Function<ResourceLocation, RenderType> overlayType = EntityRenderingState.isBlockEntity.get()
                         ? RenderType::entityTranslucentCull
-                        : RenderType::entityShadow;
+                        : CustomRenderTypes::entityTranslucentZLayering;
+
                 VertexConsumer newConsumer = makeBuffer(bufferSource, overlay, overlayType);
-                thisPart.render(poseStack, newConsumer, overlayLight, packedOverlay, red, blue, green, alpha);
+                thisPart.render(poseStack, newConsumer, overlayLight, packedOverlay, red, green, blue, alpha);
 
                 // Restore original render type
                 bufferSource.getBuffer(lastType);
