@@ -105,7 +105,7 @@ public final class SpriteLoaderMixin {
                                             overlayMetadata.overlaySpriteName(),
                                             frameSize,
                                             spriteImage,
-                                            animationMetadata
+                                            rsc.metadata()
                                     )
                             );
                         } catch (IOException err) {

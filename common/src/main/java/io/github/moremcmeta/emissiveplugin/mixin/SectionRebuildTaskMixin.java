@@ -26,11 +26,11 @@ import io.github.moremcmeta.emissiveplugin.fabricapi.SpriteFinder;
 import io.github.moremcmeta.emissiveplugin.mixinaccess.SpriteFinderSupplier;
 import io.github.moremcmeta.emissiveplugin.render.OverlayVertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ChunkBufferBuilderPack;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SectionBufferBuilderPack;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher;
 import net.minecraft.client.renderer.chunk.RenderChunkRegion;
+import net.minecraft.client.renderer.chunk.SectionRenderDispatcher;
 import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.BlockPos;
@@ -50,8 +50,8 @@ import java.util.Set;
  * @author soir20
  */
 @SuppressWarnings("unused")
-@Mixin(ChunkRenderDispatcher.RenderChunk.RebuildTask.class)
-public final class ChunkRebuildTaskMixin {
+@Mixin(SectionRenderDispatcher.RenderSection.RebuildTask.class)
+public final class SectionRebuildTaskMixin {
 
     /**
      * Renders overlay quads in the translucent layer after the base fluid was rendered.
@@ -81,9 +81,9 @@ public final class ChunkRebuildTaskMixin {
                     "Lnet/minecraft/world/level/material/FluidState;)V",
             shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD)
     public void moremcmeta_emissive_onChunkCompile(
-            float x, float y, float z, ChunkBufferBuilderPack bufferPack,
-            CallbackInfoReturnable<ChunkRenderDispatcher.RenderChunk.RebuildTask.CompileResults> callbackInfo,
-            ChunkRenderDispatcher.RenderChunk.RebuildTask.CompileResults compileResults,
+            float x, float y, float z, SectionBufferBuilderPack bufferPack,
+            CallbackInfoReturnable<SectionRenderDispatcher.RenderSection.RebuildTask.CompileResults> callbackInfo,
+            SectionRenderDispatcher.RenderSection.RebuildTask.CompileResults compileResults,
             int unused, BlockPos origin, BlockPos maxInChunk, VisGraph visGraph, RenderChunkRegion renderChunkRegion,
             PoseStack poseStack, Set<RenderType> startedRenderTypes, RandomSource randomSource,
             BlockRenderDispatcher blockRenderDispatcher, Iterator<BlockPos> posIterator, BlockPos currentPos,
