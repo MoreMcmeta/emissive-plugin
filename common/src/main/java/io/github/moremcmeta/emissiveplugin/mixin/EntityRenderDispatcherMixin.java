@@ -28,19 +28,24 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * Sets the current {@link EntityRenderingState} when regular entities are rendered.
+ * Sets the current {@link EntityRenderingState} when regular entities are rendered. Priority is set
+ * so that this Mixin runs after all other Mixins (particularly Iris) for compatibility.
  * @author soir20
  */
 @SuppressWarnings("unused")
-@Mixin(EntityRenderDispatcher.class)
+@Mixin(value = EntityRenderDispatcher.class, priority = Integer.MAX_VALUE)
 public final class EntityRenderDispatcherMixin {
 
     /**
-     * Wraps the buffer source so that its buffers set the render type when the entity is rendered.
+     * Wraps the buffer source so that its buffers set the render type when the entity is rendered. This Mixin
+     * matches Iris's Mixin location for compatibility.
      * @param bufferSource      buffer source to wrap
      * @return wrapped buffer source
      */
-    @ModifyVariable(method = "render", at = @At("HEAD"))
+    @ModifyVariable(method = "render",
+            at = @At(value = "INVOKE",
+                    target = "Lcom/mojang/blaze3d/vertex/PoseStack;pushPose()V",
+                    shift = At.Shift.AFTER))
     private MultiBufferSource moremcmeta_emissive_wrapBufferSource(MultiBufferSource bufferSource) {
         EntityRenderingState.currentBufferSource.set(bufferSource);
         return WrappedBufferSource.wrap(bufferSource, (renderType) -> {
