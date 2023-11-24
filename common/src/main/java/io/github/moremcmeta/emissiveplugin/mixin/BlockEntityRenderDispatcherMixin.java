@@ -26,13 +26,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * Sets the current {@link EntityRenderingState} when block entities are rendered.
+ * Sets the current {@link EntityRenderingState} when block entities are rendered. Priority is set
+ *  * so that this Mixin runs after all other Mixins (particularly Iris) for compatibility.
  * @author soir20
  */
 @SuppressWarnings("unused")
-@Mixin(BlockEntityRenderDispatcher.class)
+@Mixin(value = BlockEntityRenderDispatcher.class, priority = Integer.MAX_VALUE)
 public final class BlockEntityRenderDispatcherMixin {
 
     /**
@@ -40,8 +42,9 @@ public final class BlockEntityRenderDispatcherMixin {
      * @param bufferSource      buffer source to wrap
      * @return wrapped buffer source
      */
-    @ModifyVariable(method = "render", at = @At("HEAD"))
-    private MultiBufferSource moremcmeta_emissive_wrapBufferSource(MultiBufferSource bufferSource) {
+    @ModifyVariable(method = "setupAndRender(Lnet/minecraft/client/renderer/blockentity/BlockEntityRenderer;Lnet/minecraft/world/level/block/entity/BlockEntity;FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;)V",
+            at = @At(value = "HEAD"))
+    private static MultiBufferSource moremcmeta_emissive_wrapBufferSource(MultiBufferSource bufferSource) {
         EntityRenderingState.currentBufferSource.set(bufferSource);
         return WrappedBufferSource.wrap(bufferSource, (renderType) -> {
             EntityRenderingState.currentRenderType.set(renderType);
@@ -53,10 +56,30 @@ public final class BlockEntityRenderDispatcherMixin {
      * Clears the render type after the block entity finishes rendering.
      * @param callbackInfo      callback info from Mixin
      */
-    @Inject(method = "render", at = @At(value = "RETURN"))
-    private void moremcmeta_emissive_onReturn(CallbackInfo callbackInfo) {
+    @Inject(method = "setupAndRender(Lnet/minecraft/client/renderer/blockentity/BlockEntityRenderer;Lnet/minecraft/world/level/block/entity/BlockEntity;FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;)V",
+            at = @At(value = "RETURN"))
+    private static void moremcmeta_emissive_onReturn(CallbackInfo callbackInfo) {
         EntityRenderingState.currentBufferSource.remove();
         EntityRenderingState.currentRenderType.remove();
+    }
+
+    /**
+     * Wraps the buffer source so that its buffers set the render type when the block entity in hand is rendered.
+     * @param bufferSource      buffer source to wrap
+     * @return wrapped buffer source
+     */
+    @ModifyVariable(method = "renderItem", at = @At(value = "HEAD"))
+    private MultiBufferSource moremcmeta_emissive_wrapItemBufferSource(MultiBufferSource bufferSource) {
+        return moremcmeta_emissive_wrapBufferSource(bufferSource);
+    }
+
+    /**
+     * Clears the render type after the block entity in hand finishes rendering.
+     * @param callbackInfo      callback info from Mixin
+     */
+    @Inject(method = "renderItem", at = @At(value = "RETURN"))
+    private void moremcmeta_emissive_onItemReturn(CallbackInfoReturnable<Boolean> callbackInfo) {
+        moremcmeta_emissive_onReturn(callbackInfo);
     }
 
 }
