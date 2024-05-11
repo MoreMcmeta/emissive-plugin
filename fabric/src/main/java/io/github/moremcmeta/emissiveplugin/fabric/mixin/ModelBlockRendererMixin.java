@@ -38,11 +38,11 @@ public final class ModelBlockRendererMixin {
      * Sets a quad to full-bright if it is an emissive overlay quad.
      * @param args      all method arguments from Mixin
      */
-    @ModifyArgs(method = "renderQuadList", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;putBulkData(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/model/BakedQuad;FFFII)V"))
+    @ModifyArgs(method = "renderQuadList", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;putBulkData(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/model/BakedQuad;FFFFII)V"))
     private static void moremcmeta_emissive_onPutBulkData(Args args) {
         BakedQuad quad = args.get(1);
         if (quad instanceof OverlayBakedQuad overlayQuad && overlayQuad.isEmissive()) {
-            args.set(5, LightTexture.FULL_BRIGHT);
+            args.set(6, LightTexture.FULL_BRIGHT);
         }
     }
 
