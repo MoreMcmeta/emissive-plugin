@@ -1,3 +1,5 @@
+import net.fabricmc.loom.api.mappings.layered.MappingsNamespace
+
 plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
     id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -13,10 +15,9 @@ loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
 
     forge {
-        convertAccessWideners = true
-        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
+        accessTransformer file("src/main/resources/META-INF/accesstransformer.cfg")
 
-        mixinConfig "moremcmeta_emissive_plugin-common.mixins.json", "moremcmeta_emissive_plugin-forge.mixins.json"
+        mixinConfig "moremcmeta_emissive_plugin-common-noremap.mixins.json", "moremcmeta_emissive_plugin-forge.mixins.json"
     }
 }
 
@@ -56,7 +57,11 @@ shadowJar {
 }
 
 remapJar {
-    injectAccessWidener = true
+
+    // In 1.20.6+, Forge applies remapping at runtime, so we need to disable
+    // remapping in the output jar.
+    sourceNamespace = MappingsNamespace.INTERMEDIARY.toString()
+
     inputFile.set shadowJar.archiveFile
     dependsOn shadowJar
     archiveClassifier.set "forge"

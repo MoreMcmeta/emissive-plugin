@@ -28,7 +28,7 @@ import java.util.List;
  * Adds a getter for the elements of an {@link ElementsModel}.
  * @author soir20
  */
-@Mixin(ElementsModel.class)
+@Mixin(value = ElementsModel.class, remap = false)
 public interface ElementsModelMixin {
 
     /**

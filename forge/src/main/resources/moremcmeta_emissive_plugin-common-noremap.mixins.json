@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "package": "io.github.moremcmeta.emissiveplugin.forge.mixincommon",
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "client": [
+    "ModelPartMixin",
+    "EntityRenderDispatcherMixin",
+    "BlockEntityRenderDispatcherMixin",
+    "SpriteLoaderMixin",
+    "SectionRebuildTaskMixin",
+    "TextureAtlasMixin"
+  ],
+  "mixins": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
  * @author soir20
  */
 @SuppressWarnings("unused")
-@Mixin(ModelBakery.ModelBakerImpl.class)
+@Mixin(value = ModelBakery.ModelBakerImpl.class, remap = false)
 public final class ModelBakeryMixin {
     @Unique
     private ModelBakery bakery;
