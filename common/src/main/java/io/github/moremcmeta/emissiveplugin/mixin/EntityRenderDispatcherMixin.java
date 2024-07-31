@@ -17,15 +17,18 @@
 
 package io.github.moremcmeta.emissiveplugin.mixin;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.moremcmeta.emissiveplugin.render.EntityRenderingState;
 import io.github.moremcmeta.emissiveplugin.render.WrappedBufferSource;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 /**
  * Sets the current {@link EntityRenderingState} when regular entities are rendered. Priority is set
@@ -37,31 +40,53 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public final class EntityRenderDispatcherMixin {
 
     /**
-     * Wraps the buffer source so that its buffers set the render type when the entity is rendered. This Mixin
-     * matches Iris's Mixin location for compatibility.
-     * @param bufferSource      buffer source to wrap
-     * @return wrapped buffer source
-     */
-    @ModifyVariable(method = "render",
-            at = @At(value = "INVOKE",
-                    target = "Lcom/mojang/blaze3d/vertex/PoseStack;pushPose()V",
-                    shift = At.Shift.AFTER))
-    private MultiBufferSource moremcmeta_emissive_wrapBufferSource(MultiBufferSource bufferSource) {
-        EntityRenderingState.currentBufferSource.set(bufferSource);
-        return WrappedBufferSource.wrap(bufferSource, (renderType) -> {
-            EntityRenderingState.currentRenderType.set(renderType);
-            EntityRenderingState.isBlockEntity.set(false);
-        });
-    }
-
-    /**
-     * Clears the render type after the entity finishes rendering.
+     * Renders overlays for non-block entities.
+     * @param entity            entity being rendered
+     * @param x                 x-coordinate of the entity
+     * @param y                 y-coordinate of the entity
+     * @param z                 z-coordinate of the entity
+     * @param yaw               yaw of the entity
+     * @param tickDelta         ticks since the entity was last rendered
+     * @param poseStack         pose stack
+     * @param bufferSource      source of render buffers
+     * @param packedLight       packed coordinates for the light texture
      * @param callbackInfo      callback info from Mixin
      */
-    @Inject(method = "render", at = @At(value = "RETURN"))
-    private void moremcmeta_emissive_onReturn(CallbackInfo callbackInfo) {
+    @Inject(method = "render", at = @At(value = "HEAD"), locals = LocalCapture.CAPTURE_FAILHARD)
+    private void moremcmeta_emissive_onRender(Entity entity, double x, double y, double z, float yaw, float tickDelta,
+                                              PoseStack poseStack, MultiBufferSource bufferSource, int packedLight,
+                                              CallbackInfo callbackInfo) {
+        if (bufferSource instanceof WrappedBufferSource) {
+            return;
+        }
+
+        @SuppressWarnings("DataFlowIssue")
+        EntityRenderDispatcher entityRenderDispatcher = ((EntityRenderDispatcher) (Object) this);
+        entityRenderDispatcher.render(
+                entity,
+                x,
+                y,
+                z,
+                yaw,
+                tickDelta,
+                poseStack,
+                WrappedBufferSource.wrap(bufferSource, false, false),
+                packedLight
+        );
+        EntityRenderingState.isEmissive.set(true);
+        entityRenderDispatcher.render(
+                entity,
+                x,
+                y,
+                z,
+                yaw,
+                tickDelta,
+                poseStack,
+                WrappedBufferSource.wrap(bufferSource, true, false),
+                LightTexture.FULL_BRIGHT
+        );
+        EntityRenderingState.isEmissive.set(false);
         EntityRenderingState.currentBufferSource.remove();
-        EntityRenderingState.currentRenderType.remove();
     }
 
 }

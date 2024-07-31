@@ -17,5 +17,6 @@ accessible  field   net/minecraft/client/renderer/block/BlockRenderDispatcher mo
 mutable  field   net/minecraft/client/renderer/block/BlockRenderDispatcher modelRenderer  Lnet/minecraft/client/renderer/block/ModelBlockRenderer;
 accessible  field   net/minecraft/client/renderer/block/BlockRenderDispatcher blockColors  Lnet/minecraft/client/color/block/BlockColors;
 accessible class net/minecraft/client/renderer/chunk/SectionRenderDispatcher$RenderSection$RebuildTask
-accessible class net/minecraft/client/renderer/chunk/SectionRenderDispatcher$RenderSection$RebuildTask$CompileResults
+accessible  field  net/minecraft/client/renderer/chunk/SectionCompiler blockRenderer Lnet/minecraft/client/renderer/block/BlockRenderDispatcher;
+accessible  method  net/minecraft/client/renderer/chunk/SectionCompiler getOrBeginLayer (Ljava/util/Map;Lnet/minecraft/client/renderer/SectionBufferBuilderPack;Lnet/minecraft/client/renderer/RenderType;)Lcom/mojang/blaze3d/vertex/BufferBuilder;
 accessible field net/minecraft/client/renderer/texture/TextureAtlas texturesByName Ljava/util/Map;

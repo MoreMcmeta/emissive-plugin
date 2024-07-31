@@ -19,9 +19,12 @@ package io.github.moremcmeta.emissiveplugin.render;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.Util;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+
+import java.util.function.Function;
 
 /**
  * Contains factories for custom emissive overlay {@link RenderType}s.
@@ -29,30 +32,36 @@ import net.minecraft.resources.ResourceLocation;
  */
 public final class CustomRenderTypes extends RenderStateShard {
 
+    private static final Function<ResourceLocation, RenderType> ENTITY_TRANSLUCENT_Z_LAYERING = Util.memoize(
+            (textureLocation) -> {
+                RenderType.CompositeState compositeState = RenderType.CompositeState.builder()
+                        .setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_SHADER)
+                        .setTextureState(new RenderStateShard.TextureStateShard(textureLocation, false, false))
+                        .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                        .setCullState(NO_CULL)
+                        .setLightmapState(LIGHTMAP)
+                        .setOverlayState(OVERLAY)
+                        .setLayeringState(VIEW_OFFSET_Z_LAYERING)
+                        .createCompositeState(true);
+                return new RenderType.CompositeRenderType(
+                        "entity_translucent_z_layering",
+                        DefaultVertexFormat.NEW_ENTITY,
+                        VertexFormat.Mode.QUADS,
+                        1536,
+                        true,
+                        true,
+                        compositeState
+                );
+            }
+    );
+
     /**
      * Creates a new translucent entity render type with z-layering enabled, which works with armor.
      * @param textureLocation       location of the texture to render
      * @return translucent render type
      */
     public static RenderType entityTranslucentZLayering(ResourceLocation textureLocation) {
-        RenderType.CompositeState compositeState = RenderType.CompositeState.builder()
-                .setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_SHADER)
-                .setTextureState(new RenderStateShard.TextureStateShard(textureLocation, false, false))
-                .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-                .setCullState(NO_CULL)
-                .setLightmapState(LIGHTMAP)
-                .setOverlayState(OVERLAY)
-                .setLayeringState(VIEW_OFFSET_Z_LAYERING)
-                .createCompositeState(true);
-        return new RenderType.CompositeRenderType(
-                "entity_translucent_z_layering",
-                DefaultVertexFormat.NEW_ENTITY,
-                VertexFormat.Mode.QUADS,
-                256,
-                true,
-                true,
-                compositeState
-        );
+        return ENTITY_TRANSLUCENT_Z_LAYERING.apply(textureLocation);
     }
 
     /**

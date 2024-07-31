@@ -17,16 +17,22 @@
 
 package io.github.moremcmeta.emissiveplugin.mixin;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.moremcmeta.emissiveplugin.render.EntityRenderingState;
 import io.github.moremcmeta.emissiveplugin.render.WrappedBufferSource;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 /**
  * Sets the current {@link EntityRenderingState} when block entities are rendered. Priority is set
@@ -38,48 +44,99 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public final class BlockEntityRenderDispatcherMixin {
 
     /**
-     * Wraps the buffer source so that its buffers set the render type when the block entity is rendered.
-     * @param bufferSource      buffer source to wrap
-     * @return wrapped buffer source
-     */
-    @ModifyVariable(method = "setupAndRender(Lnet/minecraft/client/renderer/blockentity/BlockEntityRenderer;Lnet/minecraft/world/level/block/entity/BlockEntity;FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;)V",
-            at = @At(value = "HEAD"))
-    private static MultiBufferSource moremcmeta_emissive_wrapBufferSource(MultiBufferSource bufferSource) {
-        EntityRenderingState.currentBufferSource.set(bufferSource);
-        return WrappedBufferSource.wrap(bufferSource, (renderType) -> {
-            EntityRenderingState.currentRenderType.set(renderType);
-            EntityRenderingState.isBlockEntity.set(true);
-        });
-    }
-
-    /**
-     * Clears the render type after the block entity finishes rendering.
-     * @param callbackInfo      callback info from Mixin
+     * Renders overlays for block entities.
+     * @param blockEntityRenderer   renderer for the given block entity
+     * @param blockEntity           block entity being rendered
+     * @param tickDelta             ticks since the last render
+     * @param poseStack             pose stack
+     * @param bufferSource          source of render buffers
+     * @param callbackInfo          callback info from Mixin
+     * @param packedLight           packed coordinates for the light texture
      */
     @Inject(method = "setupAndRender(Lnet/minecraft/client/renderer/blockentity/BlockEntityRenderer;Lnet/minecraft/world/level/block/entity/BlockEntity;FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;)V",
-            at = @At(value = "RETURN"))
-    private static void moremcmeta_emissive_onReturn(CallbackInfo callbackInfo) {
+            at = @At(value = "RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
+    private static void moremcmeta_emissive_onRender(BlockEntityRenderer<BlockEntity> blockEntityRenderer,
+                                                     BlockEntity blockEntity, float tickDelta, PoseStack poseStack,
+                                                     MultiBufferSource bufferSource, CallbackInfo callbackInfo, int packedLight) {
+        moremcmeta_emissive_renderBlockEntityOverlay(
+                blockEntityRenderer,
+                blockEntity,
+                poseStack,
+                bufferSource,
+                packedLight,
+                OverlayTexture.NO_OVERLAY,
+                tickDelta
+        );
+    }
+
+    /**
+     * Renders overlays for block entity items.
+     * @param blockEntity           block entity being rendered
+     * @param poseStack             pose stack
+     * @param bufferSource          source of render buffers
+     * @param packedLight           packed coordinates for the light texture
+     * @param packedOverlay         packed coordinates for the overlay texture
+     * @param callbackInfo          callback info from Mixin
+     * @param blockEntityRenderer   renderer for the given block entity
+     */
+    @Inject(method = "renderItem", at = @At(value = "RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
+    private void moremcmeta_emissive_onBlockEntityItemRender(BlockEntity blockEntity, PoseStack poseStack,
+                                                             MultiBufferSource bufferSource, int packedLight,
+                                                             int packedOverlay, CallbackInfoReturnable<Boolean> callbackInfo,
+                                                             BlockEntityRenderer<BlockEntity> blockEntityRenderer) {
+        moremcmeta_emissive_renderBlockEntityOverlay(
+                blockEntityRenderer,
+                blockEntity,
+                poseStack,
+                bufferSource,
+                packedLight,
+                packedOverlay,
+                0.0f
+        );
+    }
+
+    /**
+     * Renders the overlay for a block entity or block entity item.
+     * @param blockEntityRenderer   renderer for the given block entity
+     * @param blockEntity           block entity being rendered
+     * @param poseStack             pose stack
+     * @param bufferSource          source of render buffers
+     * @param packedLight           packed coordinates for the light texture
+     * @param packedOverlay         packed coordinates for the overlay texture
+     * @param tickDelta             ticks since the last render
+     */
+    @Unique
+    private static void moremcmeta_emissive_renderBlockEntityOverlay(BlockEntityRenderer<BlockEntity> blockEntityRenderer,
+                                                                     BlockEntity blockEntity, PoseStack poseStack,
+                                                                     MultiBufferSource bufferSource,  int packedLight,
+                                                                     int packedOverlay, float tickDelta) {
+        if (bufferSource instanceof WrappedBufferSource) {
+            return;
+        }
+
+        if (blockEntityRenderer == null) {
+            return;
+        }
+
+        blockEntityRenderer.render(
+                blockEntity,
+                tickDelta,
+                poseStack,
+                WrappedBufferSource.wrap(bufferSource, false, true),
+                packedLight,
+                packedOverlay
+        );
+        EntityRenderingState.isEmissive.set(true);
+        blockEntityRenderer.render(
+                blockEntity,
+                tickDelta,
+                poseStack,
+                WrappedBufferSource.wrap(bufferSource, true, true),
+                LightTexture.FULL_BRIGHT,
+                packedOverlay
+        );
+        EntityRenderingState.isEmissive.set(false);
         EntityRenderingState.currentBufferSource.remove();
-        EntityRenderingState.currentRenderType.remove();
-    }
-
-    /**
-     * Wraps the buffer source so that its buffers set the render type when the block entity in hand is rendered.
-     * @param bufferSource      buffer source to wrap
-     * @return wrapped buffer source
-     */
-    @ModifyVariable(method = "renderItem", at = @At(value = "HEAD"))
-    private MultiBufferSource moremcmeta_emissive_wrapItemBufferSource(MultiBufferSource bufferSource) {
-        return moremcmeta_emissive_wrapBufferSource(bufferSource);
-    }
-
-    /**
-     * Clears the render type after the block entity in hand finishes rendering.
-     * @param callbackInfo      callback info from Mixin
-     */
-    @Inject(method = "renderItem", at = @At(value = "RETURN"))
-    private void moremcmeta_emissive_onItemReturn(CallbackInfoReturnable<Boolean> callbackInfo) {
-        moremcmeta_emissive_onReturn(callbackInfo);
     }
 
 }

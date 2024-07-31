@@ -28,7 +28,6 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
-import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -53,29 +52,24 @@ public final class ModelBakeryMixin {
 
     /**
      * Wraps models that need to be able to render an overlay.
-     * @param modelLocation     location of the model being baked
+     * @param unbakedModel      model being baked
      * @param state             state of the model being baked
      * @param callbackInfo      callback info from Mixin
      */
-    @Inject(method = "bake", at = @At("RETURN"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    private void moremcmeta_emissive_wrapModels(ResourceLocation modelLocation, ModelState state,
+    @Inject(method = "bakeUncached(Lnet/minecraft/client/resources/model/UnbakedModel;Lnet/minecraft/client/resources/model/ModelState;)Lnet/minecraft/client/resources/model/BakedModel;",
+            at = @At("RETURN"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+    private void moremcmeta_emissive_wrapModels(UnbakedModel unbakedModel, ModelState state,
                                                 CallbackInfoReturnable<BakedModel> callbackInfo) {
+        @SuppressWarnings("DataFlowIssue")
         ModelBakery.ModelBakerImpl bakeryImpl = (ModelBakery.ModelBakerImpl) (Object) this;
-        UnbakedModel unbakedModel = bakeryImpl.getModel(modelLocation);
         boolean usesOverlay = moremcmeta_emissive_usesOverlay(bakeryImpl, unbakedModel);
 
         BakedModel original = callbackInfo.getReturnValue();
-        BakedModel resultModel = original;
 
         // Built-in models are empty, and wrapping them causes shulker boxes, etc. to be invisible in the inventory
         if (usesOverlay && !(original instanceof OverlayBakedItemModel) && !(original instanceof BuiltInModel)) {
-            resultModel = new OverlayBakedItemModel(original);
+            BakedModel resultModel = new OverlayBakedItemModel(original);
             callbackInfo.setReturnValue(resultModel);
-        }
-
-        ModelBakery.BakedCacheKey key = new ModelBakery.BakedCacheKey(modelLocation, state.getRotation(), state.isUvLocked());
-        if (bakery != null && bakery.bakedCache.containsKey(key)) {
-            bakery.bakedCache.put(key, resultModel);
         }
     }
 

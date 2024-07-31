@@ -15,25 +15,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.moremcmeta.emissiveplugin.mixin;
+package io.github.moremcmeta.emissiveplugin.fabric.mixin;
 
 import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexSorting;
 import io.github.moremcmeta.emissiveplugin.fabricapi.SpriteFinder;
 import io.github.moremcmeta.emissiveplugin.mixinaccess.SpriteFinderSupplier;
-import io.github.moremcmeta.emissiveplugin.render.OverlayVertexConsumer;
+import io.github.moremcmeta.emissiveplugin.render.LiquidOverlayVertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SectionBufferBuilderPack;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.chunk.RenderChunkRegion;
-import net.minecraft.client.renderer.chunk.SectionRenderDispatcher;
+import net.minecraft.client.renderer.chunk.SectionCompiler;
 import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
@@ -43,34 +42,31 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.Iterator;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * Renders overlay quads in the translucent layer after the base fluid was rendered.
  * @author soir20
  */
 @SuppressWarnings("unused")
-@Mixin(SectionRenderDispatcher.RenderSection.RebuildTask.class)
+@Mixin(value = SectionCompiler.class, priority = Integer.MAX_VALUE)
 public final class SectionRebuildTaskMixin {
 
     /**
      * Renders overlay quads in the translucent layer after the base fluid was rendered.
-     * @param x                     player's x-coordinate
-     * @param y                     player's y-coordinate
-     * @param z                     player's z-coordinate
+     * @param sectionPos            section of the chunk
+     * @param renderChunkRegion     region being rendered
+     * @param vertexSorting         vertex sorter
      * @param bufferPack            buffers by render type
      * @param callbackInfo          callback info from Mixin
      * @param compileResults        results of chunk compilation
-     * @param unused                unknown variable that does not seem to be used anywhere
-     * @param origin                chunk origin
-     * @param maxInChunk            maximum position in chunk
+     * @param chunkOrigin           pos representing the origin of the chunk
+     * @param chunkMax              max pos within the chunk
      * @param visGraph              visibility graph for rendering
-     * @param renderChunkRegion     region being rendered
      * @param poseStack             pose stack for rendering
-     * @param startedRenderTypes    render types for which rendering has started
+     * @param chunkBufferLayers     render buffers by chunk layers
      * @param randomSource          source of random number generators
-     * @param blockRenderDispatcher handles block and fluid renderers
-     * @param posIterator           iterator over all positions in the world being rendered
+     * @param chunkPosIterator      iterator for all pos in the chunk
      * @param currentPos            position of the fluid being rendered
      * @param state                 block state of the fluid being rendered
      */
@@ -81,24 +77,24 @@ public final class SectionRebuildTaskMixin {
                     "Lnet/minecraft/world/level/material/FluidState;)V",
             shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD)
     public void moremcmeta_emissive_onChunkCompile(
-            float x, float y, float z, SectionBufferBuilderPack bufferPack,
-            CallbackInfoReturnable<SectionRenderDispatcher.RenderSection.RebuildTask.CompileResults> callbackInfo,
-            SectionRenderDispatcher.RenderSection.RebuildTask.CompileResults compileResults,
-            int unused, BlockPos origin, BlockPos maxInChunk, VisGraph visGraph, RenderChunkRegion renderChunkRegion,
-            PoseStack poseStack, Set<RenderType> startedRenderTypes, RandomSource randomSource,
-            BlockRenderDispatcher blockRenderDispatcher, Iterator<BlockPos> posIterator, BlockPos currentPos,
-            BlockState state) {
+            SectionPos sectionPos, RenderChunkRegion renderChunkRegion, VertexSorting vertexSorting,
+            SectionBufferBuilderPack bufferPack, CallbackInfoReturnable<SectionCompiler.Results> callbackInfo,
+            SectionCompiler.Results compileResults, BlockPos chunkOrigin, BlockPos chunkMax, VisGraph visGraph,
+            PoseStack poseStack, Map<RenderType, BufferBuilder> chunkBufferLayers, RandomSource randomSource,
+            Iterator<BlockPos> chunkPosIterator, BlockPos currentPos, BlockState state
+    ) {
         RenderType renderType = RenderType.translucent();
-        BufferBuilder bufferBuilder = bufferPack.builder(renderType);
-        if (startedRenderTypes.add(renderType)) {
-            bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
-        }
+
+        @SuppressWarnings("DataFlowIssue")
+        SectionCompiler sectionCompiler = ((SectionCompiler) (Object) this);
+
+        BufferBuilder bufferBuilder = sectionCompiler.getOrBeginLayer(chunkBufferLayers, bufferPack, renderType);
 
         TextureAtlas blockAtlas = Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS);
         SpriteFinder spriteFinder = ((SpriteFinderSupplier) blockAtlas).moremcmeta_emissive_spriteFinder();
 
-        VertexConsumer wrappedBuffer = new OverlayVertexConsumer(spriteFinder, bufferBuilder);
-        blockRenderDispatcher.renderLiquid(currentPos, renderChunkRegion, wrappedBuffer, state, state.getFluidState());
+        VertexConsumer wrappedBuffer = new LiquidOverlayVertexConsumer(spriteFinder, bufferBuilder);
+        sectionCompiler.blockRenderer.renderLiquid(currentPos, renderChunkRegion, wrappedBuffer, state, state.getFluidState());
     }
 
 }

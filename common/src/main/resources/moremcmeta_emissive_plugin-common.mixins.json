@@ -8,8 +8,8 @@
     "EntityRenderDispatcherMixin",
     "BlockEntityRenderDispatcherMixin",
     "SpriteLoaderMixin",
-    "SectionRebuildTaskMixin",
-    "TextureAtlasMixin"
+    "TextureAtlasMixin",
+    "TextureAtlasSpriteMixin"
   ],
   "mixins": [
   ],
