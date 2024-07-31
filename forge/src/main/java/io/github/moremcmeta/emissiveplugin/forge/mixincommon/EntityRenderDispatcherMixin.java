@@ -56,7 +56,7 @@ public final class EntityRenderDispatcherMixin {
     private void moremcmeta_emissive_onRender(Entity entity, double x, double y, double z, float yaw, float tickDelta,
                                               PoseStack poseStack, MultiBufferSource bufferSource, int packedLight,
                                               CallbackInfo callbackInfo) {
-        if (bufferSource instanceof WrappedBufferSource) {
+        if (bufferSource instanceof WrappedBufferSource || EntityRenderingState.currentBufferSource.get() != null) {
             return;
         }
 

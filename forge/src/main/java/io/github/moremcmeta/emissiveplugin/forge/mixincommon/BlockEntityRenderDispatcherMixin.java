@@ -110,7 +110,7 @@ public final class BlockEntityRenderDispatcherMixin {
                                                                      BlockEntity blockEntity, PoseStack poseStack,
                                                                      MultiBufferSource bufferSource,  int packedLight,
                                                                      int packedOverlay, float tickDelta) {
-        if (bufferSource instanceof WrappedBufferSource) {
+        if (bufferSource instanceof WrappedBufferSource || EntityRenderingState.currentBufferSource.get() != null) {
             return;
         }
 
