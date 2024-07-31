@@ -52,7 +52,7 @@ public final class EntityRenderDispatcherMixin {
      * @param packedLight       packed coordinates for the light texture
      * @param callbackInfo      callback info from Mixin
      */
-    @Inject(method = "render", at = @At(value = "HEAD"), locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "render", at = @At(value = "RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
     private void moremcmeta_emissive_onRender(Entity entity, double x, double y, double z, float yaw, float tickDelta,
                                               PoseStack poseStack, MultiBufferSource bufferSource, int packedLight,
                                               CallbackInfo callbackInfo) {
