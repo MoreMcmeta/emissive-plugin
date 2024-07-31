@@ -29,7 +29,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
  * @author soir20
  */
 @SuppressWarnings("unused")
-@Mixin(value = ModelPart.class, priority = Integer.MAX_VALUE, remap = false)
+@Mixin(value = ModelPart.class, priority = Integer.MIN_VALUE, remap = false)
 public final class ModelPartMixin {
 
     /**
