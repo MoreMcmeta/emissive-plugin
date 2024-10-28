@@ -79,7 +79,7 @@ public final class WrappedBufferSource implements MultiBufferSource {
 
         return metadataOptional
                 .map((analyzedMetadata) -> bufferFromMetadata((OverlayMetadata) analyzedMetadata))
-                .orElseGet(EmptyVertexConsumer::new);
+                .orElseGet(EmptyVertexConsumer::create);
 
     }
 
@@ -92,7 +92,7 @@ public final class WrappedBufferSource implements MultiBufferSource {
         ResourceLocation overlay = overlayMetadata.overlaySpriteName();
 
         if (overlayMetadata.isEmissive() != IS_EMISSIVE) {
-            return new EmptyVertexConsumer();
+            return EmptyVertexConsumer.create();
         }
 
         /* Disabling cull is needed to render emissive layers inside the slime properly, but it needs to

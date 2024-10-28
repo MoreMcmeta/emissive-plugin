@@ -1,6 +1,6 @@
 plugins {
     id "architectury-plugin" version "3.4-SNAPSHOT"
-    id "dev.architectury.loom" version "1.6-SNAPSHOT" apply false
+    id "dev.architectury.loom" version "1.7-SNAPSHOT" apply false
 }
 
 architectury {
@@ -16,6 +16,7 @@ subprojects {
 
     dependencies {
         minecraft "com.mojang:minecraft:${project.minecraft_version}"
+        modCompileOnly "maven.modrinth:sodium:${project.sodium_version}"
 
         // The following line declares the mojmap mappings, you may use other mappings as well
         mappings loom.officialMojangMappings()
@@ -59,6 +60,7 @@ allprojects {
                 password System.getenv("MOREMCMETA_MAVEN_PASS") ?: project.moremcmeta_maven_pass
             }
         }
+        maven { url = "https://api.modrinth.com/maven" }
     }
 
     tasks.withType(JavaCompile) {

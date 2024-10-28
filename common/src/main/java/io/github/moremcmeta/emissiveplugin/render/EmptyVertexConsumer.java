@@ -18,7 +18,13 @@
 package io.github.moremcmeta.emissiveplugin.render;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import net.caffeinemc.mods.sodium.api.vertex.buffer.VertexBufferWriter;
+import net.caffeinemc.mods.sodium.api.vertex.format.VertexFormatDescription;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import org.lwjgl.system.MemoryStack;
+
+import java.util.function.Supplier;
 
 /**
  * Vertex consumer that renders nothing.
@@ -26,6 +32,38 @@ import net.minecraft.MethodsReturnNonnullByDefault;
  */
 @MethodsReturnNonnullByDefault
 public class EmptyVertexConsumer implements VertexConsumer {
+    private static final Supplier<EmptyVertexConsumer> FACTORY;
+    private static final ThreadLocal<EmptyVertexConsumer> instance = new ThreadLocal<>();
+    static {
+        Supplier<EmptyVertexConsumer> factory;
+        try {
+            // Check whether the Sodium 0.6+ buffer interface is present before attempting to load the class
+            Class.forName("net.caffeinemc.mods.sodium.api.vertex.buffer.VertexBufferWriter");
+            factory = () -> {
+                if (instance.get() == null) {
+                    instance.set(new SodiumEmptyVertexConsumer());
+                }
+                return instance.get();
+            };
+        } catch (ClassNotFoundException err) {
+            factory = () -> {
+                if (instance.get() == null) {
+                    instance.set(new EmptyVertexConsumer());
+                }
+                return instance.get();
+            };
+        }
+        FACTORY = factory;
+    }
+
+    /**
+     * Create a new no-op vertex consumer.
+     * @return no-op vertex consumer
+     */
+    public static EmptyVertexConsumer create() {
+        return FACTORY.get();
+    }
+
     @Override
     public VertexConsumer addVertex(float x, float y, float z) {
         return this;
@@ -54,5 +92,31 @@ public class EmptyVertexConsumer implements VertexConsumer {
     @Override
     public VertexConsumer setNormal(float x, float y, float z) {
         return this;
+    }
+
+    /**
+     * Creates new no-op vertex consumer.
+     */
+    private EmptyVertexConsumer() {}
+
+    /**
+     * Creates a new no-op vertex consumer compatible with Sodium 0.6+.
+     * @author soir20
+     */
+    private static final class SodiumEmptyVertexConsumer extends EmptyVertexConsumer implements VertexBufferWriter {
+
+        /**
+         * The other push() method is used in older Sodium betas. Add this method for
+         * compatibility with newer Sodium versions.
+         * @param memoryStack       scratch memory
+         * @param pointer           pointer to read vertices from
+         * @param numVertices       number of vertices to read
+         * @param vertexFormat      format of vertices to push
+         */
+        @SuppressWarnings("unused")
+        public void push(MemoryStack memoryStack, long pointer, int numVertices, VertexFormat vertexFormat) {}
+
+        @Override
+        public void push(MemoryStack memoryStack, long pointer, int numVertices, VertexFormatDescription vertexFormatDescription) {}
     }
 }
