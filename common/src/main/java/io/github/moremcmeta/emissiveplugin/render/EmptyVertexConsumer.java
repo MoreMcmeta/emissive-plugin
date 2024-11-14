@@ -33,25 +33,14 @@ import java.util.function.Supplier;
 @MethodsReturnNonnullByDefault
 public class EmptyVertexConsumer implements VertexConsumer {
     private static final Supplier<EmptyVertexConsumer> FACTORY;
-    private static final ThreadLocal<EmptyVertexConsumer> instance = new ThreadLocal<>();
     static {
         Supplier<EmptyVertexConsumer> factory;
         try {
             // Check whether the Sodium 0.6+ buffer interface is present before attempting to load the class
             Class.forName("net.caffeinemc.mods.sodium.api.vertex.buffer.VertexBufferWriter");
-            factory = () -> {
-                if (instance.get() == null) {
-                    instance.set(new SodiumEmptyVertexConsumer());
-                }
-                return instance.get();
-            };
+            factory = SodiumEmptyVertexConsumer::new;
         } catch (ClassNotFoundException err) {
-            factory = () -> {
-                if (instance.get() == null) {
-                    instance.set(new EmptyVertexConsumer());
-                }
-                return instance.get();
-            };
+            factory = EmptyVertexConsumer::new;
         }
         FACTORY = factory;
     }
